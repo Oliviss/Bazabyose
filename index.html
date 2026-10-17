@@ -489,6 +489,29 @@
 
         // ==========================================
         // MODULE E: DASHBOARD & NAVIGATION
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
 
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
+    apiKey: "AIzaSyD6hNoXtX-nNccAAwNObqmGjC5ruHQdf_I",
+    authDomain: "bazabyose.firebaseapp.com",
+    projectId: "bazabyose",
+    storageBucket: "bazabyose.firebasestorage.app",
+    messagingSenderId: "660235040672",
+    appId: "1:660235040672:web:ea80b69fab346f037396c5",
+    measurementId: "G-LYQ2ES1FJB"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+
+</script>
 </body>
 </html>
