@@ -175,11 +175,11 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">Ifoto yawe (Profile Picture)</label>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Ifoto yawe (Profile Picture) - Hitamo muri Fone/PC</label>
                         <input type="file" id="prof-pic-file" accept="image/*" class="w-full p-2 border rounded-lg text-xs bg-gray-50 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">Upload Certificate / Diploma</label>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Upload Certificate / Diploma (PDF cyangwa Ifoto)</label>
                         <input type="file" id="prof-cert-file" accept="image/*,.pdf" class="w-full p-2 border rounded-lg text-xs bg-gray-50 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700">
                     </div>
                 </div>
@@ -191,23 +191,23 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">Amashuri Wize & Icyiciro</label>
-                        <input type="text" id="prof-school" placeholder="KIST / Bachelor in IT" class="w-full p-2.5 border rounded-lg text-sm">
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Amashuri Wize & Icyiciro (School / Degree)</label>
+                        <input type="text" id="prof-school" placeholder="Urugero: KIST / Bachelor in IT" class="w-full p-2.5 border rounded-lg text-sm">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">Impamyabumenyi Zindi</label>
-                        <input type="text" id="prof-certs" placeholder="Cisco Certified" class="w-full p-2.5 border rounded-lg text-sm">
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Impamyabumenyi Zindi (Certificates)</label>
+                        <input type="text" id="prof-certs" placeholder="Urugero: Cisco Certified, Driving License" class="w-full p-2.5 border rounded-lg text-sm">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">Uburambe n'Ibyo Wakoze (Experience)</label>
-                    <textarea id="prof-experience" rows="2" placeholder="Sobanura uburambe bwawe..." class="w-full p-2.5 border rounded-lg text-sm"></textarea>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Uburambe n'Ibyo Wakoze (Experience & Previous Workplaces)</label>
+                    <textarea id="prof-experience" rows="3" placeholder="Sobanura aho wakoze n'uburambe ufite..." class="w-full p-2.5 border rounded-lg text-sm"></textarea>
                 </div>
 
                 <div class="flex justify-between items-center pt-2">
                     <button type="button" onclick="deleteUserCV()" class="bg-red-100 text-red-700 px-4 py-2 rounded-xl text-xs font-bold hover:bg-red-200 transition">🗑️ Siba CV & Files</button>
-                    <button type="submit" class="bg-emerald-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-emerald-800 transition shadow">Bika Impinduka (Save)</button>
+                    <button type="submit" class="bg-emerald-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-emerald-800 transition shadow">Bika Impinduka (Save Profile)</button>
                 </div>
             </form>
         </div>
@@ -309,11 +309,28 @@
         let allUsersCache = [];
         let activeChatUserId = null;
 
+        // Ibicuruzwa 20+ byo mu Rwanda bigera kuri byinshi kandi bihinduranya ku home page
         const rwandanProducts = [
             {name: "Imashini y'Ubukorikori", price: "150,000 RWF", img: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=300"},
             {name: "Ibikoresho by'Ubwubatsi", price: "45,000 RWF", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300"},
             {name: "Laptop HP Core i5", price: "280,000 RWF", img: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300"},
-            {name: "Smartphones zigezweho", price: "120,000 RWF", img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300"}
+            {name: "Smartphones zigezweho", price: "120,000 RWF", img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300"},
+            {name: "Inzu yo mu Gakiriro", price: "180,000 RWF / Ukwezi", img: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=300"},
+            {name: "Imodoka Toyota RAV4", price: "12,500,000 RWF", img: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=300"},
+            {name: "Moto TVS Star", price: "1,600,000 RWF", img: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=300"},
+            {name: "Intebe z'Iroho (Sofa)", price: "220,000 RWF", img: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=300"},
+            {name: "Televiziyo 43 Inch Smart", price: "230,000 RWF", img: "https://images.unsplash.com/photo-1593784991095-a205069470b6?w=300"},
+            {name: "Frigo nshya (Refrigerator)", price: "310,000 RWF", img: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd38?w=300"},
+            {name: "Inkoko z'Amagi (Layers)", price: "8,500 RWF", img: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=300"},
+            {name: "Imbuto z'Intungamubiri", price: "25,000 RWF", img: "https://images.unsplash.com/photo-1610348725531-843dff563e2c?w=300"},
+            {name: "Imyenda y'Imyambarire", price: "15,000 RWF", img: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=300"},
+            {name: "Inkweto z'Abagabo", price: "25,000 RWF", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300"},
+            {name: "Solar Panel System", price: "350,000 RWF", img: "https://images.unsplash.com/photo-1509391365360-80a5697f884e?w=300"},
+            {name: "Printer ya Canon", price: "190,000 RWF", img: "https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=300"},
+            {name: "Camera ya Canon EOS", price: "650,000 RWF", img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=300"},
+            {name: "Meza z'ibiro (Office Desk)", price: "95,000 RWF", img: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=300"},
+            {name: "Generator y'Amashanyarazi", price: "450,000 RWF", img: "https://images.unsplash.com/photo-1617788138017-80ad40651399?w=300"},
+            {name: "Ipasi yo Guterura", price: "22,000 RWF", img: "https://images.unsplash.com/photo-1585832770481-2a550d52f6f1?w=300"}
         ];
 
         function loadRotatingProducts() {
@@ -345,7 +362,7 @@
         window.openCashOutModal = () => document.getElementById('cashout-modal').classList.remove('hidden');
         window.closeCashOutModal = () => document.getElementById('cashout-modal').classList.add('hidden');
 
-        // FIXED PROFILE MODAL: Added Offline Fallback Cache handling
+        // FIXED PROFILE MODAL: Byuzuye neza kandi bifata amakuru yose ya CV, certificates, n'amafoto avuye muri fone/PC
         window.openProfileModal = async () => {
             const user = auth.currentUser;
             if(!user) return alert("Banza winjire!");
@@ -355,7 +372,6 @@
                 try {
                     snap = await getDoc(doc(db, "users", user.uid));
                 } catch(netErr) {
-                    // Fallback if offline or network glitch
                     snap = await getDoc(doc(db, "users", user.uid), { source: 'cache' });
                 }
 
@@ -382,9 +398,7 @@
                         </div>
                     `;
                 } else {
-                    // If user doc doesn't exist yet, populate base auth data
                     document.getElementById('prof-fullname').value = user.displayName || "";
-                    document.getElementById('prof-email').value = user.email || "";
                 }
                 document.getElementById('profile-modal').classList.remove('hidden');
             } catch(e) {
