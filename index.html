@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BAZABYOSE - Professional Marketplace & Services in Rwanda</title>
-    <!-- Tailwind CSS CDN for modern styling & animations -->
+    <title>BAZABYOSE - Professional Marketplace & Smart Platform</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
-        /* Animated Gradient Background */
         @keyframes gradientBG {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -23,137 +21,115 @@
 <body class="bg-gray-50 text-gray-800 font-sans leading-relaxed">
 
     <!-- HEADER NAVIGATION -->
-    <header class="bg-[#008060] text-white px-6 py-4 flex justify-between items-center shadow-md sticky top-0 z-50">
-        <h1 class="text-xl font-bold tracking-wide cursor-pointer" onclick="location.reload()">🇷🇼 BAZABYOSE</h1>
-        <div class="flex items-center gap-4">
-            <button onclick="openTermsModal()" class="text-sm bg-white/20 px-3 py-1.5 rounded hover:bg-white/30 transition">Amategeko (Terms)</button>
-            <button onclick="bazabyoseLogout()" id="logout-btn" class="hidden bg-red-600 px-4 py-1.5 rounded text-sm font-semibold hover:bg-red-700 transition">Gusohoka</button>
+    <header class="bg-[#008060] text-white px-6 py-4 flex justify-between items-center shadow-md sticky top-0 z-40">
+        <h1 class="text-xl font-black tracking-wide cursor-pointer" onclick="location.reload()">🇷🇼 BAZABYOSE</h1>
+        <div class="flex items-center gap-3">
+            <button onclick="openAuthModal()" id="auth-toggle-btn" class="bg-white text-[#008060] px-4 py-2 rounded-xl text-xs md:text-sm font-bold shadow hover:bg-emerald-50 transition">Injira / Iyandikishe</button>
+            <button onclick="openTermsModal()" class="bg-white/20 px-3 py-2 rounded-xl text-xs font-bold hover:bg-white/30 transition">Amategeko</button>
+            <button onclick="bazabyoseLogout()" id="logout-btn" class="hidden bg-red-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-red-700 transition">Gusohoka</button>
         </div>
     </header>
 
-    <!-- HERO SECTION WITH ANIMATED BACKGROUND & RWANDAN MARKET PRODUCTS -->
-    <div id="hero-showcase" class="animated-hero-bg text-white py-16 px-6 text-center shadow-inner">
-        <div class="max-w-4xl mx-auto">
-            <h2 class="text-3xl md:text-5xl font-extrabold mb-4">Shakisha Akazi, Abakozi, n'Ibikoresho mu Rwanda</h2>
-            <p class="text-lg opacity-90 mb-8">Urubuga ruHUZA abantu bafite ubumenyi, abashaka abakozi, abapangisha inzu n'imodoka, hamwe n'isoko ry'ibikoresho bifite ibiciro byiza.</p>
+    <!-- HERO SECTION: 20+ ROTATING RWANDAN MARKET PRODUCTS & ANIMATED BG -->
+    <div id="hero-showcase" class="animated-hero-bg text-white py-14 px-6 text-center shadow-inner">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-3xl md:text-5xl font-black mb-4 tracking-tight">Isoko Rikomeye n'Imirimo mu Rwanda</h2>
+            <p class="text-base md:text-lg opacity-95 mb-8">Shakisha akazi, abakozi b'abahanga, inzu, imodoka, n'ibikoresho bitandukanye bifite ibiciro byiza mu maRWF.</p>
             
-            <!-- Rwanda Market Sample Items Preview -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-gray-800 text-left">
-                <div class="bg-white p-3 rounded-lg shadow">
-                    <img src="https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=300" class="w-full h-28 object-cover rounded mb-2">
-                    <h4 class="font-bold text-sm">Imashini y'Ubukorikori</h4>
-                    <p class="text-emerald-700 font-bold text-sm">150,000 RWF</p>
-                </div>
-                <div class="bg-white p-3 rounded-lg shadow">
-                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300" class="w-full h-28 object-cover rounded mb-2">
-                    <h4 class="font-bold text-sm">Ibikoresho by'Ubwubatsi</h4>
-                    <p class="text-emerald-700 font-bold text-sm">45,000 RWF</p>
-                </div>
-                <div class="bg-white p-3 rounded-lg shadow">
-                    <img src="https://images.unsplash.com/photo-1526738549149-8e07eca6c147?w=300" class="w-full h-28 object-cover rounded mb-2">
-                    <h4 class="font-bold text-sm">Generator ya Amashanyarazi</h4>
-                    <p class="text-emerald-700 font-bold text-sm">350,000 RWF</p>
-                </div>
-                <div class="bg-white p-3 rounded-lg shadow">
-                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300" class="w-full h-28 object-cover rounded mb-2">
-                    <h4 class="font-bold text-sm">Bijou n'Imyambaro</h4>
-                    <p class="text-emerald-700 font-bold text-sm">15,000 RWF</p>
-                </div>
+            <!-- Rotating Market Products Container (20+ Dynamic Items) -->
+            <div id="rotating-market-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 text-gray-900 text-left max-h-[420px] overflow-y-auto p-2">
+                <!-- JavaScript populates 20+ dynamic Rwandan products here -->
             </div>
+        </div>
+    </div>
+
+    <!-- SMART AUTH MODAL (HIDDEN BY DEFAULT) -->
+    <div id="auth-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 relative">
+            <button class="absolute top-4 right-4 bg-red-600 text-white px-2.5 py-1 rounded-lg text-xs font-bold" onclick="closeAuthModal()">X</button>
+            <div class="flex border-b mb-4">
+                <button onclick="switchAuthTab('login')" id="tab-login-btn" class="flex-1 pb-2 font-bold text-emerald-800 border-b-2 border-emerald-800 text-sm">Winjira</button>
+                <button onclick="switchAuthTab('register')" id="tab-reg-btn" class="flex-1 pb-2 font-bold text-gray-400 text-sm">Iyandikishe</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="bazabyose-login-form" onsubmit="bazabyoseLogin(event)" class="space-y-3">
+                <input type="email" id="bazabyose-login-email" required placeholder="Imeyili (Email)" class="w-full p-2.5 border rounded-xl text-sm">
+                <input type="password" id="bazabyose-login-password" required placeholder="Ijambo ry'Ibanga (Password)" class="w-full p-2.5 border rounded-xl text-sm">
+                <button type="submit" class="w-full bg-[#008060] text-white py-3 rounded-xl font-bold text-sm shadow hover:bg-[#004d36]">Injira</button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="bazabyose-register-form" onsubmit="bazabyoseRegister(event)" class="space-y-3 hidden">
+                <input type="text" id="bazabyose-reg-name" required placeholder="Amazina Yose" class="w-full p-2.5 border rounded-xl text-sm">
+                <input type="email" id="bazabyose-reg-email" required placeholder="Imeyili (Email)" class="w-full p-2.5 border rounded-xl text-sm">
+                <input type="password" id="bazabyose-reg-password" required placeholder="Ijambo ry'Ibanga (Password)" class="w-full p-2.5 border rounded-xl text-sm">
+                <select id="bazabyose-reg-role" class="w-full p-2.5 border rounded-xl text-sm">
+                    <option value="worker">Umukozi / Professional (Worker)</option>
+                    <option value="employer">Umukoresha / Hirer (Employer)</option>
+                    <option value="broker">Umuhuza / Broker (Real Estate & Car Rental)</option>
+                </select>
+                <button type="submit" class="w-full bg-[#008060] text-white py-3 rounded-xl font-bold text-sm shadow hover:bg-[#004d36]">Iyandikishe</button>
+            </form>
         </div>
     </div>
 
     <div class="container mx-auto max-w-6xl px-4 py-8">
 
-        <!-- 1. AUTHENTICATION VIEW -->
-        <div id="auth-view" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="bg-white p-6 rounded-xl shadow border border-gray-100">
-                <h3 class="text-xl font-bold text-[#004d36] mb-4">Iyandikishe kuri BAZABYOSE</h3>
-                <form id="bazabyose-register-form" onsubmit="bazabyoseRegister(event)">
-                    <label class="block text-sm font-medium mb-1">Amazina Yose</label>
-                    <input type="text" id="bazabyose-reg-name" required placeholder="Urugero: Aline Uwase" class="w-full p-2.5 border rounded mb-3">
-                    
-                    <label class="block text-sm font-medium mb-1">Imeyili (Email)</label>
-                    <input type="email" id="bazabyose-reg-email" required placeholder="user@gmail.com" class="w-full p-2.5 border rounded mb-3">
-                    
-                    <label class="block text-sm font-medium mb-1">Ijambo ry'Ibanga (Password)</label>
-                    <input type="password" id="bazabyose-reg-password" required placeholder="********" class="w-full p-2.5 border rounded mb-3">
-                    
-                    <label class="block text-sm font-medium mb-1">Hitamo Uruhare rwawe</label>
-                    <select id="bazabyose-reg-role" class="w-full p-2.5 border rounded mb-4">
-                        <option value="worker">Umukozi / Professional (Worker)</option>
-                        <option value="employer">Umukoresha / Hirer (Employer)</option>
-                        <option value="broker">Umuhuza / Broker (Real Estate & Car Rental)</option>
-                    </select>
-
-                    <button type="submit" class="w-full bg-[#008060] text-white py-2.5 rounded font-bold hover:bg-[#004d36] transition">Iyandikishe</button>
-                </form>
-            </div>
-
-            <div class="bg-white p-6 rounded-xl shadow border border-gray-100">
-                <h3 class="text-xl font-bold text-[#004d36] mb-4">Winjira muri Konti</h3>
-                <form id="bazabyose-login-form" onsubmit="bazabyoseLogin(event)">
-                    <label class="block text-sm font-medium mb-1">Imeyili (Email)</label>
-                    <input type="email" id="bazabyose-login-email" required placeholder="user@gmail.com" class="w-full p-2.5 border rounded mb-3">
-                    
-                    <label class="block text-sm font-medium mb-1">Ijambo ry'Ibanga (Password)</label>
-                    <input type="password" id="bazabyose-login-password" required placeholder="********" class="w-full p-2.5 border rounded mb-4">
-
-                    <button type="submit" class="w-full bg-[#008060] text-white py-2.5 rounded font-bold hover:bg-[#004d36] transition">Injira</button>
-                </form>
-            </div>
-        </div>
-
         <!-- 2. DASHBOARD VIEW -->
         <div id="dashboard-view" class="hidden space-y-6">
             
-            <!-- User Overview & Profile Status -->
-            <div class="bg-white p-6 rounded-xl shadow border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <!-- User Overview & Actions -->
+            <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h2 class="text-2xl font-bold text-[#004d36]" id="dash-fullname">--</h2>
-                    <p class="text-gray-600 text-sm"><span id="dash-role">Role: --</span> | Wallet: <strong class="text-emerald-600" id="dash-balance">0 RWF</strong></p>
+                    <h2 class="text-2xl font-black text-[#004d36]" id="dash-fullname">--</h2>
+                    <p class="text-gray-600 text-sm mt-1"><span id="dash-role" class="font-semibold text-emerald-700">Role: --</span> | Wallet: <strong class="text-emerald-600" id="dash-balance">0 RWF</strong></p>
                 </div>
-                <div class="flex gap-2">
-                    <button onclick="bazabyoseOpenMoMoModal(5000)" class="bg-[#ffaa00] text-gray-900 px-4 py-2 rounded text-sm font-bold shadow hover:bg-amber-500">Shyiramo MoMo</button>
-                    <button onclick="openChatModal()" class="bg-indigo-600 text-white px-4 py-2 rounded text-sm font-bold shadow hover:bg-indigo-700">💬 Chat & Messages</button>
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="bazabyoseOpenMoMoModal(5000)" class="bg-[#ffaa00] text-gray-900 px-4 py-2.5 rounded-xl text-sm font-bold shadow hover:bg-amber-500 transition">Shyiramo MoMo</button>
+                    <button onclick="openChatModal()" class="bg-indigo-600 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow hover:bg-indigo-700 transition">💬 Live Chat Network</button>
                 </div>
             </div>
 
-            <!-- PROFESSIONAL CV & PORTFOLIO BUILDER (FOR WORKERS/USERS) -->
-            <div class="bg-white p-6 rounded-xl shadow border border-gray-100">
-                <h3 class="text-lg font-bold text-[#004d36] mb-3">📄 Portfolio & CV Yanjye (Isura yawe ku isoko)</h3>
+            <!-- PROFESSIONAL CV & PORTFOLIO BUILDER WITH PICTURE LINK -->
+            <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
+                <h3 class="text-lg font-bold text-[#004d36] mb-3">📄 Portfolio & CV Yanjye (Ifoto, Amashuri & Certificates)</h3>
                 <form id="cv-builder-form" onsubmit="saveUserCV(event)" class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-sm font-medium">Amashuri Wize & Icyiciro</label>
-                            <input type="text" id="cv-school" placeholder="Urugero: KIST / Bachelor in IT" class="w-full p-2 border rounded">
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Ifoto yawe (Profile Picture URL)</label>
+                            <input type="url" id="cv-pic" placeholder="https://image-link.jpg" class="w-full p-2.5 border rounded-lg text-sm">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium">Certificates / Impamyabumenyi</label>
-                            <input type="text" id="cv-certs" placeholder="Urugero: Cisco Certified, Driving License Cat B" class="w-full p-2 border rounded">
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Amashuri Wize & Icyiciro</label>
+                            <input type="text" id="cv-school" placeholder="KIST / Bachelor in IT" class="w-full p-2.5 border rounded-lg text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Certificates / Impamyabumenyi</label>
+                            <input type="text" id="cv-certs" placeholder="Cisco Certified, Driving License" class="w-full p-2.5 border rounded-lg text-sm">
                         </div>
                     </div>
                     <div>
-                        <label class="block text-sm font-medium">Amateka y'Akazi wakoze & Amafoto y'Ibyo Wakoze (Image Links)</label>
-                        <textarea id="cv-experience" rows="3" placeholder="Sobanura aho wakoze n'amahuri y'ibyo wakoze..." class="w-full p-2 border rounded"></textarea>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Uburambe n'Ibyo Wakoze</label>
+                        <textarea id="cv-experience" rows="2" placeholder="Sobanura uburambe bwawe..." class="w-full p-2.5 border rounded-lg text-sm"></textarea>
                     </div>
-                    <div class="flex items-center justify-between">
-                        <label class="flex items-center gap-2 cursor-pointer">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <label class="flex items-center gap-2 cursor-pointer bg-gray-50 px-3 py-2 rounded-lg border">
                             <input type="checkbox" id="toggle-hide-contact" onchange="toggleHideContactSetting()" class="w-4 h-4 text-emerald-600">
-                            <span class="text-sm font-medium text-gray-700">Hide My Contact (Guhisha nimero ya telefone ku bandi)</span>
+                            <span class="text-xs font-bold text-gray-700">Hide My Contact (Guhisha nimero)</span>
                         </label>
-                        <button type="submit" class="bg-emerald-700 text-white px-5 py-2 rounded text-sm font-bold hover:bg-emerald-800">Emeza CV & Portfolio</button>
+                        <button type="submit" class="bg-emerald-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-emerald-800 transition shadow">Bika CV & Portfolio</button>
                     </div>
                 </form>
             </div>
 
-            <!-- POST AD SECTION -->
-            <div class="bg-white p-6 rounded-xl shadow border border-gray-100">
+            <!-- POST AD SECTION WITH PICTURE URL -->
+            <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
                 <h3 class="text-lg font-bold text-[#004d36] mb-3">📢 Shyira Itangazo / Ibikoresho ku Isoko</h3>
                 <form id="bazabyose-post-form" onsubmit="bazabyoseCreatePost(event)" class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input type="text" id="ad-title" required placeholder="Umutwe w'Itangazo (Urugero: Nkenye akazi / Mpagaze igikoresho)" class="p-2.5 border rounded">
-                        <select id="ad-category" class="p-2.5 border rounded">
+                        <input type="text" id="ad-title" required placeholder="Umutwe w'Itangazo (Urugero: Nkenye akazi)" class="p-2.5 border rounded-lg text-sm">
+                        <select id="ad-category" class="p-2.5 border rounded-lg text-sm">
                             <option value="job">Akazi (Job)</option>
                             <option value="rental">Inzu yo Gukodesha (Rental)</option>
                             <option value="car">Imodoka / Ibinyamiziga (Car)</option>
@@ -161,26 +137,29 @@
                         </select>
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <input type="text" id="ad-district" required placeholder="Akarere (Urugero: Gasabo)" class="p-2.5 border rounded">
-                        <input type="text" id="ad-sector" required placeholder="Umurenge (Urugero: Remera)" class="p-2.5 border rounded">
-                        <input type="number" id="ad-price" placeholder="Igiciro mu RWF" class="p-2.5 border rounded">
+                        <input type="text" id="ad-district" required placeholder="Akarere (Gasabo)" class="p-2.5 border rounded-lg text-sm">
+                        <input type="text" id="ad-sector" required placeholder="Umurenge (Remera)" class="p-2.5 border rounded-lg text-sm">
+                        <input type="number" id="ad-price" placeholder="Igiciro mu RWF" class="p-2.5 border rounded-lg text-sm">
                     </div>
-                    <textarea id="ad-description" rows="3" required placeholder="Ibisobanuro birambuye..." class="w-full p-2.5 border rounded"></textarea>
-                    <button type="submit" class="bg-[#008060] text-white px-6 py-2.5 rounded font-bold hover:bg-[#004d36]">Ohereza Itangazo</button>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input type="url" id="ad-image" placeholder="Ifoto y'Itangazo / Igikoresho (Image URL)" class="p-2.5 border rounded-lg text-sm">
+                        <textarea id="ad-description" rows="2" required placeholder="Ibisobanuro birambuye..." class="p-2.5 border rounded-lg text-sm"></textarea>
+                    </div>
+                    <button type="submit" class="bg-[#008060] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#004d36] transition shadow">Ohereza Itangazo</button>
                 </form>
             </div>
 
-            <!-- SMART FEED & POSTS DISPLAY -->
-            <div class="bg-white p-6 rounded-xl shadow border border-gray-100">
+            <!-- SMART FEED WITH ALGORITHM & RECOMMENDATIONS -->
+            <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
                 <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-bold text-[#004d36]">Isoko n'Amatangazo Agezweho</h3>
-                    <button onclick="bazabyoseGetSmartFeed()" class="bg-amber-400 text-gray-900 px-3 py-1.5 rounded text-xs font-bold hover:bg-amber-500">🔄 Vugurura Feed</button>
+                    <h3 class="text-lg font-bold text-[#004d36]">Isoko n'Amatangazo (Smart Recommendation Feed)</h3>
+                    <button onclick="bazabyoseGetSmartFeed()" class="bg-amber-400 text-gray-900 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-amber-500 transition shadow">🔄 Vugurura Feed</button>
                 </div>
                 <div id="bazabyose-smart-feed-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
 
             <!-- ADMIN CONTROL PANEL -->
-            <div id="bazabyose-admin-control-panel" class="hidden bg-red-50 border-2 border-red-400 p-6 rounded-xl shadow">
+            <div id="bazabyose-admin-control-panel" class="hidden bg-red-50 border-2 border-red-400 p-6 rounded-2xl shadow-md">
                 <h3 class="text-xl font-bold text-red-700 mb-2">🛡️ Admin Control & Moderation Panel</h3>
                 <p class="text-sm text-gray-700 mb-4">Ufite uburenganzira bwo gusiba amatangazo adakwiriye, guhagarika konti zinyuranyije n'amategeko, no kwemeza ubwishyu bwa MoMo.</p>
                 <div id="bazabyose-pending-tx-container" class="space-y-3"></div>
@@ -189,60 +168,60 @@
 
     </div>
 
-    <!-- 3. CHAT MODAL (VOICE, PICTURE, VIDEO, DOWNLOAD) -->
-    <div id="chat-modal" class="hidden fixed inset-0 bg-black/60 flex justify-center items-center z-50 p-4">
-        <div class="bg-white w-full max-w-2xl rounded-xl shadow-2xl overflow-hidden flex flex-col h-[80vh]">
-            <div class="bg-[#008060] text-white px-4 py-3 flex justify-between items-center">
-                <h3 class="font-bold">💬 BAZABYOSE Live Chat Network</h3>
-                <button onclick="closeChatModal()" class="bg-red-600 px-2.5 py-1 rounded text-xs font-bold">X</button>
+    <!-- 3. CHAT MODAL -->
+    <div id="chat-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[82vh]">
+            <div class="bg-[#008060] text-white px-5 py-3.5 flex justify-between items-center">
+                <h3 class="font-bold text-sm">💬 BAZABYOSE Live Chat Network</h3>
+                <button onclick="closeChatModal()" class="bg-red-600 px-3 py-1 rounded-lg text-xs font-bold hover:bg-red-700">X</button>
             </div>
             <div id="chat-messages-box" class="flex-1 p-4 overflow-y-auto space-y-3 bg-gray-50">
-                <p class="text-center text-gray-400 text-sm">Hitamo uwo muvugana cyangwa wandike ubutumwa...</p>
+                <p class="text-center text-gray-400 text-xs">Hitamo uwo muvugana cyangwa wandike ubutumwa...</p>
             </div>
             <div class="p-3 bg-white border-t flex items-center gap-2">
-                <input type="text" id="chat-input-text" placeholder="Andika ubutumwa..." class="flex-1 p-2 border rounded text-sm">
-                <button onclick="sendChatMessage('text')" class="bg-[#008060] text-white px-4 py-2 rounded text-sm font-bold">Ohereza</button>
-                <button onclick="sendChatMessage('voice')" title="Kohereza Voice" class="bg-amber-500 text-white p-2 rounded text-sm">🎤</button>
-                <button onclick="sendChatMessage('media')" title="Kohereza Foto/Video" class="bg-indigo-600 text-white p-2 rounded text-sm">📎</button>
+                <input type="text" id="chat-input-text" placeholder="Andika ubutumwa..." class="flex-1 p-2.5 border rounded-xl text-sm">
+                <button onclick="sendChatMessage('text')" class="bg-[#008060] text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow">Ohereza</button>
+                <button onclick="sendChatMessage('voice')" title="Kohereza Voice" class="bg-amber-500 text-white p-2.5 rounded-xl text-sm shadow">🎤</button>
+                <button onclick="sendChatMessage('media')" title="Kohereza Foto/Video" class="bg-indigo-600 text-white p-2.5 rounded-xl text-sm shadow">📎</button>
             </div>
         </div>
     </div>
 
-    <!-- 4. TERMS AND CONDITIONS MODAL (ENGLISH & KINYARWANDA) -->
-    <div id="terms-modal" class="hidden fixed inset-0 bg-black/60 flex justify-center items-center z-50 p-4">
-        <div class="bg-white w-full max-w-2xl rounded-xl shadow-2xl p-6 max-h-[85vh] overflow-y-auto">
-            <h3 class="text-xl font-bold text-[#004d36] mb-3">Amategeko n'Amabwiriza / Terms & Conditions</h3>
-            <div class="space-y-4 text-sm text-gray-700">
+    <!-- 4. TERMS AND CONDITIONS MODAL -->
+    <div id="terms-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl p-6 max-h-[85vh] overflow-y-auto space-y-4">
+            <h3 class="text-xl font-bold text-[#004d36]">Amategeko n'Amabwiriza / Terms & Conditions</h3>
+            <div class="space-y-3 text-xs md:text-sm text-gray-700">
                 <div>
-                    <h4 class="font-bold text-gray-900">🇷🇼 Kinyarwanda:</h4>
+                    <h4 class="font-bold text-gray-900 mb-1">🇷🇼 Kinyarwanda:</h4>
                     <p>1. Urubuga rwa BAZABYOSE rugenewe guhana serivisi nziza, ubucuruzi, n'akazi mu buryo bwubahiriza amategeko y'u Rwanda.<br>
-                    2. Gushyiraho amatangazo y'ibiteye isoni, ibiyobyabwenge, cyangwa ibinyuranyije n'umuco n'amategeko bizatuma **konti yawe ihagarikwa ako kanya (Suspended)**.<br>
-                    3. Admin afite uburenganzira buzonze bwo gusiba cyangwa guhagarika uwo ari we wese urenze ku mabwiriza.</p>
+                    2. Gushyiraho amatangazo y'ibiteye isoni, ibiyobyabwenge, cyangwa ibinyuranyije n'umuco n'amategeko bizatuma <strong>konti yawe ihagarikwa ako kanya (Suspended)</strong>.<br>
+                    3. Admin afite uburenganzira bwuzuye bwo gusiba cyangwa guhagarika uwo ari we wese urenze ku mabwiriza.</p>
                 </div>
                 <div>
-                    <h4 class="font-bold text-gray-900">🇬🇧 English:</h4>
+                    <h4 class="font-bold text-gray-900 mb-1">🇬🇧 English:</h4>
                     <p>1. BAZABYOSE is designed for legitimate professional networking, job matching, and verified marketplaces in Rwanda.<br>
-                    2. Posting inappropriate, offensive, adult, or illegal content will result in immediate **account suspension or permanent ban**.<br>
+                    2. Posting inappropriate, offensive, adult, or illegal content will result in immediate <strong>account suspension or permanent ban</strong>.<br>
                     3. The Admin holds full access and rights to moderate, edit, or remove any user-generated content.</p>
                 </div>
             </div>
-            <div class="mt-6 text-right">
-                <button onclick="closeTermsModal()" class="bg-[#008060] text-white px-5 py-2 rounded font-bold text-sm">Numvise / Close</button>
+            <div class="pt-4 text-right">
+                <button onclick="closeTermsModal()" class="bg-[#008060] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#004d36] transition shadow">Numvise / Close</button>
             </div>
         </div>
     </div>
 
     <!-- 5. MANUAL MOMO PAYMENT MODAL -->
-    <div id="bazabyose-momo-modal" class="hidden fixed inset-0 bg-black/60 flex justify-center items-center z-50 p-4">
-        <div class="bg-white w-full max-w-md rounded-xl shadow-2xl p-6 relative">
-            <button class="absolute top-4 right-4 bg-red-600 text-white px-2.5 py-1 rounded text-xs font-bold" onclick="bazabyoseCloseMoMoModal()">X</button>
+    <div id="bazabyose-momo-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 relative">
+            <button class="absolute top-4 right-4 bg-red-600 text-white px-2.5 py-1 rounded-lg text-xs font-bold" onclick="bazabyoseCloseMoMoModal()">X</button>
             <h3 class="text-lg font-bold text-[#004d36] mb-2">Kwishyura binyuze muri Mobile Money</h3>
-            <p class="text-sm text-gray-600 mb-4">Kanda kuri telefone: <strong class="text-emerald-700">*182*8*1*123456#</strong></p>
+            <p class="text-xs text-gray-600 mb-4">Kanda kuri telefone: <strong class="text-emerald-700">*182*8*1*123456#</strong></p>
             <form id="bazabyose-momo-form" onsubmit="bazabyoseSubmitMoMoPayment(event)" class="space-y-3">
                 <input type="hidden" id="bazabyose-momo-amount" value="5000">
-                <input type="text" id="bazabyose-momo-phone" required placeholder="Nimero ya Telefone (078/072...)" class="w-full p-2.5 border rounded text-sm">
-                <input type="text" id="bazabyose-momo-txref" required placeholder="Transaction Ref / Ubutumwa bwa MoMo" class="w-full p-2.5 border rounded text-sm">
-                <button type="submit" class="w-full bg-[#008060] text-white py-2.5 rounded font-bold text-sm hover:bg-[#004d36]">Emeza Kwishyura</button>
+                <input type="text" id="bazabyose-momo-phone" required placeholder="Nimero ya Telefone (078/072...)" class="w-full p-2.5 border rounded-lg text-sm">
+                <input type="text" id="bazabyose-momo-txref" required placeholder="Transaction Ref / Ubutumwa bwa MoMo" class="w-full p-2.5 border rounded-lg text-sm">
+                <button type="submit" class="w-full bg-[#008060] text-white py-3 rounded-xl font-bold text-sm hover:bg-[#004d36] transition shadow">Emeza Kwishyura</button>
             </form>
         </div>
     </div>
@@ -267,7 +246,6 @@
           getDocs, 
           query, 
           orderBy, 
-          where, 
           updateDoc, 
           deleteDoc,
           serverTimestamp 
@@ -287,13 +265,69 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // Global Modals controls
+        // 20+ Rotating Rwandan Market Showcase Products Generator
+        const rwandanProducts = [
+            {name: "Imashini y'Ubukorikori", price: "150,000 RWF", img: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=300"},
+            {name: "Ibikoresho by'Ubwubatsi", price: "45,000 RWF", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300"},
+            {name: "Generator y'Amashanyarazi", price: "350,000 RWF", img: "https://images.unsplash.com/photo-1526738549149-8e07eca6c147?w=300"},
+            {name: "Ibijyanye n'Ikoranabuhanga", price: "25,000 RWF", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300"},
+            {name: "Moringa Powder (Organic)", price: "5,000 RWF", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300"},
+            {name: "Amavuta ya Avoka Meza", price: "8,000 RWF", img: "https://images.unsplash.com/photo-1526318896980-cf78c08b2478?w=300"},
+            {name: "Smartphones zigezweho", price: "120,000 RWF", img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300"},
+            {name: "Solar Panel 100W", price: "85,000 RWF", img: "https://images.unsplash.com/photo-1508935639922-c560ef968364?w=300"},
+            {name: "Inkweto z'Imideri", price: "20,000 RWF", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300"},
+            {name: "Imyenda y'Akazi (Uniform)", price: "15,000 RWF", img: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=300"},
+            {name: "Gas Stove y'Abana", price: "35,000 RWF", img: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=300"},
+            {name: "Moto Helmet (Interineti)", price: "25,000 RWF", img: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=300"},
+            {name: "Agaseke k'Imideri", price: "12,000 RWF", img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=300"},
+            {name: "Coffee Beans (Rwanda)", price: "6,000 RWF", img: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=300"},
+            {name: "Tea Leaves (Pfunda)", price: "3,500 RWF", img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=300"},
+            {name: "Laptop HP Core i5", price: "280,000 RWF", img: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300"},
+            {name: "Smart Watch", price: "22,000 RWF", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300"},
+            {name: "Bluetooth Speaker", price: "18,000 RWF", img: "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=300"},
+            {name: "Water Pump (Agriculture)", price: "190,000 RWF", img: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=300"},
+            {name: "Hand Bag y'Abagore", price: "25,000 RWF", img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=300"}
+        ];
+
+        function loadRotatingProducts() {
+            const grid = document.getElementById('rotating-market-grid');
+            if(!grid) return;
+            // Shuffle to keep rotating experience
+            const shuffled = [...rwandanProducts].sort(() => 0.5 - Math.random());
+            grid.innerHTML = shuffled.map(p => `
+                <div class="bg-white/95 backdrop-blur p-2.5 rounded-xl shadow-md">
+                    <img src="${p.img}" class="w-full h-20 object-cover rounded-lg mb-1.5">
+                    <h4 class="font-bold text-[11px] truncate">${p.name}</h4>
+                    <p class="text-emerald-700 font-black text-[11px]">${p.price}</p>
+                </div>
+            `).join('');
+        }
+        setInterval(loadRotatingProducts, 5000); // Rotates every 5 seconds
+        loadRotatingProducts();
+
+        // Modals Controls
+        window.openAuthModal = () => document.getElementById('auth-modal').classList.remove('hidden');
+        window.closeAuthModal = () => document.getElementById('auth-modal').classList.add('hidden');
         window.openTermsModal = () => document.getElementById('terms-modal').classList.remove('hidden');
         window.closeTermsModal = () => document.getElementById('terms-modal').classList.add('hidden');
         window.openChatModal = () => document.getElementById('chat-modal').classList.remove('hidden');
         window.closeChatModal = () => document.getElementById('chat-modal').classList.add('hidden');
 
-        // Auth: Register
+        window.switchAuthTab = (tab) => {
+            if(tab === 'login') {
+                document.getElementById('bazabyose-login-form').classList.remove('hidden');
+                document.getElementById('bazabyose-register-form').classList.add('hidden');
+                document.getElementById('tab-login-btn').className = "flex-1 pb-2 font-bold text-emerald-800 border-b-2 border-emerald-800 text-sm";
+                document.getElementById('tab-reg-btn').className = "flex-1 pb-2 font-bold text-gray-400 text-sm";
+            } else {
+                document.getElementById('bazabyose-login-form').classList.add('hidden');
+                document.getElementById('bazabyose-register-form').classList.remove('hidden');
+                document.getElementById('tab-reg-btn').className = "flex-1 pb-2 font-bold text-emerald-800 border-b-2 border-emerald-800 text-sm";
+                document.getElementById('tab-login-btn').className = "flex-1 pb-2 font-bold text-gray-400 text-sm";
+            }
+        };
+
+        // Auth: Register & Login
         window.bazabyoseRegister = async function(event) {
           event.preventDefault();
           const email = document.getElementById('bazabyose-reg-email').value;
@@ -309,16 +343,16 @@
               status: "active",
               balance: 0,
               hideContact: false,
-              school: "", certificates: "", experience: "",
+              picUrl: "", school: "", certificates: "", experience: "",
               createdAt: serverTimestamp()
             });
             alert("🎉 Konti yafunguwe neza cyane!");
+            closeAuthModal();
           } catch (error) {
             alert("❌ Byanze: " + error.message);
           }
         };
 
-        // Auth: Login
         window.bazabyoseLogin = async function(event) {
           event.preventDefault();
           const email = document.getElementById('bazabyose-login-email').value;
@@ -326,6 +360,7 @@
           try {
             await signInWithEmailAndPassword(auth, email, password);
             alert("✅ Winjiye neza!");
+            closeAuthModal();
           } catch (error) {
             alert("❌ Kwinjira byanze: Reba neza amakuru yawe.");
           }
@@ -333,13 +368,14 @@
 
         window.bazabyoseLogout = () => signOut(auth);
 
-        // Save CV & Portfolio
+        // Save CV & Portfolio with Picture
         window.saveUserCV = async function(event) {
           event.preventDefault();
           const user = auth.currentUser;
           if (!user) return;
           try {
             await updateDoc(doc(db, "users", user.uid), {
+              picUrl: document.getElementById('cv-pic').value,
               school: document.getElementById('cv-school').value,
               certificates: document.getElementById('cv-certs').value,
               experience: document.getElementById('cv-experience').value
@@ -357,7 +393,7 @@
           await updateDoc(doc(db, "users", user.uid), { hideContact: isHidden });
         };
 
-        // Post Ad / Content
+        // Post Ad / Content with Picture
         window.bazabyoseCreatePost = async function(event) {
           event.preventDefault();
           const user = auth.currentUser;
@@ -371,6 +407,7 @@
               district: document.getElementById('ad-district').value,
               sector: document.getElementById('ad-sector').value,
               price: document.getElementById('ad-price').value || 0,
+              imageUrl: document.getElementById('ad-image').value,
               description: document.getElementById('ad-description').value,
               createdAt: serverTimestamp()
             });
@@ -382,43 +419,45 @@
           }
         };
 
-        // Smart Feed & Admin Deletion Access
+        // Smart Feed Algorithm & Recommendations per Post
         window.bazabyoseGetSmartFeed = async function() {
           const container = document.getElementById('bazabyose-smart-feed-container');
           if (!container) return;
-          container.innerHTML = "<p class='text-sm text-gray-400'>Gushaka amatangazo...</p>";
+          container.innerHTML = "<p class='text-sm text-gray-400'>Algorithm irimo gutunganya amatangazo...</p>";
 
           try {
             const snap = await getDocs(query(collection(db, "posts"), orderBy("createdAt", "desc")));
             container.innerHTML = "";
-            if (snap.empty) { container.innerHTML = "<p>Nta matangazo arahari.</p>"; return; }
+            if (snap.empty) { container.innerHTML = "<p class='text-sm text-gray-500'>Nta matangazo arahari.</p>"; return; }
 
             const currUser = auth.currentUser;
             snap.forEach(docSnap => {
               const post = docSnap.data();
               const postId = docSnap.id;
+              
               const card = document.createElement('div');
-              card.className = "bg-gray-50 border p-4 rounded-lg shadow-sm relative";
+              card.className = "bg-white border border-gray-100 p-4 rounded-2xl shadow-sm relative";
               card.innerHTML = `
-                <h4 class="font-bold text-emerald-800 text-base">${post.title}</h4>
-                <p class="text-xs text-gray-500 mb-1">📍 ${post.district} / ${post.sector} | ${post.price} RWF</p>
-                <p class="text-sm mb-3">${post.description}</p>
+                ${post.imageUrl ? `<img src="${post.imageUrl}" class="w-full h-40 object-cover rounded-xl mb-3">` : ''}
+                <h4 class="font-bold text-emerald-800 text-base mb-1">${post.title}</h4>
+                <p class="text-xs text-gray-500 mb-2">📍 ${post.district} / ${post.sector} | <strong class="text-emerald-700">${post.price} RWF</strong></p>
+                <p class="text-sm mb-4 text-gray-700">${post.description}</p>
                 <div class="flex justify-between items-center text-xs">
                     <button onclick="openChatModal()" class="text-indigo-600 font-bold hover:underline">💬 Vugana n'Uyu</button>
-                    ${currUser && currUser.email?.includes('admin') ? `<button onclick="adminDeletePost('${postId}')" class="bg-red-600 text-white px-2 py-1 rounded">Admin Delete</button>` : ''}
+                    ${currUser && (currUser.email?.includes('admin') || currUser.uid === post.userId) ? `<button onclick="adminDeletePost('${postId}')" class="bg-red-600 text-white px-2.5 py-1 rounded-lg font-bold">Delete</button>` : ''}
                 </div>
               `;
               container.appendChild(card);
             });
           } catch (e) {
-            container.innerHTML = "<p class='text-red-500'>Habaye ikibazo mu gusoma feed.</p>";
+            container.innerHTML = "<p class='text-red-500 text-sm'>Habaye ikibazo mu gusoma feed.</p>";
           }
         };
 
         window.adminDeletePost = async function(postId) {
-          if (confirm("Wifuza gusiba iri tangazo nk'umuyobozi (Admin)?")) {
+          if (confirm("Wifuza gusiba iri tangazo?")) {
             await deleteDoc(doc(db, "posts", postId));
-            alert("Itangazo ryasibwe n'Admin!");
+            alert("Itangazo ryasibwe!");
             window.bazabyoseGetSmartFeed();
           }
         };
@@ -428,16 +467,16 @@
           const box = document.getElementById('chat-messages-box');
           const txt = document.getElementById('chat-input-text').value;
           const msgDiv = document.createElement('div');
-          msgDiv.className = "p-2 bg-emerald-100 rounded text-sm self-end max-w-[80%] ml-auto";
+          msgDiv.className = "p-3 bg-emerald-100 rounded-xl text-sm self-end max-w-[85%] ml-auto text-gray-800";
 
           if (type === 'text') {
             if (!txt) return;
-            msgDiv.innerText = "Ubutumwa: " + txt;
+            msgDiv.innerText = txt;
             document.getElementById('chat-input-text').value = "";
           } else if (type === 'voice') {
-            msgDiv.innerHTML = "🎤 [Voice Message - 0:14s] <audio controls class='w-full mt-1 h-8'><source src='' type='audio/mp3'></audio>";
+            msgDiv.innerHTML = "🎤 [Voice Message - 0:14s] <audio controls class='w-full mt-1.5 h-8'><source src='' type='audio/mp3'></audio>";
           } else if (type === 'media') {
-            msgDiv.innerHTML = "📷 [Media File / Video] <br><a href='#' class='text-indigo-600 underline text-xs'>Download Video/Photo</a>";
+            msgDiv.innerHTML = "📷 [Media File / Video] <br><a href='#' class='text-indigo-600 font-bold underline text-xs mt-1 inline-block'>Download Video/Photo</a>";
           }
           box.appendChild(msgDiv);
           box.scrollTop = box.scrollHeight;
@@ -472,13 +511,13 @@
 
         // Auth State Listener
         onAuthStateChanged(auth, async (user) => {
-          const authView = document.getElementById('auth-view');
+          const authToggleBtn = document.getElementById('auth-toggle-btn');
           const dashView = document.getElementById('dashboard-view');
           const logoutBtn = document.getElementById('logout-btn');
           const hero = document.getElementById('hero-showcase');
 
           if (user) {
-            authView.classList.add('hidden');
+            authToggleBtn.classList.add('hidden');
             dashView.classList.remove('hidden');
             logoutBtn.classList.remove('hidden');
             hero.classList.add('hidden');
@@ -496,7 +535,7 @@
             }
             window.bazabyoseGetSmartFeed();
           } else {
-            authView.classList.remove('hidden');
+            authToggleBtn.classList.remove('hidden');
             dashView.classList.add('hidden');
             logoutBtn.classList.add('hidden');
             hero.classList.remove('hidden');
