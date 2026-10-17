@@ -229,7 +229,7 @@
     <!-- LIVE CHAT MODAL -->
     <div id="chat-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
         <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[85vh]">
-            <div class="bg-[#008060] text-white px-5 py-3.5 flex justify-between items-center">
+            <div class="bg-[#008060] text-white px-5 py-7 flex justify-between items-center">
                 <h3 class="font-bold text-sm">💬 BAZABYOSE Live Chat Network</h3>
                 <button onclick="closeChatModal()" class="bg-red-600 px-3 py-1 rounded-lg text-xs font-bold hover:bg-red-700">X</button>
             </div>
@@ -247,7 +247,7 @@
                         Hitamo uwo muvugana ukoresheje Username ye...
                     </div>
                     <div id="chat-messages-box" class="flex-1 p-4 overflow-y-auto space-y-3 bg-gray-50">
-                        <p class="text-center text-gray-400 text-xs">Nta butumwa burahari.</p>
+                        <p class="text-center text-gray-400 text-xs">Nta butumwa buhari.</p>
                     </div>
                     
                     <!-- EXPANDED CHAT INPUT BOX TABLE -->
@@ -268,7 +268,7 @@
     <div id="terms-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
         <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl p-6 max-h-[85vh] overflow-y-auto space-y-4">
             <h3 class="text-xl font-bold text-[#004d36]">Amategeko n'Amabwiriza</h3>
-            <p class="text-xs md:text-sm text-gray-700">Urubuga rwa BAZABYOSE rusaba ko buri mukoresha aba afite ID yemewe na username yihariye.</p>
+            <p class="text-xs md:text-sm text-gray-700">Urubuga rwa BAZABYOSE rusaba ko buri mukoresha aba afite ID yemewe na username yihariye gushiraho ikintu cyose kitagendanye nakazi ntibyemewe,ibiteye isoni,amafoto ateye isoni,kuzana politike,gusebya igihugu nabayobozi ba leta birabujijwe hano kuko byatuma account yawe isibwa.</p>
             <div class="pt-4 text-right">
                 <button onclick="closeTermsModal()" class="bg-[#008060] text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow">Numvise</button>
             </div>
@@ -314,13 +314,13 @@
 
         const rwandanProducts = [
             {name: "Imashini y'Ubukorikori", price: "150,000 RWF", img: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=300"},
-            {name: "Ibikoresho by'Ubwubatsi", price: "45,000 RWF", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300"},
+            {name: "Inkweto nziza", price: "40,000 RWF", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300"},
             {name: "Laptop HP Core i5", price: "280,000 RWF", img: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300"},
             {name: "Smartphones zigezweho", price: "120,000 RWF", img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300"},
             {name: "Inzu yo mu Gakiriro", price: "180,000 RWF / Ukwezi", img: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=300"},
             {name: "Imodoka Toyota RAV4", price: "12,500,000 RWF", img: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=300"},
             {name: "Moto TVS Star", price: "1,600,000 RWF", img: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=300"},
-            {name: "Intebe z'Iroho (Sofa)", price: "220,000 RWF", img: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=300"},
+            {name: "Intebe nziza (Sofa)", price: "720,000 RWF", img: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=300"},
             {name: "Televiziyo 43 Inch Smart", price: "230,000 RWF", img: "https://images.unsplash.com/photo-1593784991095-a205069470b6?w=300"},
             {name: "Frigo nshya (Refrigerator)", price: "310,000 RWF", img: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd38?w=300"},
             {name: "Inkoko z'Amagi (Layers)", price: "8,500 RWF", img: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=300"},
@@ -421,7 +421,36 @@
                 document.getElementById('tab-login-btn').className = "flex-1 pb-2 font-bold text-gray-400 text-sm";
             }
         };
+  let data = {};
+            try {
+                const snap = await getDoc(doc(db, "users", user.uid));
+                if(snap.exists()) data = snap.data();
+            } catch(netErr) {
+                try {
+                    const cachedSnap = await getDoc(doc(db, "users", user.uid));
+                    if(cachedSnap.exists()) data = cachedSnap.data();
+                } catch(cacheErr) {}
+            }
 
+            document.getElementById('prof-fullname').value = data.fullName || "";
+            document.getElementById('prof-username').value = data.username || "";
+            document.getElementById('prof-idnumber').value = data.idNumber || "";
+            document.getElementById('prof-phone').value = data.phone || "";
+            document.getElementById('prof-school').value = data.school || "";
+            document.getElementById('prof-certs').value = data.certificates || "";
+            document.getElementById('prof-experience').value = data.experience || "";
+
+            // --- Gushyiraho Admin Panel niba ari admin ---
+            const userRole = data.role ? data.role.toLowerCase().trim() : "";
+            const adminPanel = document.getElementById('bazabyose-admin-control-panel');
+            if (adminPanel) {
+                if (userRole === "admin") {
+                    adminPanel.classList.remove('hidden');
+                } else {
+                    adminPanel.classList.add('hidden');
+                }
+            }
+        
         window.bazabyoseRegister = async function(event) {
           event.preventDefault();
           const email = document.getElementById('bazabyose-reg-email').value;
