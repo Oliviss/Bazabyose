@@ -62,6 +62,7 @@
             <form id="bazabyose-register-form" onsubmit="bazabyoseRegister(event)" class="space-y-3 hidden">
                 <input type="text" id="bazabyose-reg-name" required placeholder="Amazina Yose" class="w-full p-2.5 border rounded-xl text-sm">
                 <input type="email" id="bazabyose-reg-email" required placeholder="Imeyili (Email)" class="w-full p-2.5 border rounded-xl text-sm">
+                <input type="tel" id="bazabyose-reg-phone" required placeholder="Nimero ya Telefone (078...)" class="w-full p-2.5 border rounded-xl text-sm">
                 <input type="password" id="bazabyose-reg-password" required placeholder="Ijambo ry'Ibanga (Password)" class="w-full p-2.5 border rounded-xl text-sm">
                 <select id="bazabyose-reg-role" class="w-full p-2.5 border rounded-xl text-sm">
                     <option value="worker">Umukozi / Professional (Worker)</option>
@@ -78,47 +79,21 @@
         <!-- DASHBOARD VIEW -->
         <div id="dashboard-view" class="hidden space-y-6">
             
+            <!-- Professional Dashboard Action Bar -->
             <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h2 class="text-2xl font-black text-[#004d36]" id="dash-fullname">--</h2>
-                    <p class="text-gray-600 text-sm mt-1"><span id="dash-role" class="font-semibold text-emerald-700">Role: --</span> | Wallet: <strong class="text-emerald-600" id="dash-balance">0 RWF</strong></p>
+                    <p class="text-gray-600 text-sm mt-1">
+                        <span id="dash-role" class="font-semibold text-emerald-700">Role: --</span> | 
+                        Wallet Balance: <strong class="text-emerald-600 text-base" id="dash-balance">0 RWF</strong>
+                    </p>
                 </div>
                 <div class="flex flex-wrap gap-2">
-                    <button onclick="bazabyoseOpenMoMoModal(5000)" class="bg-[#ffaa00] text-gray-900 px-4 py-2.5 rounded-xl text-sm font-bold shadow hover:bg-amber-500 transition">Shyiramo MoMo</button>
-                    <button onclick="openChatModal()" class="bg-indigo-600 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow hover:bg-indigo-700 transition">💬 Live Chat Network</button>
+                    <button onclick="bazabyoseOpenMoMoModal(5000)" class="bg-[#ffaa00] text-gray-900 px-4 py-2.5 rounded-xl text-sm font-bold shadow hover:bg-amber-500 transition">📥 Deposit</button>
+                    <button onclick="openCashOutModal()" class="bg-red-600 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow hover:bg-red-700 transition">📤 Cash Out</button>
+                    <button onclick="openProfileModal()" class="bg-emerald-700 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow hover:bg-emerald-800 transition">👤 View & Edit Profile (CV)</button>
+                    <button onclick="openChatModal()" class="bg-indigo-600 text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow hover:bg-indigo-700 transition">💬 Live Chat</button>
                 </div>
-            </div>
-
-            <!-- PROFESSIONAL CV & PORTFOLIO BUILDER WITH DEVICE FILE PICKER -->
-            <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
-                <h3 class="text-lg font-bold text-[#004d36] mb-3">📄 Portfolio & CV Yanjye (Ifoto, Amashuri & Certificates)</h3>
-                <form id="cv-builder-form" onsubmit="saveUserCV(event)" class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">Ifoto yawe (Hitamo muri Device)</label>
-                            <input type="file" id="cv-pic-file" accept="image/*" class="w-full p-2 border rounded-lg text-xs bg-gray-50 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">Amashuri Wize & Icyiciro</label>
-                            <input type="text" id="cv-school" placeholder="KIST / Bachelor in IT" class="w-full p-2.5 border rounded-lg text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">Certificates / Impamyabumenyi</label>
-                            <input type="text" id="cv-certs" placeholder="Cisco Certified, Driving License" class="w-full p-2.5 border rounded-lg text-sm">
-                        </div>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">Uburambe n'Ibyo Wakoze</label>
-                        <textarea id="cv-experience" rows="2" placeholder="Sobanura uburambe bwawe..." class="w-full p-2.5 border rounded-lg text-sm"></textarea>
-                    </div>
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                        <label class="flex items-center gap-2 cursor-pointer bg-gray-50 px-3 py-2 rounded-lg border">
-                            <input type="checkbox" id="toggle-hide-contact" onchange="toggleHideContactSetting()" class="w-4 h-4 text-emerald-600">
-                            <span class="text-xs font-bold text-gray-700">Hide My Contact (Guhisha nimero)</span>
-                        </label>
-                        <button type="submit" class="bg-emerald-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-emerald-800 transition shadow">Bika CV & Portfolio</button>
-                    </div>
-                </form>
             </div>
 
             <!-- POST AD SECTION WITH FILE MANAGER PICKER (PICTURE / VIDEO) -->
@@ -169,7 +144,78 @@
 
     </div>
 
-    <!-- CHAT MODAL WITH DOWNLOAD & SHARE FOR PICTURE / VIDEO -->
+    <!-- PROFILE & CV EDITABLE MODAL -->
+    <div id="profile-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+        <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl p-6 relative max-h-[90vh] overflow-y-auto">
+            <button class="absolute top-4 right-4 bg-red-600 text-white px-2.5 py-1 rounded-lg text-xs font-bold" onclick="closeProfileModal()">X</button>
+            <h3 class="text-xl font-bold text-[#004d36] mb-4">👤 Profayili & CV Yanjye (Editable)</h3>
+            
+            <form id="profile-cv-form" onsubmit="saveUserProfileAndCV(event)" class="space-y-4">
+                <div id="current-cv-preview" class="mb-4 p-4 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center gap-4">
+                    <!-- Profile preview inserted here dynamically -->
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Amazina Yose</label>
+                        <input type="text" id="prof-fullname" required class="w-full p-2.5 border rounded-lg text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Nimero ya Telefone</label>
+                        <input type="tel" id="prof-phone" required class="w-full p-2.5 border rounded-lg text-sm">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Imeyili (Email)</label>
+                        <input type="email" id="prof-email" disabled class="w-full p-2.5 border bg-gray-100 rounded-lg text-sm text-gray-500">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Ifoto yawe (Hitamo muri Device)</label>
+                        <input type="file" id="prof-pic-file" accept="image/*" class="w-full p-2 border rounded-lg text-xs bg-gray-50 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Amashuri Wize & Icyiciro</label>
+                        <input type="text" id="prof-school" placeholder="KIST / Bachelor in IT" class="w-full p-2.5 border rounded-lg text-sm">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Certificates / Impamyabumenyi</label>
+                        <input type="text" id="prof-certs" placeholder="Cisco Certified, Driving License" class="w-full p-2.5 border rounded-lg text-sm">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Uburambe n'Ibyo Wakoze (Experience)</label>
+                    <textarea id="prof-experience" rows="3" placeholder="Sobanura uburambe bwawe..." class="w-full p-2.5 border rounded-lg text-sm"></textarea>
+                </div>
+
+                <div class="flex justify-between items-center pt-2">
+                    <button type="button" onclick="deleteUserCV()" class="bg-red-100 text-red-700 px-4 py-2 rounded-xl text-xs font-bold hover:bg-red-200 transition">🗑️ Siba Amakuru ya CV</button>
+                    <button type="submit" class="bg-emerald-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-emerald-800 transition shadow">Bika Impinduka (Save)</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CASH OUT MODAL -->
+    <div id="cashout-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
+        <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 relative">
+            <button class="absolute top-4 right-4 bg-red-600 text-white px-2.5 py-1 rounded-lg text-xs font-bold" onclick="closeCashOutModal()">X</button>
+            <h3 class="text-lg font-bold text-[#004d36] mb-2">Gukura Amafaranga (Cash Out)</h3>
+            <p class="text-xs text-gray-600 mb-4">Saba kohereza amafaranga yawe kuri Mobile Money.</p>
+            <form onsubmit="submitCashOut(event)" class="space-y-3">
+                <input type="number" id="cashout-amount" required placeholder="Amafaranga mu RWF" class="w-full p-2.5 border rounded-lg text-sm">
+                <input type="text" id="cashout-phone" required placeholder="Nimero ya MoMo (078/072...)" class="w-full p-2.5 border rounded-lg text-sm">
+                <button type="submit" class="w-full bg-red-600 text-white py-3 rounded-xl font-bold text-sm hover:bg-red-700 transition shadow">Ohereza Ubusabe bwa Cash Out</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- CHAT MODAL WITH DOWNLOAD & SHARE -->
     <div id="chat-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
         <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[82vh]">
             <div class="bg-[#008060] text-white px-5 py-3.5 flex justify-between items-center">
@@ -180,36 +226,22 @@
                 <p class="text-center text-gray-400 text-xs">Hitamo uwo muvugana cyangwa wandike ubutumwa...</p>
             </div>
             
-            <!-- Chat Input Bar -->
             <div class="p-3 bg-white border-t flex items-center gap-2">
                 <input type="text" id="chat-input-text" placeholder="Andika ubutumwa..." class="flex-1 p-2.5 border rounded-xl text-sm">
-                
-                <!-- Hidden file input for chat media (pictures & videos) -->
                 <input type="file" id="chat-media-upload" accept="image/*,video/*" class="hidden" onchange="handleChatMediaSelection(event)">
-                
                 <button onclick="sendChatMessage('text')" class="bg-[#008060] text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow">Ohereza</button>
                 <button onclick="triggerChatMediaPicker()" title="Kohereza Picture / Video" class="bg-indigo-600 text-white p-2.5 rounded-xl text-sm shadow">📎</button>
             </div>
         </div>
     </div>
 
-    <!-- TERMS AND CONDITIONS MODAL -->
+    <!-- TERMS MODAL -->
     <div id="terms-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
         <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl p-6 max-h-[85vh] overflow-y-auto space-y-4">
             <h3 class="text-xl font-bold text-[#004d36]">Amategeko n'Amabwiriza / Terms & Conditions</h3>
             <div class="space-y-3 text-xs md:text-sm text-gray-700">
-                <div>
-                    <h4 class="font-bold text-gray-900 mb-1">🇷🇼 Kinyarwanda:</h4>
-                    <p>1. Urubuga rwa BAZABYOSE rugenewe guhana serivisi nziza, ubucuruzi, n'akazi mu buryo bwubahiriza amategeko y'u Rwanda.<br>
-                    2. Gushyiraho amatangazo y'ibiteye isoni, ibiyobyabwenge, cyangwa ibinyuranyije n'umuco n'amategeko bizatuma <strong>konti yawe ihagarikwa ako kanya (Suspended)</strong>.<br>
-                    3. Admin afite uburenganzira bwuzuye bwo gusiba cyangwa guhagarika uwo ari we wese urenze ku mabwiriza.</p>
-                </div>
-                <div>
-                    <h4 class="font-bold text-gray-900 mb-1">🇬🇧 English:</h4>
-                    <p>1. BAZABYOSE is designed for legitimate professional networking, job matching, and verified marketplaces in Rwanda.<br>
-                    2. Posting inappropriate, offensive, adult, or illegal content will result in immediate <strong>account suspension or permanent ban</strong>.<br>
-                    3. The Admin holds full access and rights to moderate, edit, or remove any user-generated content.</p>
-                </div>
+                <p>1. Urubuga rwa BAZABYOSE rugenewe guhana serivisi nziza, ubucuruzi, n'akazi mu buryo bwubahiriza amategeko y'u Rwanda.</p>
+                <p>2. Gushyiraho amatangazo y'ibiteye isoni cyangwa ibinyuranyije n'amategeko bizatuma konti yawe ihagarikwa.</p>
             </div>
             <div class="pt-4 text-right">
                 <button onclick="closeTermsModal()" class="bg-[#008060] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#004d36] transition shadow">Numvise / Close</button>
@@ -217,17 +249,17 @@
         </div>
     </div>
 
-    <!-- MANUAL MOMO PAYMENT MODAL -->
+    <!-- MOMO PAYMENT MODAL -->
     <div id="bazabyose-momo-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
         <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 relative">
             <button class="absolute top-4 right-4 bg-red-600 text-white px-2.5 py-1 rounded-lg text-xs font-bold" onclick="bazabyoseCloseMoMoModal()">X</button>
-            <h3 class="text-lg font-bold text-[#004d36] mb-2">Kwishyura binyuze muri Mobile Money</h3>
+            <h3 class="text-lg font-bold text-[#004d36] mb-2">Kwishyura Deposit (Mobile Money)</h3>
             <p class="text-xs text-gray-600 mb-4">Kanda kuri telefone: <strong class="text-emerald-700">*182*8*1*123456#</strong></p>
-            <form id="bazabyose-momo-form" onsubmit="bazabyoseSubmitMoMoPayment(event)" class="space-y-3">
+            <form onsubmit="bazabyoseSubmitMoMoPayment(event)" class="space-y-3">
                 <input type="hidden" id="bazabyose-momo-amount" value="5000">
-                <input type="text" id="bazabyose-momo-phone" required placeholder="Nimero ya Telefone (078/072...)" class="w-full p-2.5 border rounded-lg text-sm">
+                <input type="tel" id="bazabyose-momo-phone" required placeholder="Nimero ya Telefone (078/072...)" class="w-full p-2.5 border rounded-lg text-sm">
                 <input type="text" id="bazabyose-momo-txref" required placeholder="Transaction Ref / Ubutumwa bwa MoMo" class="w-full p-2.5 border rounded-lg text-sm">
-                <button type="submit" class="w-full bg-[#008060] text-white py-3 rounded-xl font-bold text-sm hover:bg-[#004d36] transition shadow">Emeza Kwishyura</button>
+                <button type="submit" class="w-full bg-[#008060] text-white py-3 rounded-xl font-bold text-sm hover:bg-[#004d36] transition shadow">Emeza Deposit</button>
             </form>
         </div>
     </div>
@@ -276,23 +308,9 @@
             {name: "Imashini y'Ubukorikori", price: "150,000 RWF", img: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=300"},
             {name: "Ibikoresho by'Ubwubatsi", price: "45,000 RWF", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300"},
             {name: "Generator y'Amashanyarazi", price: "350,000 RWF", img: "https://images.unsplash.com/photo-1526738549149-8e07eca6c147?w=300"},
-            {name: "Ibijyanye n'Ikoranabuhanga", price: "25,000 RWF", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=300"},
-            {name: "Moringa Powder (Organic)", price: "5,000 RWF", img: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=300"},
-            {name: "Amavuta ya Avoka Meza", price: "8,000 RWF", img: "https://images.unsplash.com/photo-1526318896980-cf78c08b2478?w=300"},
-            {name: "Smartphones zigezweho", price: "120,000 RWF", img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300"},
-            {name: "Solar Panel 100W", price: "85,000 RWF", img: "https://images.unsplash.com/photo-1508935639922-c560ef968364?w=300"},
-            {name: "Inkweto z'Imideri", price: "20,000 RWF", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300"},
-            {name: "Imyenda y'Akazi (Uniform)", price: "15,000 RWF", img: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=300"},
-            {name: "Gas Stove y'Abana", price: "35,000 RWF", img: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=300"},
-            {name: "Moto Helmet", price: "25,000 RWF", img: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=300"},
-            {name: "Agaseke k'Imideri", price: "12,000 RWF", img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=300"},
-            {name: "Coffee Beans (Rwanda)", price: "6,000 RWF", img: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=300"},
-            {name: "Tea Leaves (Pfunda)", price: "3,500 RWF", img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=300"},
             {name: "Laptop HP Core i5", price: "280,000 RWF", img: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300"},
-            {name: "Smart Watch", price: "22,000 RWF", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=300"},
-            {name: "Bluetooth Speaker", price: "18,000 RWF", img: "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=300"},
-            {name: "Water Pump (Agriculture)", price: "190,000 RWF", img: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=300"},
-            {name: "Hand Bag y'Abagore", price: "25,000 RWF", img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=300"}
+            {name: "Smartphones zigezweho", price: "120,000 RWF", img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300"},
+            {name: "Amavuta ya Avoka Meza", price: "8,000 RWF", img: "https://images.unsplash.com/photo-1526318896980-cf78c08b2478?w=300"}
         ];
 
         function loadRotatingProducts() {
@@ -317,6 +335,36 @@
         window.closeTermsModal = () => document.getElementById('terms-modal').classList.add('hidden');
         window.openChatModal = () => document.getElementById('chat-modal').classList.remove('hidden');
         window.closeChatModal = () => document.getElementById('chat-modal').classList.add('hidden');
+        
+        window.openCashOutModal = () => document.getElementById('cashout-modal').classList.remove('hidden');
+        window.closeCashOutModal = () => document.getElementById('cashout-modal').classList.add('hidden');
+
+        window.openProfileModal = async () => {
+            const user = auth.currentUser;
+            if(!user) return;
+            const snap = await getDoc(doc(db, "users", user.uid));
+            if(snap.exists()) {
+                const data = snap.data();
+                document.getElementById('prof-fullname').value = data.fullName || "";
+                document.getElementById('prof-phone').value = data.phone || "";
+                document.getElementById('prof-email').value = data.email || "";
+                document.getElementById('prof-school').value = data.school || "";
+                document.getElementById('prof-certs').value = data.certificates || "";
+                document.getElementById('prof-experience').value = data.experience || "";
+
+                const previewBox = document.getElementById('current-cv-preview');
+                previewBox.innerHTML = `
+                    <img src="${data.picUrl || 'https://via.placeholder.com/80'}" class="w-16 h-16 rounded-full object-cover border">
+                    <div>
+                        <h4 class="font-bold text-emerald-900">${data.fullName}</h4>
+                        <p class="text-xs text-gray-600">📞 ${data.phone || 'Nta nimero'} | ✉️ ${data.email}</p>
+                        <p class="text-xs text-emerald-700 font-semibold mt-1">${data.school || 'Nta shuri ryanditswe'}</p>
+                    </div>
+                `;
+            }
+            document.getElementById('profile-modal').classList.remove('hidden');
+        };
+        window.closeProfileModal = () => document.getElementById('profile-modal').classList.add('hidden');
 
         window.switchAuthTab = (tab) => {
             if(tab === 'login') {
@@ -332,22 +380,22 @@
             }
         };
 
-        // Auth: Register & Login
+        // Auth Register & Login
         window.bazabyoseRegister = async function(event) {
           event.preventDefault();
           const email = document.getElementById('bazabyose-reg-email').value;
           const password = document.getElementById('bazabyose-reg-password').value;
           const fullName = document.getElementById('bazabyose-reg-name').value;
+          const phone = document.getElementById('bazabyose-reg-phone').value;
           const role = document.getElementById('bazabyose-reg-role').value;
 
           try {
             const userCred = await createUserWithEmailAndPassword(auth, email, password);
             await setDoc(doc(db, "users", userCred.user.uid), {
               uid: userCred.user.uid,
-              fullName, email, role,
+              fullName, email, phone, role,
               status: "active",
               balance: 0,
-              hideContact: false,
               picUrl: "", school: "", certificates: "", experience: "",
               createdAt: serverTimestamp()
             });
@@ -373,7 +421,6 @@
 
         window.bazabyoseLogout = () => signOut(auth);
 
-        // Helper to convert selected file into base64 URL so it can be previewed/saved locally or stored
         function readFileAsDataURL(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -383,39 +430,52 @@
             });
         }
 
-        // Save CV & Portfolio with Local File (Image)
-        window.saveUserCV = async function(event) {
+        // Save & Edit Profile and CV
+        window.saveUserProfileAndCV = async function(event) {
           event.preventDefault();
           const user = auth.currentUser;
           if (!user) return;
           
           try {
-            let picUrl = "";
-            const fileInput = document.getElementById('cv-pic-file');
+            let picUrl = undefined;
+            const fileInput = document.getElementById('prof-pic-file');
             if (fileInput.files && fileInput.files[0]) {
                 picUrl = await readFileAsDataURL(fileInput.files[0]);
             }
 
-            await updateDoc(doc(db, "users", user.uid), {
-              picUrl: picUrl || undefined,
-              school: document.getElementById('cv-school').value,
-              certificates: document.getElementById('cv-certs').value,
-              experience: document.getElementById('cv-experience').value
-            });
-            alert("✅ Portfolio & CV yawe yasevwe neza!");
+            const updateData = {
+              fullName: document.getElementById('prof-fullname').value,
+              phone: document.getElementById('prof-phone').value,
+              school: document.getElementById('prof-school').value,
+              certificates: document.getElementById('prof-certs').value,
+              experience: document.getElementById('prof-experience').value
+            };
+            if(picUrl) updateData.picUrl = picUrl;
+
+            await updateDoc(doc(db, "users", user.uid), updateData);
+            alert("✅ Profayili na CV byahinduwe kandi byasevwe neza!");
+            closeProfileModal();
+            location.reload();
           } catch (e) {
             alert("Byanze: " + e.message);
           }
         };
 
-        window.toggleHideContactSetting = async function() {
-          const user = auth.currentUser;
-          if (!user) return;
-          const isHidden = document.getElementById('toggle-hide-contact').checked;
-          await updateDoc(doc(db, "users", user.uid), { hideContact: isHidden });
+        // Delete CV Data
+        window.deleteUserCV = async function() {
+            if(confirm("Wifuza koko gusiba amakuru yawe ya CV?")) {
+                const user = auth.currentUser;
+                if(!user) return;
+                await updateDoc(doc(db, "users", user.uid), {
+                    school: "", certificates: "", experience: "", picUrl: ""
+                });
+                alert("CV yasibwe!");
+                closeProfileModal();
+                location.reload();
+            }
         };
 
-        // Post Ad / Content with Picture or Video from Device File Manager
+        // Post Ad with Picture or Video
         window.bazabyoseCreatePost = async function(event) {
           event.preventDefault();
           const user = auth.currentUser;
@@ -435,7 +495,7 @@
               district: document.getElementById('ad-district').value,
               sector: document.getElementById('ad-sector').value,
               price: document.getElementById('ad-price').value || 0,
-              imageUrl: mediaUrl, // can be picture or video data url
+              imageUrl: mediaUrl,
               description: document.getElementById('ad-description').value,
               createdAt: serverTimestamp()
             });
@@ -447,7 +507,7 @@
           }
         };
 
-        // Smart Feed Algorithm & Recommendations
+        // Smart Feed
         window.bazabyoseGetSmartFeed = async function() {
           const container = document.getElementById('bazabyose-smart-feed-container');
           if (!container) return;
@@ -500,10 +560,8 @@
           }
         };
 
-        // CHAT MEDIA & FILE PICKER INTEGRATION
-        window.triggerChatMediaPicker = function() {
-            document.getElementById('chat-media-upload').click();
-        };
+        // Chat Media Picker, Download & Share
+        window.triggerChatMediaPicker = () => document.getElementById('chat-media-upload').click();
 
         window.handleChatMediaSelection = async function(event) {
             const file = event.target.files[0];
@@ -516,42 +574,28 @@
             const msgDiv = document.createElement('div');
             msgDiv.className = "p-3 bg-indigo-50 border border-indigo-100 rounded-2xl text-sm self-end max-w-[85%] ml-auto text-gray-800 space-y-2";
 
-            let previewElement = '';
-            let fileName = file.name || "media_file";
-            if (isVideo) {
-                previewElement = `<video src="${mediaDataUrl}" controls class="w-full max-h-48 rounded-lg"></video>`;
-            } else {
-                previewElement = `<img src="${mediaDataUrl}" class="w-full max-h-48 object-cover rounded-lg">`;
-            }
+            let previewElement = isVideo ? `<video src="${mediaDataUrl}" controls class="w-full max-h-48 rounded-lg"></video>` : `<img src="${mediaDataUrl}" class="w-full max-h-48 object-cover rounded-lg">`;
 
             msgDiv.innerHTML = `
                 ${previewElement}
                 <div class="flex items-center justify-between gap-3 pt-1 border-t border-indigo-100 text-xs font-bold">
-                    <a href="${mediaDataUrl}" download="${fileName}" class="text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg hover:bg-emerald-100 transition flex items-center gap-1">⬇️ Download</a>
+                    <a href="${mediaDataUrl}" download="${file.name || 'media'}" class="text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg hover:bg-emerald-100 transition flex items-center gap-1">⬇️ Download</a>
                     <button onclick="shareChatMedia('${mediaDataUrl}', '${isVideo ? 'video' : 'image'}')" class="text-indigo-700 bg-indigo-100 px-3 py-1.5 rounded-lg hover:bg-indigo-200 transition flex items-center gap-1">🔗 Share</button>
                 </div>
             `;
-
             box.appendChild(msgDiv);
             box.scrollTop = box.scrollHeight;
-            event.target.value = ""; // reset file input
+            event.target.value = "";
         };
 
         window.shareChatMedia = async function(url, type) {
             if (navigator.share) {
                 try {
-                    await navigator.share({
-                        title: 'BAZABYOSE Shared Media',
-                        text: `Reba iyi ${type} yoherejwe kuri BAZABYOSE chat.`,
-                        url: url
-                    });
-                } catch (err) {
-                    console.log("Sharing canceled or failed", err);
-                }
+                    await navigator.share({ title: 'BAZABYOSE Media', url: url });
+                } catch (err) { console.log(err); }
             } else {
-                // Fallback: Copy link/data to clipboard
                 navigator.clipboard.writeText(url);
-                alert("📋 Link y'ifoto cyangwa video yikoporowe muri Clipboard!");
+                alert("📋 Link y'ifoto cyangwa video yikoporowe!");
             }
         };
 
@@ -569,7 +613,7 @@
           box.scrollTop = box.scrollHeight;
         };
 
-        // MoMo Payment Modal Control
+        // MoMo Deposit & Cash Out Actions
         window.bazabyoseOpenMoMoModal = (amt) => {
           document.getElementById('bazabyose-momo-amount').value = amt;
           document.getElementById('bazabyose-momo-modal').classList.remove('hidden');
@@ -583,17 +627,34 @@
           try {
             await addDoc(collection(db, "transactions"), {
               userId: user.uid,
+              type: "deposit",
               phone: document.getElementById('bazabyose-momo-phone').value,
               txRef: document.getElementById('bazabyose-momo-txref').value,
               amount: parseInt(document.getElementById('bazabyose-momo-amount').value),
               status: "pending",
               createdAt: serverTimestamp()
             });
-            alert("Ubusabe bwoherejwe! Tegereza ko Admin abyemeza.");
+            alert("Ubusabe bwa Deposit bwoherejwe! Tegereza ko Admin abyemeza.");
             window.bazabyoseCloseMoMoModal();
-          } catch (e) {
-            alert("Byanze: " + e.message);
-          }
+          } catch (e) { alert("Byanze: " + e.message); }
+        };
+
+        window.submitCashOut = async function(event) {
+            event.preventDefault();
+            const user = auth.currentUser;
+            if(!user) return;
+            try {
+                await addDoc(collection(db, "transactions"), {
+                    userId: user.uid,
+                    type: "cashout",
+                    amount: parseInt(document.getElementById('cashout-amount').value),
+                    phone: document.getElementById('cashout-phone').value,
+                    status: "pending",
+                    createdAt: serverTimestamp()
+                });
+                alert("Ubusabe bwa Cash Out bwoherejwe neza!");
+                closeCashOutModal();
+            } catch (e) { alert("Byanze: " + e.message); }
         };
 
         // Auth State Listener
