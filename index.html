@@ -30,20 +30,19 @@
         </div>
     </header>
 
-    <!-- HERO SECTION: 20+ ROTATING RWANDAN MARKET PRODUCTS & ANIMATED BG -->
+    <!-- HERO SECTION -->
     <div id="hero-showcase" class="animated-hero-bg text-white py-14 px-6 text-center shadow-inner">
         <div class="max-w-5xl mx-auto">
             <h2 class="text-3xl md:text-5xl font-black mb-4 tracking-tight">Isoko Rikomeye n'Imirimo mu Rwanda</h2>
             <p class="text-base md:text-lg opacity-95 mb-8">Shakisha akazi, abakozi b'abahanga, inzu, imodoka, n'ibikoresho bitandukanye bifite ibiciro byiza mu maRWF.</p>
             
-            <!-- Rotating Market Products Container (20+ Dynamic Items) -->
             <div id="rotating-market-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 text-gray-900 text-left max-h-[420px] overflow-y-auto p-2">
-                <!-- JavaScript populates 20+ dynamic Rwandan products here -->
+                <!-- Dynamic Products -->
             </div>
         </div>
     </div>
 
-    <!-- SMART AUTH MODAL (HIDDEN BY DEFAULT) -->
+    <!-- SMART AUTH MODAL -->
     <div id="auth-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
         <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 relative">
             <button class="absolute top-4 right-4 bg-red-600 text-white px-2.5 py-1 rounded-lg text-xs font-bold" onclick="closeAuthModal()">X</button>
@@ -76,10 +75,9 @@
 
     <div class="container mx-auto max-w-6xl px-4 py-8">
 
-        <!-- 2. DASHBOARD VIEW -->
+        <!-- DASHBOARD VIEW -->
         <div id="dashboard-view" class="hidden space-y-6">
             
-            <!-- User Overview & Actions -->
             <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h2 class="text-2xl font-black text-[#004d36]" id="dash-fullname">--</h2>
@@ -91,14 +89,14 @@
                 </div>
             </div>
 
-            <!-- PROFESSIONAL CV & PORTFOLIO BUILDER WITH PICTURE LINK -->
+            <!-- PROFESSIONAL CV & PORTFOLIO BUILDER WITH DEVICE FILE PICKER -->
             <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
                 <h3 class="text-lg font-bold text-[#004d36] mb-3">📄 Portfolio & CV Yanjye (Ifoto, Amashuri & Certificates)</h3>
                 <form id="cv-builder-form" onsubmit="saveUserCV(event)" class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
-                            <label class="block text-xs font-bold text-gray-600 mb-1">Ifoto yawe (Profile Picture URL)</label>
-                            <input type="url" id="cv-pic" placeholder="https://image-link.jpg" class="w-full p-2.5 border rounded-lg text-sm">
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Ifoto yawe (Hitamo muri Device)</label>
+                            <input type="file" id="cv-pic-file" accept="image/*" class="w-full p-2 border rounded-lg text-xs bg-gray-50 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-gray-600 mb-1">Amashuri Wize & Icyiciro</label>
@@ -123,9 +121,9 @@
                 </form>
             </div>
 
-            <!-- POST AD SECTION WITH PICTURE URL -->
+            <!-- POST AD SECTION WITH FILE MANAGER PICKER (PICTURE / VIDEO) -->
             <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
-                <h3 class="text-lg font-bold text-[#004d36] mb-3">📢 Shyira Itangazo / Ibikoresho ku Isoko</h3>
+                <h3 class="text-lg font-bold text-[#004d36] mb-3">📢 Shyira Itangazo / Ibikoresho (Add Picture & Video)</h3>
                 <form id="bazabyose-post-form" onsubmit="bazabyoseCreatePost(event)" class="space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input type="text" id="ad-title" required placeholder="Umutwe w'Itangazo (Urugero: Nkenye akazi)" class="p-2.5 border rounded-lg text-sm">
@@ -142,14 +140,17 @@
                         <input type="number" id="ad-price" placeholder="Igiciro mu RWF" class="p-2.5 border rounded-lg text-sm">
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input type="url" id="ad-image" placeholder="Ifoto y'Itangazo / Igikoresho (Image URL)" class="p-2.5 border rounded-lg text-sm">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">Hitamo Ifoto cyangwa Video muri Device</label>
+                            <input type="file" id="ad-media-file" accept="image/*,video/*" class="w-full p-2 border rounded-lg text-xs bg-gray-50 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
+                        </div>
                         <textarea id="ad-description" rows="2" required placeholder="Ibisobanuro birambuye..." class="p-2.5 border rounded-lg text-sm"></textarea>
                     </div>
                     <button type="submit" class="bg-[#008060] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#004d36] transition shadow">Ohereza Itangazo</button>
                 </form>
             </div>
 
-            <!-- SMART FEED WITH ALGORITHM & RECOMMENDATIONS -->
+            <!-- SMART FEED -->
             <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-lg font-bold text-[#004d36]">Isoko n'Amatangazo (Smart Recommendation Feed)</h3>
@@ -168,7 +169,7 @@
 
     </div>
 
-    <!-- 3. CHAT MODAL -->
+    <!-- CHAT MODAL WITH DOWNLOAD & SHARE FOR PICTURE / VIDEO -->
     <div id="chat-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
         <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[82vh]">
             <div class="bg-[#008060] text-white px-5 py-3.5 flex justify-between items-center">
@@ -178,16 +179,21 @@
             <div id="chat-messages-box" class="flex-1 p-4 overflow-y-auto space-y-3 bg-gray-50">
                 <p class="text-center text-gray-400 text-xs">Hitamo uwo muvugana cyangwa wandike ubutumwa...</p>
             </div>
+            
+            <!-- Chat Input Bar -->
             <div class="p-3 bg-white border-t flex items-center gap-2">
                 <input type="text" id="chat-input-text" placeholder="Andika ubutumwa..." class="flex-1 p-2.5 border rounded-xl text-sm">
+                
+                <!-- Hidden file input for chat media (pictures & videos) -->
+                <input type="file" id="chat-media-upload" accept="image/*,video/*" class="hidden" onchange="handleChatMediaSelection(event)">
+                
                 <button onclick="sendChatMessage('text')" class="bg-[#008060] text-white px-4 py-2.5 rounded-xl text-sm font-bold shadow">Ohereza</button>
-                <button onclick="sendChatMessage('voice')" title="Kohereza Voice" class="bg-amber-500 text-white p-2.5 rounded-xl text-sm shadow">🎤</button>
-                <button onclick="sendChatMessage('media')" title="Kohereza Foto/Video" class="bg-indigo-600 text-white p-2.5 rounded-xl text-sm shadow">📎</button>
+                <button onclick="triggerChatMediaPicker()" title="Kohereza Picture / Video" class="bg-indigo-600 text-white p-2.5 rounded-xl text-sm shadow">📎</button>
             </div>
         </div>
     </div>
 
-    <!-- 4. TERMS AND CONDITIONS MODAL -->
+    <!-- TERMS AND CONDITIONS MODAL -->
     <div id="terms-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
         <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl p-6 max-h-[85vh] overflow-y-auto space-y-4">
             <h3 class="text-xl font-bold text-[#004d36]">Amategeko n'Amabwiriza / Terms & Conditions</h3>
@@ -211,7 +217,7 @@
         </div>
     </div>
 
-    <!-- 5. MANUAL MOMO PAYMENT MODAL -->
+    <!-- MANUAL MOMO PAYMENT MODAL -->
     <div id="bazabyose-momo-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
         <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 relative">
             <button class="absolute top-4 right-4 bg-red-600 text-white px-2.5 py-1 rounded-lg text-xs font-bold" onclick="bazabyoseCloseMoMoModal()">X</button>
@@ -265,7 +271,7 @@
         const auth = getAuth(app);
         const db = getFirestore(app);
 
-        // 20+ Rotating Rwandan Market Showcase Products Generator
+        // Rotating Products Generator
         const rwandanProducts = [
             {name: "Imashini y'Ubukorikori", price: "150,000 RWF", img: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=300"},
             {name: "Ibikoresho by'Ubwubatsi", price: "45,000 RWF", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300"},
@@ -278,7 +284,7 @@
             {name: "Inkweto z'Imideri", price: "20,000 RWF", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300"},
             {name: "Imyenda y'Akazi (Uniform)", price: "15,000 RWF", img: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=300"},
             {name: "Gas Stove y'Abana", price: "35,000 RWF", img: "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=300"},
-            {name: "Moto Helmet (Interineti)", price: "25,000 RWF", img: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=300"},
+            {name: "Moto Helmet", price: "25,000 RWF", img: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=300"},
             {name: "Agaseke k'Imideri", price: "12,000 RWF", img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=300"},
             {name: "Coffee Beans (Rwanda)", price: "6,000 RWF", img: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=300"},
             {name: "Tea Leaves (Pfunda)", price: "3,500 RWF", img: "https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=300"},
@@ -292,7 +298,6 @@
         function loadRotatingProducts() {
             const grid = document.getElementById('rotating-market-grid');
             if(!grid) return;
-            // Shuffle to keep rotating experience
             const shuffled = [...rwandanProducts].sort(() => 0.5 - Math.random());
             grid.innerHTML = shuffled.map(p => `
                 <div class="bg-white/95 backdrop-blur p-2.5 rounded-xl shadow-md">
@@ -302,7 +307,7 @@
                 </div>
             `).join('');
         }
-        setInterval(loadRotatingProducts, 5000); // Rotates every 5 seconds
+        setInterval(loadRotatingProducts, 5000);
         loadRotatingProducts();
 
         // Modals Controls
@@ -368,14 +373,31 @@
 
         window.bazabyoseLogout = () => signOut(auth);
 
-        // Save CV & Portfolio with Picture
+        // Helper to convert selected file into base64 URL so it can be previewed/saved locally or stored
+        function readFileAsDataURL(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Save CV & Portfolio with Local File (Image)
         window.saveUserCV = async function(event) {
           event.preventDefault();
           const user = auth.currentUser;
           if (!user) return;
+          
           try {
+            let picUrl = "";
+            const fileInput = document.getElementById('cv-pic-file');
+            if (fileInput.files && fileInput.files[0]) {
+                picUrl = await readFileAsDataURL(fileInput.files[0]);
+            }
+
             await updateDoc(doc(db, "users", user.uid), {
-              picUrl: document.getElementById('cv-pic').value,
+              picUrl: picUrl || undefined,
               school: document.getElementById('cv-school').value,
               certificates: document.getElementById('cv-certs').value,
               experience: document.getElementById('cv-experience').value
@@ -393,13 +415,19 @@
           await updateDoc(doc(db, "users", user.uid), { hideContact: isHidden });
         };
 
-        // Post Ad / Content with Picture
+        // Post Ad / Content with Picture or Video from Device File Manager
         window.bazabyoseCreatePost = async function(event) {
           event.preventDefault();
           const user = auth.currentUser;
           if (!user) return alert("Banza winjire!");
 
           try {
+            let mediaUrl = "";
+            const fileInput = document.getElementById('ad-media-file');
+            if (fileInput.files && fileInput.files[0]) {
+                mediaUrl = await readFileAsDataURL(fileInput.files[0]);
+            }
+
             await addDoc(collection(db, "posts"), {
               userId: user.uid,
               title: document.getElementById('ad-title').value,
@@ -407,7 +435,7 @@
               district: document.getElementById('ad-district').value,
               sector: document.getElementById('ad-sector').value,
               price: document.getElementById('ad-price').value || 0,
-              imageUrl: document.getElementById('ad-image').value,
+              imageUrl: mediaUrl, // can be picture or video data url
               description: document.getElementById('ad-description').value,
               createdAt: serverTimestamp()
             });
@@ -419,7 +447,7 @@
           }
         };
 
-        // Smart Feed Algorithm & Recommendations per Post
+        // Smart Feed Algorithm & Recommendations
         window.bazabyoseGetSmartFeed = async function() {
           const container = document.getElementById('bazabyose-smart-feed-container');
           if (!container) return;
@@ -437,8 +465,18 @@
               
               const card = document.createElement('div');
               card.className = "bg-white border border-gray-100 p-4 rounded-2xl shadow-sm relative";
+              
+              let mediaHTML = '';
+              if (post.imageUrl) {
+                  if (post.imageUrl.startsWith('data:video') || post.imageUrl.includes('video')) {
+                      mediaHTML = `<video src="${post.imageUrl}" controls class="w-full h-40 object-cover rounded-xl mb-3"></video>`;
+                  } else {
+                      mediaHTML = `<img src="${post.imageUrl}" class="w-full h-40 object-cover rounded-xl mb-3">`;
+                  }
+              }
+
               card.innerHTML = `
-                ${post.imageUrl ? `<img src="${post.imageUrl}" class="w-full h-40 object-cover rounded-xl mb-3">` : ''}
+                ${mediaHTML}
                 <h4 class="font-bold text-emerald-800 text-base mb-1">${post.title}</h4>
                 <p class="text-xs text-gray-500 mb-2">📍 ${post.district} / ${post.sector} | <strong class="text-emerald-700">${post.price} RWF</strong></p>
                 <p class="text-sm mb-4 text-gray-700">${post.description}</p>
@@ -462,22 +500,71 @@
           }
         };
 
-        // Chat Demo simulation with voice/media features
+        // CHAT MEDIA & FILE PICKER INTEGRATION
+        window.triggerChatMediaPicker = function() {
+            document.getElementById('chat-media-upload').click();
+        };
+
+        window.handleChatMediaSelection = async function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const mediaDataUrl = await readFileAsDataURL(file);
+            const isVideo = file.type.startsWith('video');
+            
+            const box = document.getElementById('chat-messages-box');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = "p-3 bg-indigo-50 border border-indigo-100 rounded-2xl text-sm self-end max-w-[85%] ml-auto text-gray-800 space-y-2";
+
+            let previewElement = '';
+            let fileName = file.name || "media_file";
+            if (isVideo) {
+                previewElement = `<video src="${mediaDataUrl}" controls class="w-full max-h-48 rounded-lg"></video>`;
+            } else {
+                previewElement = `<img src="${mediaDataUrl}" class="w-full max-h-48 object-cover rounded-lg">`;
+            }
+
+            msgDiv.innerHTML = `
+                ${previewElement}
+                <div class="flex items-center justify-between gap-3 pt-1 border-t border-indigo-100 text-xs font-bold">
+                    <a href="${mediaDataUrl}" download="${fileName}" class="text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg hover:bg-emerald-100 transition flex items-center gap-1">⬇️ Download</a>
+                    <button onclick="shareChatMedia('${mediaDataUrl}', '${isVideo ? 'video' : 'image'}')" class="text-indigo-700 bg-indigo-100 px-3 py-1.5 rounded-lg hover:bg-indigo-200 transition flex items-center gap-1">🔗 Share</button>
+                </div>
+            `;
+
+            box.appendChild(msgDiv);
+            box.scrollTop = box.scrollHeight;
+            event.target.value = ""; // reset file input
+        };
+
+        window.shareChatMedia = async function(url, type) {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'BAZABYOSE Shared Media',
+                        text: `Reba iyi ${type} yoherejwe kuri BAZABYOSE chat.`,
+                        url: url
+                    });
+                } catch (err) {
+                    console.log("Sharing canceled or failed", err);
+                }
+            } else {
+                // Fallback: Copy link/data to clipboard
+                navigator.clipboard.writeText(url);
+                alert("📋 Link y'ifoto cyangwa video yikoporowe muri Clipboard!");
+            }
+        };
+
         window.sendChatMessage = function(type) {
           const box = document.getElementById('chat-messages-box');
           const txt = document.getElementById('chat-input-text').value;
+          if (!txt) return;
+
           const msgDiv = document.createElement('div');
           msgDiv.className = "p-3 bg-emerald-100 rounded-xl text-sm self-end max-w-[85%] ml-auto text-gray-800";
-
-          if (type === 'text') {
-            if (!txt) return;
-            msgDiv.innerText = txt;
-            document.getElementById('chat-input-text').value = "";
-          } else if (type === 'voice') {
-            msgDiv.innerHTML = "🎤 [Voice Message - 0:14s] <audio controls class='w-full mt-1.5 h-8'><source src='' type='audio/mp3'></audio>";
-          } else if (type === 'media') {
-            msgDiv.innerHTML = "📷 [Media File / Video] <br><a href='#' class='text-indigo-600 font-bold underline text-xs mt-1 inline-block'>Download Video/Photo</a>";
-          }
+          msgDiv.innerText = txt;
+          document.getElementById('chat-input-text').value = "";
+          
           box.appendChild(msgDiv);
           box.scrollTop = box.scrollHeight;
         };
