@@ -513,5 +513,76 @@
   const analytics = getAnalytics(app);
 
 </script>
+    <script type="module">
+  // 1. Ibikoresho bya Firebase wazanye (Wabishyizeho)
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+  // Wongeyeho izi za Auth zingenzi cyane:
+  import { 
+    getAuth, 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword 
+  } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "...",
+    authDomain: "...",
+    projectId: "...",
+    storageBucket: "...",
+    messagingSenderId: "...",
+    appId: "...",
+    measurementId: "..."
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+  const auth = getAuth(app); // 👈 Iyi ni yo ikenewe kugira ngo Auth ikore!
+
+  // ==========================================
+  // 2. Ongeraho iyi function ya Register (Kwiyandikisha)
+  // ==========================================
+  window.koraRegister = function() {
+    const email = document.getElementById('email-input').value;
+    const password = document.getElementById('password-input').value;
+
+    if (!email || !password) {
+      alert("Nyamuneka uzuza email n'ijambo ry'ibanga!");
+      return;
+    }
+
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        alert("🎉 Konti yafunguwe neza cyane!");
+        console.log("Registered:", userCredential.user);
+      })
+      .catch((error) => {
+        alert("❌ Kwiyandikisha byanze: " + error.message);
+        console.error("Error:", error.message);
+      });
+  };
+
+  // ==========================================
+  // 3. Ongeraho iyi function ya Login (Kwinjira)
+  // ==========================================
+  window.koraLogin = function() {
+    const email = document.getElementById('email-input').value;
+    const password = document.getElementById('password-input').value;
+
+    if (!email || !password) {
+      alert("Nyamuneka andika email n'ijambo ry'ibanga!");
+      return;
+    }
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        alert("✅ Winjiye neza imbere!");
+        console.log("Logged in:", userCredential.user);
+      })
+      .catch((error) => {
+        alert("❌ Kwinjira byanze: " + error.message);
+        console.error("Error:", error.message);
+      });
+  };
+</script>
 </body>
 </html>
