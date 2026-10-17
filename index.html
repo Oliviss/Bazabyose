@@ -61,7 +61,7 @@
                 <input type="text" id="bazabyose-reg-name" required placeholder="Amazina Yose (Nkuko biri kuri ID)" class="w-full p-2.5 border rounded-xl text-sm">
                 <input type="text" id="bazabyose-reg-username" required placeholder="Username yihariye (Urugero: john_250)" class="w-full p-2.5 border rounded-xl text-sm">
                 <input type="email" id="bazabyose-reg-email" required placeholder="Imeyili (Email)" class="w-full p-2.5 border rounded-xl text-sm">
-                <input type="text" id="bazabyose-reg-idnumber" required placeholder="Nimero y'Indangamuntu / National ID (11 digits)" class="w-full p-2.5 border rounded-xl text-sm">
+                <input type="text" id="bazabyose-reg-idnumber" required placeholder="Nimero y'Indangamuntu / National ID" class="w-full p-2.5 border rounded-xl text-sm">
                 <input type="tel" id="bazabyose-reg-phone" required placeholder="Nimero ya Telefone (078...)" class="w-full p-2.5 border rounded-xl text-sm">
                 <input type="password" id="bazabyose-reg-password" required placeholder="Ijambo ry'Ibanga (Password)" class="w-full p-2.5 border rounded-xl text-sm">
                 <select id="bazabyose-reg-role" class="w-full p-2.5 border rounded-xl text-sm">
@@ -132,19 +132,17 @@
                 <div id="bazabyose-smart-feed-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
 
-            <!-- ADMIN CONTROL PANEL & AUDIT TRAIL / FILE LOGS -->
+            <!-- ADMIN CONTROL PANEL & AUDIT TRAIL -->
             <div id="bazabyose-admin-control-panel" class="hidden bg-red-50 border-2 border-red-400 p-6 rounded-2xl shadow-md space-y-4">
                 <h3 class="text-xl font-bold text-red-700">🛡️ Admin Control & File Audit Trail</h3>
-                <p class="text-sm text-gray-700">Abayobozi bashobora kugenzura certificates/diplomas (Original Check) no kureba faili zose zashyizweho cyangwa zasibwe na users.</p>
-                <div id="admin-files-audit-container" class="bg-white p-4 rounded-xl border border-red-200 max-h-60 overflow-y-auto space-y-2">
-                    <!-- Loaded via JS -->
-                </div>
+                <p class="text-sm text-gray-700">Abayobozi bashobora kugenzura certificates/diplomas (Original Check) no kureba faili zose.</p>
+                <div id="admin-files-audit-container" class="bg-white p-4 rounded-xl border border-red-200 max-h-60 overflow-y-auto space-y-2"></div>
             </div>
         </div>
 
     </div>
 
-    <!-- PROFILE & CV EDITABLE MODAL WITH CERTIFICATE VERIFICATION -->
+    <!-- PROFILE & CV EDITABLE MODAL -->
     <div id="profile-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
         <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl p-6 relative max-h-[90vh] overflow-y-auto">
             <button class="absolute top-4 right-4 bg-red-600 text-white px-2.5 py-1 rounded-lg text-xs font-bold" onclick="closeProfileModal()">X</button>
@@ -181,7 +179,7 @@
                         <input type="file" id="prof-pic-file" accept="image/*" class="w-full p-2 border rounded-lg text-xs bg-gray-50 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">Upload Certificate / Diploma (For Original Check)</label>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Upload Certificate / Diploma</label>
                         <input type="file" id="prof-cert-file" accept="image/*,.pdf" class="w-full p-2 border rounded-lg text-xs bg-gray-50 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700">
                     </div>
                 </div>
@@ -223,12 +221,12 @@
             <form onsubmit="submitCashOut(event)" class="space-y-3">
                 <input type="number" id="cashout-amount" required placeholder="Amafaranga mu RWF" class="w-full p-2.5 border rounded-lg text-sm">
                 <input type="text" id="cashout-phone" required placeholder="Nimero ya MoMo (078/072...)" class="w-full p-2.5 border rounded-lg text-sm">
-                <button type="submit" class="w-full bg-red-600 text-white py-3 rounded-xl font-bold text-sm hover:bg-red-700 transition shadow">Ohereza Cash Out</button>
+                <button type="submit" class="w-full bg-red-600 text-white py-3 rounded-xl font-bold text-sm shadow">Ohereza Cash Out</button>
             </form>
         </div>
     </div>
 
-    <!-- LIVE CHAT MODAL WITH USERNAME SEARCH -->
+    <!-- LIVE CHAT MODAL -->
     <div id="chat-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
         <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[85vh]">
             <div class="bg-[#008060] text-white px-5 py-3.5 flex justify-between items-center">
@@ -347,14 +345,21 @@
         window.openCashOutModal = () => document.getElementById('cashout-modal').classList.remove('hidden');
         window.closeCashOutModal = () => document.getElementById('cashout-modal').classList.add('hidden');
 
-        // Profile Modal
+        // FIXED PROFILE MODAL: Added Offline Fallback Cache handling
         window.openProfileModal = async () => {
             const user = auth.currentUser;
             if(!user) return alert("Banza winjire!");
             
             try {
-                const snap = await getDoc(doc(db, "users", user.uid));
-                if(snap.exists()) {
+                let snap;
+                try {
+                    snap = await getDoc(doc(db, "users", user.uid));
+                } catch(netErr) {
+                    // Fallback if offline or network glitch
+                    snap = await getDoc(doc(db, "users", user.uid), { source: 'cache' });
+                }
+
+                if(snap && snap.exists()) {
                     const data = snap.data();
                     document.getElementById('prof-fullname').value = data.fullName || "";
                     document.getElementById('prof-username').value = data.username || "";
@@ -371,11 +376,15 @@
                     previewBox.innerHTML = `
                         <img src="${data.picUrl || 'https://via.placeholder.com/80'}" class="w-16 h-16 rounded-full object-cover border">
                         <div>
-                            <h4 class="font-bold text-emerald-900">${data.fullName} (@${data.username})</h4>
-                            <p class="text-xs text-gray-600">🆔 ID: ${data.idNumber} | 📞 ${data.phone}</p>
+                            <h4 class="font-bold text-emerald-900">${data.fullName || ''} (@${data.username || ''})</h4>
+                            <p class="text-xs text-gray-600">🆔 ID: ${data.idNumber || ''} | 📞 ${data.phone || ''}</p>
                             <p class="text-xs text-emerald-700 font-semibold mt-1">${data.school || 'Nta shuri ryanditswe'}</p>
                         </div>
                     `;
+                } else {
+                    // If user doc doesn't exist yet, populate base auth data
+                    document.getElementById('prof-fullname').value = user.displayName || "";
+                    document.getElementById('prof-email').value = user.email || "";
                 }
                 document.getElementById('profile-modal').classList.remove('hidden');
             } catch(e) {
@@ -398,7 +407,6 @@
             }
         };
 
-        // Register with Username & ID Check
         window.bazabyoseRegister = async function(event) {
           event.preventDefault();
           const email = document.getElementById('bazabyose-reg-email').value;
@@ -410,21 +418,10 @@
           const role = document.getElementById('bazabyose-reg-role').value;
 
           if(!idNumber || idNumber.length < 5) {
-              return alert("❌ Shyiramo Nimero y'Indangamuntu (ID) yemewe kugira ngo konti yawe ibone kuba Active.");
+              return alert("❌ Shyiramo Nimero y'Indangamuntu (ID) yemewe.");
           }
 
           try {
-            // Check if username already exists
-            const userQuery = await getDocs(collection(db, "users"));
-            let usernameExists = false;
-            userQuery.forEach(docSnap => {
-                if(docSnap.data().username === username) usernameExists = true;
-            });
-
-            if(usernameExists) {
-                return alert("❌ Iyi username iratwa n'undi muntu. Hitamo indi.");
-            }
-
             const userCred = await createUserWithEmailAndPassword(auth, email, password);
             await setDoc(doc(db, "users", userCred.user.uid), {
               uid: userCred.user.uid,
@@ -436,7 +433,6 @@
               createdAt: serverTimestamp()
             });
 
-            // Log Audit Trail for File/ID creation
             await addDoc(collection(db, "auditLogs"), {
                 userId: userCred.user.uid,
                 action: "ACCOUNT_CREATED",
@@ -445,7 +441,7 @@
                 createdAt: serverTimestamp()
             });
 
-            alert("🎉 Konti yawe yafunguwe kandi ni Active!");
+            alert("🎉 Konti yawe yafunguwe neza!");
             closeAuthModal();
           } catch (error) {
             alert("❌ Byanze: " + error.message);
@@ -476,7 +472,6 @@
             });
         }
 
-        // Save & Edit Profile, ID, Certificate Original Check
         window.saveUserProfileAndCV = async function(event) {
           event.preventDefault();
           const user = auth.currentUser;
@@ -512,7 +507,6 @@
 
             await updateDoc(doc(db, "users", user.uid), updateData);
 
-            // Audit Trail Log
             await addDoc(collection(db, "auditLogs"), {
                 userId: user.uid,
                 action: "PROFILE_UPDATED",
@@ -529,7 +523,6 @@
           }
         };
 
-        // Delete CV / Files with Audit Trail (Admin still sees logs/status)
         window.deleteUserCV = async function() {
             if(confirm("Wifuza koko gusiba amakuru yawe ya CV na Files?")) {
                 const user = auth.currentUser;
@@ -539,7 +532,6 @@
                     school: "", certificates: "", experience: "", picUrl: "", certUrl: "", certStatus: "Deleted by User"
                 });
 
-                // Audit Trail Log for Deletion
                 await addDoc(collection(db, "auditLogs"), {
                     userId: user.uid,
                     action: "FILE_DELETED",
@@ -548,13 +540,12 @@
                     createdAt: serverTimestamp()
                 });
 
-                alert("CV na files byasibwe, ariko Admin abisigaranye muri audit trail.");
+                alert("CV na files byasibwe!");
                 closeProfileModal();
                 location.reload();
             }
         };
 
-        // Post Ad with Audit Trail
         window.bazabyoseCreatePost = async function(event) {
           event.preventDefault();
           const user = auth.currentUser;
@@ -567,7 +558,7 @@
                 mediaUrl = await readFileAsDataURL(fileInput.files[0]);
             }
 
-            const docRef = await addDoc(collection(db, "posts"), {
+            await addDoc(collection(db, "posts"), {
               userId: user.uid,
               title: document.getElementById('ad-title').value,
               category: document.getElementById('ad-category').value,
@@ -580,7 +571,6 @@
               createdAt: serverTimestamp()
             });
 
-            // Audit Trail Log
             await addDoc(collection(db, "auditLogs"), {
                 userId: user.uid,
                 action: "POST_CREATED",
@@ -649,7 +639,6 @@
           }
         };
 
-        // LOAD ADMIN AUDIT LOGS FOR FILES & CERTIFICATES
         async function loadAdminAuditLogs() {
             const container = document.getElementById('admin-files-audit-container');
             if(!container) return;
@@ -678,7 +667,6 @@
             }
         }
 
-        // LIVE CHAT WITH USERNAME SEARCH
         async function loadChatUsers() {
             const listContainer = document.getElementById('chat-users-list');
             try {
@@ -709,7 +697,7 @@
                 <div onclick="selectChatUser('${u.uid}', '${u.fullName}', '${u.username}')" class="p-3 hover:bg-emerald-50 cursor-pointer transition flex items-center gap-2.5 border-b">
                     <img src="${u.picUrl || 'https://via.placeholder.com/40'}" class="w-9 h-9 rounded-full object-cover border">
                     <div class="truncate">
-                        <h5 class="font-bold text-xs text-gray-900">${u.fullName}</h5>
+                        <h5 class="font-bold text-xs text-gray-900">${u.fullName || ''}</h5>
                         <p class="text-[10px] text-indigo-600 font-bold">@${u.username || 'username'}</p>
                     </div>
                 </div>
@@ -720,7 +708,7 @@
             const queryVal = document.getElementById('chat-search-user').value.toLowerCase().replace('@','');
             const filtered = allUsersCache.filter(u => 
                 (u.username && u.username.toLowerCase().includes(queryVal)) || 
-                u.fullName.toLowerCase().includes(queryVal)
+                (u.fullName && u.fullName.toLowerCase().includes(queryVal))
             );
             renderChatUsersList(filtered);
         };
@@ -731,7 +719,6 @@
             document.getElementById('chat-messages-box').innerHTML = `<p class='text-center text-gray-400 text-xs'>Tangira ikiganiro na @${username}...</p>`;
         };
 
-        // Chat Media Picker, Download & Share
         window.triggerChatMediaPicker = () => {
             if(!activeChatUserId) return alert("Banza uhitemo uwo muvugana muri search y'ibumoso!");
             document.getElementById('chat-media-upload').click();
@@ -844,19 +831,29 @@
             logoutBtn.classList.remove('hidden');
             hero.classList.add('hidden');
 
-            const userSnap = await getDoc(doc(db, "users", user.uid));
-            if (userSnap.exists()) {
-              const data = userSnap.data();
-              document.getElementById('dash-fullname').innerText = data.fullName;
-              document.getElementById('dash-username').innerText = `@${data.username || 'username'}`;
-              document.getElementById('dash-role').innerText = `Role: ${data.role.toUpperCase()}`;
-              document.getElementById('dash-balance').innerText = `${data.balance || 0} RWF`;
-              document.getElementById('dash-status').innerText = data.status || "Active";
-              
-              if (data.role === 'admin' || user.email.includes('admin')) {
-                document.getElementById('bazabyose-admin-control-panel').classList.remove('hidden');
-                loadAdminAuditLogs();
-              }
+            try {
+                let userSnap;
+                try {
+                    userSnap = await getDoc(doc(db, "users", user.uid));
+                } catch(e) {
+                    userSnap = await getDoc(doc(db, "users", user.uid), { source: 'cache' });
+                }
+
+                if (userSnap && userSnap.exists()) {
+                  const data = userSnap.data();
+                  document.getElementById('dash-fullname').innerText = data.fullName || user.displayName || "User";
+                  document.getElementById('dash-username').innerText = `@${data.username || 'username'}`;
+                  document.getElementById('dash-role').innerText = `Role: ${(data.role || 'worker').toUpperCase()}`;
+                  document.getElementById('dash-balance').innerText = `${data.balance || 0} RWF`;
+                  document.getElementById('dash-status').innerText = data.status || "Active";
+                  
+                  if (data.role === 'admin' || user.email.includes('admin')) {
+                    document.getElementById('bazabyose-admin-control-panel').classList.remove('hidden');
+                    loadAdminAuditLogs();
+                  }
+                }
+            } catch(err) {
+                console.log("Dashboard load info error:", err);
             }
             window.bazabyoseGetSmartFeed();
           } else {
