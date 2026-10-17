@@ -226,7 +226,7 @@
         </div>
     </div>
 
-    <!-- LIVE CHAT MODAL (EXPANDED INPUT TABLE FIXED) -->
+    <!-- LIVE CHAT MODAL -->
     <div id="chat-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
         <div class="bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[85vh]">
             <div class="bg-[#008060] text-white px-5 py-3.5 flex justify-between items-center">
@@ -255,7 +255,7 @@
                         <textarea id="chat-input-text" rows="2" placeholder="Andika ubutumwa bwawe hano..." class="flex-1 w-full p-3 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600 resize-none"></textarea>
                         <input type="file" id="chat-media-upload" accept="image/*,video/*" class="hidden" onchange="handleChatMediaSelection(event)">
                         <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                            <button onclick="triggerChatMediaPicker()" title="Kohereza Picture / Video" class="bg-indigo-600 text-white px-4 py-3 rounded-xl text-sm font-bold shadow hover:bg-indigo-700 transition flex items-center gap-1">📎 Ifoto/Video</button>
+                            <button onclick="triggerChatMediaPicker()" title="Kohereza Ifoto / Video" class="bg-indigo-600 text-white px-4 py-3 rounded-xl text-sm font-bold shadow hover:bg-indigo-700 transition flex items-center gap-1">📎 Ifoto/Video</button>
                             <button onclick="sendChatMessage()" class="bg-[#008060] text-white px-6 py-3 rounded-xl text-sm font-bold shadow hover:bg-[#004d36] transition">Ohereza</button>
                         </div>
                     </div>
@@ -364,44 +364,43 @@
         window.openCashOutModal = () => document.getElementById('cashout-modal').classList.remove('hidden');
         window.closeCashOutModal = () => document.getElementById('cashout-modal').classList.add('hidden');
 
-        // FIXED PROFILE MODAL: Robust and properly loads/prefills data
+        // FIXED PROFILE MODAL: Handled offline mode & cache gracefully
         window.openProfileModal = async () => {
             const user = auth.currentUser;
             if(!user) return alert("Banza winjire!");
             
             try {
-                let snap;
+                let data = {};
                 try {
-                    snap = await getDoc(doc(db, "users", user.uid));
+                    const snap = await getDoc(doc(db, "users", user.uid));
+                    if(snap.exists()) data = snap.data();
                 } catch(netErr) {
-                    snap = await getDoc(doc(db, "users", user.uid), { source: 'cache' });
+                    try {
+                        const cachedSnap = await getDoc(doc(db, "users", user.uid), { source: 'cache' });
+                        if(cachedSnap.exists()) data = cachedSnap.data();
+                    } catch(cacheErr) {}
                 }
 
-                if(snap && snap.exists()) {
-                    const data = snap.data();
-                    document.getElementById('prof-fullname').value = data.fullName || "";
-                    document.getElementById('prof-username').value = data.username || "";
-                    document.getElementById('prof-idnumber').value = data.idNumber || "";
-                    document.getElementById('prof-phone').value = data.phone || "";
-                    document.getElementById('prof-school').value = data.school || "";
-                    document.getElementById('prof-certs').value = data.certificates || "";
-                    document.getElementById('prof-experience').value = data.experience || "";
+                document.getElementById('prof-fullname').value = data.fullName || user.displayName || "";
+                document.getElementById('prof-username').value = data.username || "";
+                document.getElementById('prof-idnumber').value = data.idNumber || "";
+                document.getElementById('prof-phone').value = data.phone || "";
+                document.getElementById('prof-school').value = data.school || "";
+                document.getElementById('prof-certs').value = data.certificates || "";
+                document.getElementById('prof-experience').value = data.experience || "";
 
-                    const statusBadge = document.getElementById('cert-status-badge');
-                    statusBadge.innerText = data.certStatus || "Pending Admin Check";
+                const statusBadge = document.getElementById('cert-status-badge');
+                statusBadge.innerText = data.certStatus || "Pending Admin Check";
 
-                    const previewBox = document.getElementById('current-cv-preview');
-                    previewBox.innerHTML = `
-                        <img src="${data.picUrl || 'https://via.placeholder.com/80'}" class="w-16 h-16 rounded-full object-cover border">
-                        <div>
-                            <h4 class="font-bold text-emerald-900">${data.fullName || ''} (@${data.username || ''})</h4>
-                            <p class="text-xs text-gray-600">🆔 ID: ${data.idNumber || ''} | 📞 ${data.phone || ''}</p>
-                            <p class="text-xs text-emerald-700 font-semibold mt-1">${data.school || 'Nta shuri ryanditswe'}</p>
-                        </div>
-                    `;
-                } else {
-                    document.getElementById('prof-fullname').value = user.displayName || "";
-                }
+                const previewBox = document.getElementById('current-cv-preview');
+                previewBox.innerHTML = `
+                    <img src="${data.picUrl || 'https://via.placeholder.com/80'}" class="w-16 h-16 rounded-full object-cover border">
+                    <div>
+                        <h4 class="font-bold text-emerald-900">${data.fullName || user.email || ''} (@${data.username || 'username'})</h4>
+                        <p class="text-xs text-gray-600">🆔 ID: ${data.idNumber || 'Nta ID'} | 📞 ${data.phone || 'Nta telefone'}</p>
+                        <p class="text-xs text-emerald-700 font-semibold mt-1">${data.school || 'Nta shuri ryanditswe'}</p>
+                    </div>
+                `;
                 document.getElementById('profile-modal').classList.remove('hidden');
             } catch(e) {
                 alert("Byanze gufungura profile: " + e.message);
