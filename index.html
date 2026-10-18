@@ -100,14 +100,14 @@
             <!-- SMART FOLDERS / TABS NAVIGATION -->
             <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
                 <div class="flex border-b bg-gray-50 overflow-x-auto">
-                    <button onclick="switchDashboardFolder('feed')" id="folder-tab-feed" class="flex-1 min-w-[140px] py-3.5 px-4 font-bold text-emerald-800 border-b-2 border-emerald-800 text-sm transition flex items-center justify-center gap-2 bg-white">
-                        🛍️ Isoko n'Amatangazo
+                    <button onclick="switchDashboardFolder('feed')" id="folder-tab-feed" class="flex-1 min-w-[130px] py-3.5 px-4 font-bold text-emerald-800 border-b-2 border-emerald-800 text-xs md:text-sm transition flex items-center justify-center gap-2 bg-white">
+                        🛍️ Isoko
                     </button>
-                    <button onclick="switchDashboardFolder('post')" id="folder-tab-post" class="flex-1 min-w-[140px] py-3.5 px-4 font-bold text-gray-500 text-sm transition flex items-center justify-center gap-2 hover:bg-gray-100">
+                    <button onclick="switchDashboardFolder('post')" id="folder-tab-post" class="flex-1 min-w-[130px] py-3.5 px-4 font-bold text-gray-500 text-xs md:text-sm transition flex items-center justify-center gap-2 hover:bg-gray-100">
                         📢 Shyira Itangazo
                     </button>
-                    <button onclick="switchDashboardFolder('admin')" id="folder-tab-admin" class="hidden flex-1 min-w-[140px] py-3.5 px-4 font-bold text-red-600 text-sm transition flex items-center justify-center gap-2 hover:bg-red-50">
-                        🛡️ Admin Panel
+                    <button onclick="switchDashboardFolder('admin')" id="folder-tab-admin" class="hidden flex-1 min-w-[130px] py-3.5 px-4 font-bold text-red-600 text-xs md:text-sm transition flex items-center justify-center gap-2 hover:bg-red-50">
+                        🛡️ Super Admin Panel
                     </button>
                 </div>
 
@@ -146,12 +146,23 @@
                     </form>
                 </div>
 
-                <!-- FOLDER 3: ADMIN CONTROL PANEL -->
-                <div id="folder-content-admin" class="p-6 space-y-4 hidden bg-red-50/50">
-                    <div id="bazabyose-admin-control-panel" class="space-y-4">
-                        <h3 class="text-xl font-bold text-red-700">🛡️ Admin Control & File Audit Trail</h3>
-                        <p class="text-sm text-gray-700">Abayobozi bashobora kugenzura certificates/diplomas (Original Check) no kureba faili zose.</p>
-                        <div id="admin-files-audit-container" class="bg-white p-4 rounded-xl border border-red-200 max-h-60 overflow-y-auto space-y-2"></div>
+                <!-- FOLDER 3: SUPER ADMIN CONTROL PANEL (FULL ACCESS) -->
+                <div id="folder-content-admin" class="p-6 space-y-6 hidden bg-red-50/40">
+                    <div class="bg-white p-5 rounded-2xl border border-red-200 shadow-sm space-y-3">
+                        <h3 class="text-lg font-bold text-red-700">💳 1. Gucunga Amafaranga (Pending Deposits & Cash Outs)</h3>
+                        <p class="text-xs text-gray-600">Emeza cyangwa uhakane ubusabe bw'abakoresha baka amafaranga.</p>
+                        <div id="admin-transactions-container" class="space-y-2 max-h-56 overflow-y-auto"></div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-red-200 shadow-sm space-y-3">
+                        <h3 class="text-lg font-bold text-red-700">👥 2. Gucunga Abakoresha (Users & Block Control)</h3>
+                        <p class="text-xs text-gray-600">Reba abantu bose bafite konti kuri BAZABYOSE, ubabuze cyangwa ubemerere.</p>
+                        <div id="admin-users-container" class="space-y-2 max-h-56 overflow-y-auto"></div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-red-200 shadow-sm space-y-3">
+                        <h3 class="text-lg font-bold text-red-700">📜 3. Audit Logs & System Activities</h3>
+                        <div id="admin-files-audit-container" class="bg-gray-50 p-3 rounded-xl border max-h-40 overflow-y-auto space-y-2 text-xs"></div>
                     </div>
                 </div>
             </div>
@@ -193,11 +204,11 @@
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">Ifoto yawe (Profile Picture) - Hitamo muri Fone/PC</label>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Ifoto yawe (Profile Picture)</label>
                         <input type="file" id="prof-pic-file" accept="image/*" class="w-full p-2 border rounded-lg text-xs bg-gray-50 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">Upload Certificate / Diploma (PDF cyangwa Ifoto)</label>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Upload Certificate / Diploma (PDF/Image)</label>
                         <input type="file" id="prof-cert-file" accept="image/*,.pdf" class="w-full p-2 border rounded-lg text-xs bg-gray-50 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700">
                     </div>
                 </div>
@@ -219,7 +230,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">Uburambe n'Ibyo Wakoze (Experience & Previous Workplaces)</label>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Uburambe n'Ibyo Wakoze (Experience)</label>
                     <textarea id="prof-experience" rows="3" placeholder="Sobanura aho wakoze n'uburambe ufite..." class="w-full p-2.5 border rounded-lg text-sm"></textarea>
                 </div>
 
@@ -268,7 +279,6 @@
                         <p class="text-center text-gray-400 text-xs">Nta butumwa buhari.</p>
                     </div>
                     
-                    <!-- EXPANDED CHAT INPUT BOX TABLE -->
                     <div class="p-4 bg-white border-t flex flex-col sm:flex-row items-center gap-3">
                         <textarea id="chat-input-text" rows="2" placeholder="Andika ubutumwa bwawe hano..." class="flex-1 w-full p-3 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600 resize-none"></textarea>
                         <input type="file" id="chat-media-upload" accept="image/*,video/*" class="hidden" onchange="handleChatMediaSelection(event)">
@@ -311,7 +321,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs, query, orderBy, updateDoc, deleteDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, addDoc, getDocs, query, orderBy, updateDoc, deleteDoc, serverTimestamp, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyD6hNoXtX-nNccAAwNObqmGjC5ruHQdf_I",
@@ -336,11 +346,7 @@
             {name: "Laptop HP Core i5", price: "280,000 RWF", img: "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=300"},
             {name: "Smartphones zigezweho", price: "120,000 RWF", img: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300"},
             {name: "Inzu yo mu Gakiriro", price: "180,000 RWF / Ukwezi", img: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=300"},
-            {name: "Imodoka Toyota RAV4", price: "12,500,000 RWF", img: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=300"},
-            {name: "Moto TVS Star", price: "1,600,000 RWF", img: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=300"},
-            {name: "Intebe nziza (Sofa)", price: "720,000 RWF", img: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=300"},
-            {name: "Televiziyo 43 Inch Smart", price: "230,000 RWF", img: "https://images.unsplash.com/photo-1593784991095-a205069470b6?w=300"},
-            {name: "Frigo nshya (Refrigerator)", price: "310,000 RWF", img: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd38?w=300"}
+            {name: "Imodoka Toyota RAV4", price: "12,500,000 RWF", img: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=300"}
         ];
 
         function loadRotatingProducts() {
@@ -382,16 +388,16 @@
                     if(f === folderName) {
                         content.classList.remove('hidden');
                         if(f === 'admin') {
-                            tabBtn.className = "flex-1 min-w-[140px] py-3.5 px-4 font-bold text-red-700 border-b-2 border-red-600 text-sm transition flex items-center justify-center gap-2 bg-white";
+                            tabBtn.className = "flex-1 min-w-[130px] py-3.5 px-4 font-bold text-red-700 border-b-2 border-red-600 text-xs md:text-sm transition flex items-center justify-center gap-2 bg-white";
                         } else {
-                            tabBtn.className = "flex-1 min-w-[140px] py-3.5 px-4 font-bold text-emerald-800 border-b-2 border-emerald-800 text-sm transition flex items-center justify-center gap-2 bg-white";
+                            tabBtn.className = "flex-1 min-w-[130px] py-3.5 px-4 font-bold text-emerald-800 border-b-2 border-emerald-800 text-xs md:text-sm transition flex items-center justify-center gap-2 bg-white";
                         }
                     } else {
                         content.classList.add('hidden');
                         if(f === 'admin') {
-                            tabBtn.className = "flex-1 min-w-[140px] py-3.5 px-4 font-bold text-red-500 text-sm transition flex items-center justify-center gap-2 hover:bg-red-50";
+                            tabBtn.className = "flex-1 min-w-[130px] py-3.5 px-4 font-bold text-red-500 text-xs md:text-sm transition flex items-center justify-center gap-2 hover:bg-red-50";
                         } else {
-                            tabBtn.className = "flex-1 min-w-[140px] py-3.5 px-4 font-bold text-gray-500 text-sm transition flex items-center justify-center gap-2 hover:bg-gray-100";
+                            tabBtn.className = "flex-1 min-w-[130px] py-3.5 px-4 font-bold text-gray-500 text-xs md:text-sm transition flex items-center justify-center gap-2 hover:bg-gray-100";
                         }
                     }
                 }
@@ -404,15 +410,8 @@
             
             try {
                 let data = {};
-                try {
-                    const snap = await getDoc(doc(db, "users", user.uid));
-                    if(snap.exists()) data = snap.data();
-                } catch(netErr) {
-                    try {
-                        const cachedSnap = await getDoc(doc(db, "users", user.uid), { source: 'cache' });
-                        if(cachedSnap.exists()) data = cachedSnap.data();
-                    } catch(cacheErr) {}
-                }
+                const snap = await getDoc(doc(db, "users", user.uid));
+                if(snap.exists()) data = snap.data();
 
                 document.getElementById('prof-fullname').value = data.fullName || user.displayName || "";
                 document.getElementById('prof-username').value = data.username || "";
@@ -422,8 +421,7 @@
                 document.getElementById('prof-certs').value = data.certificates || "";
                 document.getElementById('prof-experience').value = data.experience || "";
 
-                const statusBadge = document.getElementById('cert-status-badge');
-                statusBadge.innerText = data.certStatus || "Pending Admin Check";
+                document.getElementById('cert-status-badge').innerText = data.certStatus || "Pending Admin Check";
 
                 const previewBox = document.getElementById('current-cv-preview');
                 previewBox.innerHTML = `
@@ -479,14 +477,6 @@
               picUrl: "", certUrl: "", certStatus: "Pending Admin Check",
               school: "", certificates: "", experience: "",
               createdAt: serverTimestamp()
-            });
-
-            await addDoc(collection(db, "auditLogs"), {
-                userId: userCred.user.uid,
-                action: "ACCOUNT_CREATED",
-                details: `User @${username} registered with ID: ${idNumber}`,
-                status: "active",
-                createdAt: serverTimestamp()
             });
 
             alert("🎉 Konti yawe yafunguwe neza!");
@@ -554,15 +544,6 @@
             }
 
             await updateDoc(doc(db, "users", user.uid), updateData);
-
-            await addDoc(collection(db, "auditLogs"), {
-                userId: user.uid,
-                action: "PROFILE_UPDATED",
-                details: `User updated profile/certificate files.`,
-                status: "active",
-                createdAt: serverTimestamp()
-            });
-
             alert("✅ Profayili na CV byasevwe neza!");
             closeProfileModal();
             location.reload();
@@ -579,15 +560,6 @@
                 await updateDoc(doc(db, "users", user.uid), {
                     school: "", certificates: "", experience: "", picUrl: "", certUrl: "", certStatus: "Deleted by User"
                 });
-
-                await addDoc(collection(db, "auditLogs"), {
-                    userId: user.uid,
-                    action: "FILE_DELETED",
-                    details: `User deleted their CV/Certificate files.`,
-                    status: "deleted",
-                    createdAt: serverTimestamp()
-                });
-
                 alert("CV na files byasibwe!");
                 closeProfileModal();
                 location.reload();
@@ -617,14 +589,6 @@
               description: document.getElementById('ad-description').value,
               status: "active",
               createdAt: serverTimestamp()
-            });
-
-            await addDoc(collection(db, "auditLogs"), {
-                userId: user.uid,
-                action: "POST_CREATED",
-                details: `Created post: ${document.getElementById('ad-title').value}`,
-                status: "active",
-                createdAt: serverTimestamp()
             });
 
             alert("✅ Itangazo ryashyizwe ku isoko neza!");
@@ -688,32 +652,124 @@
           }
         };
 
+        // SUPER ADMIN FUNCTIONS FOR FULL CONTROL
+        async function loadSuperAdminPanel() {
+            loadAdminTransactions();
+            loadAdminUsersList();
+            loadAdminAuditLogs();
+        }
+
+        async function loadAdminTransactions() {
+            const container = document.getElementById('admin-transactions-container');
+            if(!container) return;
+            try {
+                const snap = await getDocs(collection(db, "transactions"));
+                container.innerHTML = "";
+                if(snap.empty) { container.innerHTML = "<p class='text-xs text-gray-400'>Nta transaction zihari.</p>"; return; }
+
+                snap.forEach(d => {
+                    const tx = d.data();
+                    const txId = d.id;
+                    const div = document.createElement('div');
+                    div.className = "p-3 bg-gray-50 border rounded-xl text-xs flex justify-between items-center gap-2";
+                    div.innerHTML = `
+                        <div>
+                            <strong class="text-emerald-800">${tx.type?.toUpperCase()}</strong>: ${tx.amount} RWF (${tx.phone || 'Nta phone'})
+                            <br><span class="text-[10px] text-gray-500">Status: <b>${tx.status}</b> | Ref: ${tx.txRef || 'N/A'}</span>
+                        </div>
+                        <div class="flex gap-1">
+                            ${tx.status === 'pending' ? `<button onclick="adminApproveTx('${txId}', '${tx.userId}', ${tx.amount}, '${tx.type}')" class="bg-emerald-600 text-white px-2.5 py-1 rounded font-bold">Approve</button>` : ''}
+                            <button onclick="adminDeleteTx('${txId}')" class="bg-red-600 text-white px-2 py-1 rounded font-bold">Delete</button>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            } catch(e) {
+                container.innerHTML = "<p class='text-xs text-red-500'>Byanze gusoma transactions.</p>";
+            }
+        }
+
+        window.adminApproveTx = async function(txId, userId, amount, type) {
+            if(confirm("Emeza iyi transaction?")) {
+                await updateDoc(doc(db, "transactions", txId), { status: "approved" });
+                if(userId) {
+                    const userRef = doc(db, "users", userId);
+                    if(type === 'deposit') {
+                        await updateDoc(userRef, { balance: increment(amount) });
+                    } else if(type === 'cashout') {
+                        await updateDoc(userRef, { balance: increment(-amount) });
+                    }
+                }
+                alert("Transaction yemejwe neza!");
+                loadAdminTransactions();
+            }
+        };
+
+        window.adminDeleteTx = async function(txId) {
+            if(confirm("Siba iyi transaction?")) {
+                await deleteDoc(doc(db, "transactions", txId));
+                loadAdminTransactions();
+            }
+        };
+
+        async function loadAdminUsersList() {
+            const container = document.getElementById('admin-users-container');
+            if(!container) return;
+            try {
+                const snap = await getDocs(collection(db, "users"));
+                container.innerHTML = "";
+                snap.forEach(d => {
+                    const u = d.data();
+                    const uId = d.id;
+                    const div = document.createElement('div');
+                    div.className = "p-3 bg-gray-50 border rounded-xl text-xs flex justify-between items-center gap-2";
+                    div.innerHTML = `
+                        <div>
+                            <b>${u.fullName || 'User'}</b> (@${u.username || 'N/A'})
+                            <br><span class="text-[10px] text-gray-500">Email: ${u.email} | Role: <b>${u.role}</b> | Status: <b class="${u.status === 'blocked' ? 'text-red-600':'text-emerald-600'}">${u.status || 'active'}</b></span>
+                        </div>
+                        <div class="flex gap-1">
+                            <button onclick="adminToggleBlockUser('${uId}', '${u.status}')" class="${u.status === 'blocked' ? 'bg-emerald-600' : 'bg-amber-600'} text-white px-2 py-1 rounded font-bold">${u.status === 'blocked' ? 'Unblock' : 'Block'}</button>
+                            <button onclick="adminMakeAdmin('${uId}')" class="bg-indigo-600 text-white px-2 py-1 rounded font-bold">Make Admin</button>
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            } catch(e) {
+                container.innerHTML = "<p class='text-xs text-red-500'>Byanze gusoma users.</p>";
+            }
+        }
+
+        window.adminToggleBlockUser = async function(uId, currentStatus) {
+            const newStatus = currentStatus === 'blocked' ? 'active' : 'blocked';
+            await updateDoc(doc(db, "users", uId), { status: newStatus });
+            alert(`User status yahindutse: ${newStatus}`);
+            loadAdminUsersList();
+        };
+
+        window.adminMakeAdmin = async function(uId) {
+            if(confirm("Humuza uyu mushoferi/umukoresha abe Admin?")) {
+                await updateDoc(doc(db, "users", uId), { role: 'admin' });
+                alert("Yahinduwe Admin neza!");
+                loadAdminUsersList();
+            }
+        };
+
         async function loadAdminAuditLogs() {
             const container = document.getElementById('admin-files-audit-container');
             if(!container) return;
             try {
                 const snap = await getDocs(query(collection(db, "auditLogs"), orderBy("createdAt", "desc")));
                 container.innerHTML = "";
-                if(snap.empty) {
-                    container.innerHTML = "<p class='text-xs text-gray-500'>Nta log zirahari.</p>";
-                    return;
-                }
+                if(snap.empty) { container.innerHTML = "<p class='text-xs text-gray-500'>Nta logs zirahari.</p>"; return; }
                 snap.forEach(d => {
                     const log = d.data();
                     const item = document.createElement('div');
-                    item.className = "p-2 bg-gray-50 border rounded-lg text-xs flex justify-between items-center";
-                    item.innerHTML = `
-                        <div>
-                            <span class="font-bold text-red-800">[${log.action}]</span> 
-                            <span class="text-gray-700">${log.details}</span>
-                        </div>
-                        <span class="text-[10px] text-gray-400 font-semibold">${log.status}</span>
-                    `;
+                    item.className = "p-2 bg-white border rounded flex justify-between items-center";
+                    item.innerHTML = `<span><b>[${log.action}]</b> ${log.details || ''}</span><span class="text-[10px] text-gray-400">${log.status}</span>`;
                     container.appendChild(item);
                 });
-            } catch(e) {
-                container.innerHTML = "<p class='text-xs text-red-500'>Byanze gusoma audit logs.</p>";
-            }
+            } catch(e) {}
         }
 
         async function loadChatUsers() {
@@ -882,15 +938,9 @@
             hero.classList.add('hidden');
 
             try {
-                let userSnap;
-                try {
-                    userSnap = await getDoc(doc(db, "users", user.uid));
-                } catch(e) {
-                    userSnap = await getDoc(doc(db, "users", user.uid), { source: 'cache' });
-                }
-
+                let userSnap = await getDoc(doc(db, "users", user.uid));
                 let data = {};
-                if (userSnap && userSnap.exists()) {
+                if (userSnap.exists()) {
                     data = userSnap.data();
                 } else {
                     data = {
@@ -909,10 +959,10 @@
                 document.getElementById('dash-balance').innerText = `${data.balance || 0} RWF`;
                 document.getElementById('dash-status').innerText = data.status || "Active";
                 
-                // Kwerekana Admin Control Panel Folder niba ari Admin
+                // Kwerekana Admin Control Panel Folder niba ari Admin cyangwa email irimo admin
                 if (data.role === 'admin' || user.email.includes('admin')) {
                     if(adminTabBtn) adminTabBtn.classList.remove('hidden');
-                    loadAdminAuditLogs();
+                    loadSuperAdminPanel();
                 } else {
                     if(adminTabBtn) adminTabBtn.classList.add('hidden');
                 }
