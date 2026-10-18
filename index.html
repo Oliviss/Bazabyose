@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BAZABYOSE - Professional Marketplace & Smart Platform</title>
+    <title>BAZABYOSE - Executive Royal Marketplace & Smart Platform</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         @keyframes gradientBG {
@@ -16,9 +16,20 @@
             background-size: 400% 400%;
             animation: gradientBG 12s ease infinite;
         }
+        /* Custom Toast Animation */
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .toast-animate {
+            animation: slideIn 0.3s ease forwards;
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans leading-relaxed">
+
+    <!-- FLOATING TOAST NOTIFICATION CONTAINER -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 space-y-2 pointer-events-none"></div>
 
     <!-- HEADER NAVIGATION -->
     <header class="bg-[#008060] text-white px-6 py-4 flex justify-between items-center shadow-md sticky top-0 z-40">
@@ -49,11 +60,11 @@
                 <button onclick="switchAuthTab('register')" id="tab-reg-btn" class="flex-1 pb-2 font-bold text-gray-400 text-sm">Iyandikishe</button>
             </div>
 
-            <!-- Login Form -->
+            <!-- Login Form (Manual click Login with automatic toast feedback) -->
             <form id="bazabyose-login-form" onsubmit="bazabyoseLogin(event)" class="space-y-3">
                 <input type="email" id="bazabyose-login-email" required placeholder="Imeyili (Email)" class="w-full p-2.5 border rounded-xl text-sm">
                 <input type="password" id="bazabyose-login-password" required placeholder="Ijambo ry'Ibanga (Password)" class="w-full p-2.5 border rounded-xl text-sm">
-                <button type="submit" class="w-full bg-[#008060] text-white py-3 rounded-xl font-bold text-sm shadow hover:bg-[#004d36]">Injira</button>
+                <button type="submit" class="w-full bg-[#008060] text-white py-3 rounded-xl font-bold text-sm shadow hover:bg-[#004d36] transition">Login</button>
             </form>
 
             <!-- Register Form -->
@@ -69,7 +80,7 @@
                     <option value="employer">Umukoresha / Hirer (Employer)</option>
                     <option value="broker">Umuhuza / Broker (Real Estate & Car Rental)</option>
                 </select>
-                <button type="submit" class="w-full bg-[#008060] text-white py-3 rounded-xl font-bold text-sm shadow hover:bg-[#004d36]">Iyandikishe (Active Account)</button>
+                <button type="submit" class="w-full bg-[#008060] text-white py-3 rounded-xl font-bold text-sm shadow hover:bg-[#004d36] transition">Register Account</button>
             </form>
         </div>
     </div>
@@ -101,31 +112,31 @@
             <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
                 <div class="flex border-b bg-gray-50 overflow-x-auto">
                     <button onclick="switchDashboardFolder('feed')" id="folder-tab-feed" class="flex-1 min-w-[130px] py-3.5 px-4 font-bold text-emerald-800 border-b-2 border-emerald-800 text-xs md:text-sm transition flex items-center justify-center gap-2 bg-white">
-                        🛍️ Isoko
+                        🛍️ Marketplace
                     </button>
                     <button onclick="switchDashboardFolder('post')" id="folder-tab-post" class="flex-1 min-w-[130px] py-3.5 px-4 font-bold text-gray-500 text-xs md:text-sm transition flex items-center justify-center gap-2 hover:bg-gray-100">
-                        📢 Shyira Itangazo
+                        📢 Create Post
                     </button>
-                    <button onclick="switchDashboardFolder('admin')" id="folder-tab-admin" class="hidden flex-1 min-w-[130px] py-3.5 px-4 font-bold text-red-600 text-xs md:text-sm transition flex items-center justify-center gap-2 hover:bg-red-50">
-                        🛡️ Super Admin Panel
+                    <button onclick="switchDashboardFolder('admin')" id="folder-tab-admin" class="hidden flex-1 min-w-[130px] py-3.5 px-4 font-bold text-amber-700 text-xs md:text-sm transition flex items-center justify-center gap-2 hover:bg-amber-50">
+                        👑 Royal Office (Admin)
                     </button>
                 </div>
 
                 <!-- FOLDER 1: FEED -->
                 <div id="folder-content-feed" class="p-6 space-y-4">
                     <div class="flex justify-between items-center mb-2">
-                        <h3 class="text-lg font-bold text-[#004d36]">Isoko n'Amatangazo (Smart Recommendation Feed)</h3>
-                        <button onclick="bazabyoseGetSmartFeed()" class="bg-amber-400 text-gray-900 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-amber-500 transition shadow">🔄 Vugurura Feed</button>
+                        <h3 class="text-lg font-bold text-[#004d36]">Market Feed (Smart Recommendations)</h3>
+                        <button onclick="bazabyoseGetSmartFeed()" class="bg-amber-400 text-gray-900 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-amber-500 transition shadow">🔄 Refresh Feed</button>
                     </div>
                     <div id="bazabyose-smart-feed-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                 </div>
 
                 <!-- FOLDER 2: POST AD SECTION -->
                 <div id="folder-content-post" class="p-6 space-y-4 hidden">
-                    <h3 class="text-lg font-bold text-[#004d36] mb-3">📢 Shyira Itangazo / Ibikoresho (Add Picture & Video)</h3>
+                    <h3 class="text-lg font-bold text-[#004d36] mb-3">📢 Create New Advertisement (Picture & Video)</h3>
                     <form id="bazabyose-post-form" onsubmit="bazabyoseCreatePost(event)" class="space-y-4">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <input type="text" id="ad-title" required placeholder="Umutwe w'Itangazo" class="p-2.5 border rounded-lg text-sm">
+                            <input type="text" id="ad-title" required placeholder="Ad Title" class="p-2.5 border rounded-lg text-sm">
                             <select id="ad-category" class="p-2.5 border rounded-lg text-sm">
                                 <option value="job">Akazi (Job)</option>
                                 <option value="rental">Inzu yo Gukodesha (Rental)</option>
@@ -134,34 +145,48 @@
                             </select>
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <input type="text" id="ad-district" required placeholder="Akarere (Gasabo)" class="p-2.5 border rounded-lg text-sm">
-                            <input type="text" id="ad-sector" required placeholder="Umurenge (Remera)" class="p-2.5 border rounded-lg text-sm">
-                            <input type="number" id="ad-price" placeholder="Igiciro mu RWF" class="p-2.5 border rounded-lg text-sm">
+                            <input type="text" id="ad-district" required placeholder="District (Gasabo)" class="p-2.5 border rounded-lg text-sm">
+                            <input type="text" id="ad-sector" required placeholder="Sector (Remera)" class="p-2.5 border rounded-lg text-sm">
+                            <input type="number" id="ad-price" placeholder="Price in RWF" class="p-2.5 border rounded-lg text-sm">
                         </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <input type="file" id="ad-media-file" accept="image/*,video/*" class="w-full p-2 border rounded-lg text-xs bg-gray-50 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700">
-                            <textarea id="ad-description" rows="2" required placeholder="Ibisobanuro birambuye..." class="p-2.5 border rounded-lg text-sm"></textarea>
+                            <textarea id="ad-description" rows="2" required placeholder="Detailed description..." class="p-2.5 border rounded-lg text-sm"></textarea>
                         </div>
-                        <button type="submit" class="bg-[#008060] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#004d36] transition shadow">Ohereza Itangazo</button>
+                        <button type="submit" class="bg-[#008060] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#004d36] transition shadow">Publish Ad</button>
                     </form>
                 </div>
 
-                <!-- FOLDER 3: SUPER ADMIN CONTROL PANEL (FULL ACCESS) -->
-                <div id="folder-content-admin" class="p-6 space-y-6 hidden bg-red-50/40">
-                    <div class="bg-white p-5 rounded-2xl border border-red-200 shadow-sm space-y-3">
-                        <h3 class="text-lg font-bold text-red-700">💳 1. Gucunga Amafaranga (Pending Deposits & Cash Outs)</h3>
-                        <p class="text-xs text-gray-600">Emeza cyangwa uhakane ubusabe bw'abakoresha baka amafaranga.</p>
-                        <div id="admin-transactions-container" class="space-y-2 max-h-56 overflow-y-auto"></div>
+                <!-- FOLDER 3: ROYAL OFFICE (EXECUTIVE ADMIN PANEL) -->
+                <div id="folder-content-admin" class="p-6 space-y-6 hidden bg-amber-50/30">
+                    <div class="p-4 bg-gradient-to-r from-amber-700 to-amber-900 text-white rounded-2xl shadow-lg flex justify-between items-center">
+                        <div>
+                            <h3 class="text-lg font-black tracking-wide">👑 Royal Supreme Control Center</h3>
+                            <p class="text-xs text-amber-100">Authorized Sovereign Administration & Financial Oversight</p>
+                        </div>
+                        <span id="royal-badge" class="bg-white/20 text-white px-3 py-1 rounded-xl text-xs font-bold">Secure Gateway</span>
                     </div>
 
-                    <div class="bg-white p-5 rounded-2xl border border-red-200 shadow-sm space-y-3">
-                        <h3 class="text-lg font-bold text-red-700">👥 2. Gucunga Abakoresha (Users & Block Control)</h3>
-                        <p class="text-xs text-gray-600">Reba abantu bose bafite konti kuri BAZABYOSE, ubabuze cyangwa ubemerere.</p>
-                        <div id="admin-users-container" class="space-y-2 max-h-56 overflow-y-auto"></div>
+                    <div class="bg-white p-5 rounded-2xl border border-amber-200 shadow-sm space-y-3">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-base font-bold text-amber-900">💳 Payment Transactions & Real-Time Notifications</h3>
+                            <span id="pending-tx-badge" class="bg-amber-100 text-amber-800 text-[10px] px-2 py-0.5 rounded-full font-bold">0 Pending</span>
+                        </div>
+                        <p class="text-xs text-gray-600">Review pending deposits and cash-out requests. Approve to instantly credit or debit user balances.</p>
+                        <div id="admin-transactions-container" class="space-y-2 max-h-60 overflow-y-auto"></div>
                     </div>
 
-                    <div class="bg-white p-5 rounded-2xl border border-red-200 shadow-sm space-y-3">
-                        <h3 class="text-lg font-bold text-red-700">📜 3. Audit Logs & System Activities</h3>
+                    <div class="bg-white p-5 rounded-2xl border border-amber-200 shadow-sm space-y-3">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-base font-bold text-amber-900">👥 Sovereign User Management & Moderation</h3>
+                            <span id="total-users-badge" class="bg-indigo-100 text-indigo-800 text-[10px] px-2 py-0.5 rounded-full font-bold">0 Users</span>
+                        </div>
+                        <p class="text-xs text-gray-600">Complete citizen roster. Block fraudulent accounts or elevate trusted personnel to Sovereign Admins.</p>
+                        <div id="admin-users-container" class="space-y-2 max-h-60 overflow-y-auto"></div>
+                    </div>
+
+                    <div class="bg-white p-5 rounded-2xl border border-amber-200 shadow-sm space-y-3">
+                        <h3 class="text-base font-bold text-amber-900">📜 Royal Audit Trail & System Logs</h3>
                         <div id="admin-files-audit-container" class="bg-gray-50 p-3 rounded-xl border max-h-40 overflow-y-auto space-y-2 text-xs"></div>
                     </div>
                 </div>
@@ -171,72 +196,72 @@
 
     </div>
 
-    <!-- PROFILE & CV EDITABLE MODAL -->
+    <!-- PROFILE MODAL -->
     <div id="profile-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
         <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl p-6 relative max-h-[90vh] overflow-y-auto">
             <button class="absolute top-4 right-4 bg-red-600 text-white px-2.5 py-1 rounded-lg text-xs font-bold" onclick="closeProfileModal()">X</button>
-            <h3 class="text-xl font-bold text-[#004d36] mb-4">👤 Profayili, ID & Certificate Verification</h3>
+            <h3 class="text-xl font-bold text-[#004d36] mb-4">👤 Profile & CV Verification</h3>
             
             <form id="profile-cv-form" onsubmit="saveUserProfileAndCV(event)" class="space-y-4">
                 <div id="current-cv-preview" class="mb-4 p-4 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center gap-4"></div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">Amazina Yose (Kuri ID)</label>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Full Name</label>
                         <input type="text" id="prof-fullname" required class="w-full p-2.5 border rounded-lg text-sm">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">Username Yihariye</label>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Username</label>
                         <input type="text" id="prof-username" required class="w-full p-2.5 border rounded-lg text-sm">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">Nimero y'Indangamuntu (ID Number)</label>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">National ID Number</label>
                         <input type="text" id="prof-idnumber" required class="w-full p-2.5 border rounded-lg text-sm">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">Nimero ya Telefone</label>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Phone Number</label>
                         <input type="tel" id="prof-phone" required class="w-full p-2.5 border rounded-lg text-sm">
                     </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">Ifoto yawe (Profile Picture)</label>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Profile Picture</label>
                         <input type="file" id="prof-pic-file" accept="image/*" class="w-full p-2 border rounded-lg text-xs bg-gray-50 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">Upload Certificate / Diploma (PDF/Image)</label>
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Upload Certificate / Diploma</label>
                         <input type="file" id="prof-cert-file" accept="image/*,.pdf" class="w-full p-2 border rounded-lg text-xs bg-gray-50 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700">
                     </div>
                 </div>
 
                 <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs flex justify-between items-center">
-                    <span>Certificate Status Check:</span>
+                    <span>Certificate Status:</span>
                     <strong id="cert-status-badge" class="text-amber-700 font-bold">Pending Admin Check</strong>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">Amashuri Wize & Icyiciro (School / Degree)</label>
-                        <input type="text" id="prof-school" placeholder="Urugero: KIST / Bachelor in IT" class="w-full p-2.5 border rounded-lg text-sm">
+                        <label class="block text-xs font-bold text-gray-600 mb-1">School / Degree</label>
+                        <input type="text" id="prof-school" placeholder="e.g. KIST / Bachelor in IT" class="w-full p-2.5 border rounded-lg text-sm">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-600 mb-1">Impamyabumenyi Zindi (Certificates)</label>
-                        <input type="text" id="prof-certs" placeholder="Urugero: Cisco Certified, Driving License" class="w-full p-2.5 border rounded-lg text-sm">
+                        <label class="block text-xs font-bold text-gray-600 mb-1">Certificates</label>
+                        <input type="text" id="prof-certs" placeholder="e.g. Driving License" class="w-full p-2.5 border rounded-lg text-sm">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-gray-600 mb-1">Uburambe n'Ibyo Wakoze (Experience)</label>
-                    <textarea id="prof-experience" rows="3" placeholder="Sobanura aho wakoze n'uburambe ufite..." class="w-full p-2.5 border rounded-lg text-sm"></textarea>
+                    <label class="block text-xs font-bold text-gray-600 mb-1">Experience</label>
+                    <textarea id="prof-experience" rows="3" placeholder="Describe your experience..." class="w-full p-2.5 border rounded-lg text-sm"></textarea>
                 </div>
 
                 <div class="flex justify-between items-center pt-2">
-                    <button type="button" onclick="deleteUserCV()" class="bg-red-100 text-red-700 px-4 py-2 rounded-xl text-xs font-bold hover:bg-red-200 transition">🗑️ Siba CV & Files</button>
-                    <button type="submit" class="bg-emerald-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-emerald-800 transition shadow">Bika Impinduka (Save Profile)</button>
+                    <button type="button" onclick="deleteUserCV()" class="bg-red-100 text-red-700 px-4 py-2 rounded-xl text-xs font-bold hover:bg-red-200 transition">🗑️ Delete CV & Files</button>
+                    <button type="submit" class="bg-emerald-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-emerald-800 transition shadow">Save Profile</button>
                 </div>
             </form>
         </div>
@@ -246,11 +271,11 @@
     <div id="cashout-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
         <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 relative">
             <button class="absolute top-4 right-4 bg-red-600 text-white px-2.5 py-1 rounded-lg text-xs font-bold" onclick="closeCashOutModal()">X</button>
-            <h3 class="text-lg font-bold text-[#004d36] mb-2">Gukura Amafaranga (Cash Out)</h3>
+            <h3 class="text-lg font-bold text-[#004d36] mb-2">Request Cash Out</h3>
             <form onsubmit="submitCashOut(event)" class="space-y-3">
-                <input type="number" id="cashout-amount" required placeholder="Amafaranga mu RWF" class="w-full p-2.5 border rounded-lg text-sm">
-                <input type="text" id="cashout-phone" required placeholder="Nimero ya MoMo (078/072...)" class="w-full p-2.5 border rounded-lg text-sm">
-                <button type="submit" class="w-full bg-red-600 text-white py-3 rounded-xl font-bold text-sm shadow">Ohereza Cash Out</button>
+                <input type="number" id="cashout-amount" required placeholder="Amount in RWF" class="w-full p-2.5 border rounded-lg text-sm">
+                <input type="text" id="cashout-phone" required placeholder="MoMo Phone (078/072...)" class="w-full p-2.5 border rounded-lg text-sm">
+                <button type="submit" class="w-full bg-red-600 text-white py-3 rounded-xl font-bold text-sm shadow">Submit Cash Out</button>
             </form>
         </div>
     </div>
@@ -266,25 +291,25 @@
             <div class="flex flex-1 overflow-hidden">
                 <div class="w-1/3 border-r bg-gray-50 flex flex-col">
                     <div class="p-3 border-b bg-white">
-                        <input type="text" id="chat-search-user" oninput="filterChatUsers()" placeholder="🔍 Shakisha Username (@...)" class="w-full p-2 border rounded-lg text-xs">
+                        <input type="text" id="chat-search-user" oninput="filterChatUsers()" placeholder="🔍 Search Username (@...)" class="w-full p-2 border rounded-lg text-xs">
                     </div>
                     <div id="chat-users-list" class="flex-1 overflow-y-auto divide-y"></div>
                 </div>
 
                 <div class="w-2/3 flex flex-col bg-white">
                     <div id="chat-active-header" class="p-3 border-b bg-emerald-50 text-emerald-900 font-bold text-xs">
-                        Hitamo uwo muvugana ukoresheje Username ye...
+                        Select a user from the left list to chat...
                     </div>
                     <div id="chat-messages-box" class="flex-1 p-4 overflow-y-auto space-y-3 bg-gray-50">
-                        <p class="text-center text-gray-400 text-xs">Nta butumwa buhari.</p>
+                        <p class="text-center text-gray-400 text-xs">No messages yet.</p>
                     </div>
                     
                     <div class="p-4 bg-white border-t flex flex-col sm:flex-row items-center gap-3">
-                        <textarea id="chat-input-text" rows="2" placeholder="Andika ubutumwa bwawe hano..." class="flex-1 w-full p-3 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600 resize-none"></textarea>
+                        <textarea id="chat-input-text" rows="2" placeholder="Type your message..." class="flex-1 w-full p-3 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600 resize-none"></textarea>
                         <input type="file" id="chat-media-upload" accept="image/*,video/*" class="hidden" onchange="handleChatMediaSelection(event)">
                         <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                            <button onclick="triggerChatMediaPicker()" title="Kohereza Ifoto / Video" class="bg-indigo-600 text-white px-4 py-3 rounded-xl text-sm font-bold shadow hover:bg-indigo-700 transition flex items-center gap-1">📎 Ifoto/Video</button>
-                            <button onclick="sendChatMessage()" class="bg-[#008060] text-white px-6 py-3 rounded-xl text-sm font-bold shadow hover:bg-[#004d36] transition">Ohereza</button>
+                            <button onclick="triggerChatMediaPicker()" title="Send Photo / Video" class="bg-indigo-600 text-white px-4 py-3 rounded-xl text-sm font-bold shadow hover:bg-indigo-700 transition flex items-center gap-1">📎 Photo/Video</button>
+                            <button onclick="sendChatMessage()" class="bg-[#008060] text-white px-6 py-3 rounded-xl text-sm font-bold shadow hover:bg-[#004d36] transition">Send</button>
                         </div>
                     </div>
                 </div>
@@ -295,10 +320,10 @@
     <!-- TERMS MODAL -->
     <div id="terms-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
         <div class="bg-white w-full max-w-2xl rounded-2xl shadow-2xl p-6 max-h-[85vh] overflow-y-auto space-y-4">
-            <h3 class="text-xl font-bold text-[#004d36]">Amategeko n'Amabwiriza</h3>
-            <p class="text-xs md:text-sm text-gray-700">Urubuga rwa BAZABYOSE rusaba ko buri mukoresha aba afite ID yemewe na username yihariye gushiraho ikintu cyose kitagendanye nakazi ntibyemewe,ibiteye isoni,amafoto ateye isoni,kuzana politike,gusebya igihugu nabayobozi ba leta birabujijwe hano kuko byatuma account yawe isibwa.</p>
+            <h3 class="text-xl font-bold text-[#004d36]">Terms & Conditions</h3>
+            <p class="text-xs md:text-sm text-gray-700">BAZABYOSE requires every user to have a valid ID and unique username. Publishing inappropriate images, hate speech, political propaganda, or defaming government officials is strictly prohibited and will lead to immediate account termination.</p>
             <div class="pt-4 text-right">
-                <button onclick="closeTermsModal()" class="bg-[#008060] text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow">Numvise</button>
+                <button onclick="closeTermsModal()" class="bg-[#008060] text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow">Understood</button>
             </div>
         </div>
     </div>
@@ -307,12 +332,12 @@
     <div id="bazabyose-momo-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50 p-4">
         <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 relative">
             <button class="absolute top-4 right-4 bg-red-600 text-white px-2.5 py-1 rounded-lg text-xs font-bold" onclick="bazabyoseCloseMoMoModal()">X</button>
-            <h3 class="text-lg font-bold text-[#004d36] mb-2">Kwishyura Deposit</h3>
+            <h3 class="text-lg font-bold text-[#004d36] mb-2">Deposit via MoMo</h3>
             <form onsubmit="bazabyoseSubmitMoMoPayment(event)" class="space-y-3">
                 <input type="hidden" id="bazabyose-momo-amount" value="5000">
-                <input type="tel" id="bazabyose-momo-phone" required placeholder="Nimero ya Telefone (078...)" class="w-full p-2.5 border rounded-lg text-sm">
+                <input type="tel" id="bazabyose-momo-phone" required placeholder="Phone Number (078...)" class="w-full p-2.5 border rounded-lg text-sm">
                 <input type="text" id="bazabyose-momo-txref" required placeholder="Transaction Ref" class="w-full p-2.5 border rounded-lg text-sm">
-                <button type="submit" class="w-full bg-[#008060] text-white py-3 rounded-xl font-bold text-sm shadow">Emeza Deposit</button>
+                <button type="submit" class="w-full bg-[#008060] text-white py-3 rounded-xl font-bold text-sm shadow">Confirm Deposit</button>
             </form>
         </div>
     </div>
@@ -339,6 +364,21 @@
 
         let allUsersCache = [];
         let activeChatUserId = null;
+
+        // SMART TOAST NOTIFICATION SYSTEM (Automatic, non-intrusive floating feedback)
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast-animate pointer-events-auto px-4 py-3 rounded-xl shadow-xl text-white text-xs font-bold flex items-center gap-2 ${type === 'success' ? 'bg-[#008060]' : 'bg-red-600'}`;
+            toast.innerHTML = `<span>${type === 'success' ? '✅' : '❌'}</span> <span>${message}</span>`;
+            
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
 
         const rwandanProducts = [
             {name: "Imashini y'Ubukorikori", price: "150,000 RWF", img: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=300"},
@@ -375,10 +415,9 @@
         };
         window.closeChatModal = () => document.getElementById('chat-modal').classList.add('hidden');
         
-        window.openCashOutModal = () => document.getElementById('cashout-modal').classList.remove('hidden');
+        window.openCashOutModal = () => document.getElementById('cashout-modal').classList.add('hidden') === false ? document.getElementById('cashout-modal').classList.remove('hidden') : document.getElementById('cashout-modal').classList.remove('hidden');
         window.closeCashOutModal = () => document.getElementById('cashout-modal').classList.add('hidden');
 
-        // SMART FOLDERS SWITCHER FOR DASHBOARD
         window.switchDashboardFolder = (folderName) => {
             const folders = ['feed', 'post', 'admin'];
             folders.forEach(f => {
@@ -388,14 +427,14 @@
                     if(f === folderName) {
                         content.classList.remove('hidden');
                         if(f === 'admin') {
-                            tabBtn.className = "flex-1 min-w-[130px] py-3.5 px-4 font-bold text-red-700 border-b-2 border-red-600 text-xs md:text-sm transition flex items-center justify-center gap-2 bg-white";
+                            tabBtn.className = "flex-1 min-w-[130px] py-3.5 px-4 font-bold text-amber-700 border-b-2 border-amber-600 text-xs md:text-sm transition flex items-center justify-center gap-2 bg-white";
                         } else {
                             tabBtn.className = "flex-1 min-w-[130px] py-3.5 px-4 font-bold text-emerald-800 border-b-2 border-emerald-800 text-xs md:text-sm transition flex items-center justify-center gap-2 bg-white";
                         }
                     } else {
                         content.classList.add('hidden');
                         if(f === 'admin') {
-                            tabBtn.className = "flex-1 min-w-[130px] py-3.5 px-4 font-bold text-red-500 text-xs md:text-sm transition flex items-center justify-center gap-2 hover:bg-red-50";
+                            tabBtn.className = "flex-1 min-w-[130px] py-3.5 px-4 font-bold text-amber-600 text-xs md:text-sm transition flex items-center justify-center gap-2 hover:bg-amber-50";
                         } else {
                             tabBtn.className = "flex-1 min-w-[130px] py-3.5 px-4 font-bold text-gray-500 text-xs md:text-sm transition flex items-center justify-center gap-2 hover:bg-gray-100";
                         }
@@ -406,7 +445,7 @@
 
         window.openProfileModal = async () => {
             const user = auth.currentUser;
-            if(!user) return alert("Banza winjire!");
+            if(!user) return showToast("Please sign in first!", "error");
             
             try {
                 let data = {};
@@ -428,13 +467,13 @@
                     <img src="${data.picUrl || 'https://via.placeholder.com/80'}" class="w-16 h-16 rounded-full object-cover border">
                     <div>
                         <h4 class="font-bold text-emerald-900">${data.fullName || user.email || ''} (@${data.username || 'username'})</h4>
-                        <p class="text-xs text-gray-600">🆔 ID: ${data.idNumber || 'Nta ID'} | 📞 ${data.phone || 'Nta telefone'}</p>
-                        <p class="text-xs text-emerald-700 font-semibold mt-1">${data.school || 'Nta shuri ryanditswe'}</p>
+                        <p class="text-xs text-gray-600">🆔 ID: ${data.idNumber || 'No ID'} | 📞 ${data.phone || 'No phone'}</p>
+                        <p class="text-xs text-emerald-700 font-semibold mt-1">${data.school || 'No school specified'}</p>
                     </div>
                 `;
                 document.getElementById('profile-modal').classList.remove('hidden');
             } catch(e) {
-                alert("Byanze gufungura profile: " + e.message);
+                showToast("Error opening profile: " + e.message, "error");
             }
         };
         window.closeProfileModal = () => document.getElementById('profile-modal').classList.add('hidden');
@@ -464,7 +503,7 @@
           const role = document.getElementById('bazabyose-reg-role').value;
 
           if(!idNumber || idNumber.length < 5) {
-              return alert("❌ Shyiramo Nimero y'Indangamuntu (ID) yemewe.");
+              return showToast("Please provide a valid National ID.", "error");
           }
 
           try {
@@ -479,23 +518,32 @@
               createdAt: serverTimestamp()
             });
 
-            alert("🎉 Konti yawe yafunguwe neza!");
+            await addDoc(collection(db, "auditLogs"), {
+                userId: userCred.user.uid,
+                action: "ACCOUNT_CREATED",
+                details: `User @${username} registered.`,
+                status: "active",
+                createdAt: serverTimestamp()
+            });
+
+            showToast("Account created successfully!");
             closeAuthModal();
           } catch (error) {
-            alert("❌ Byanze: " + error.message);
+            showToast("Error: " + error.message, "error");
           }
         };
 
+        // MANUAL LOGIN WITH AUTOMATIC TOAST FEEDBACK IN ENGLISH (Auto-dismiss)
         window.bazabyoseLogin = async function(event) {
           event.preventDefault();
           const email = document.getElementById('bazabyose-login-email').value;
           const password = document.getElementById('bazabyose-login-password').value;
           try {
             await signInWithEmailAndPassword(auth, email, password);
-            alert("✅ Winjiye neza!");
+            showToast("Logged in successfully!");
             closeAuthModal();
           } catch (error) {
-            alert("❌ Kwinjira byanze: Reba neza amakuru yawe.");
+            showToast("Login failed: Check your credentials.", "error");
           }
         };
 
@@ -544,23 +592,32 @@
             }
 
             await updateDoc(doc(db, "users", user.uid), updateData);
-            alert("✅ Profayili na CV byasevwe neza!");
+            
+            await addDoc(collection(db, "auditLogs"), {
+                userId: user.uid,
+                action: "PROFILE_UPDATED",
+                details: `User updated profile info.`,
+                status: "active",
+                createdAt: serverTimestamp()
+            });
+
+            showToast("Profile saved successfully!");
             closeProfileModal();
             location.reload();
           } catch (e) {
-            alert("Byanze: " + e.message);
+            showToast("Error: " + e.message, "error");
           }
         };
 
         window.deleteUserCV = async function() {
-            if(confirm("Wifuza koko gusiba amakuru yawe ya CV na Files?")) {
+            if(confirm("Are you sure you want to delete your profile/CV files?")) {
                 const user = auth.currentUser;
                 if(!user) return;
                 
                 await updateDoc(doc(db, "users", user.uid), {
                     school: "", certificates: "", experience: "", picUrl: "", certUrl: "", certStatus: "Deleted by User"
                 });
-                alert("CV na files byasibwe!");
+                showToast("CV and files deleted!");
                 closeProfileModal();
                 location.reload();
             }
@@ -569,7 +626,7 @@
         window.bazabyoseCreatePost = async function(event) {
           event.preventDefault();
           const user = auth.currentUser;
-          if (!user) return alert("Banza winjire!");
+          if (!user) return showToast("Please sign in first!", "error");
 
           try {
             let mediaUrl = "";
@@ -591,24 +648,32 @@
               createdAt: serverTimestamp()
             });
 
-            alert("✅ Itangazo ryashyizwe ku isoko neza!");
+            await addDoc(collection(db, "auditLogs"), {
+                userId: user.uid,
+                action: "POST_CREATED",
+                details: `Created post: ${document.getElementById('ad-title').value}`,
+                status: "active",
+                createdAt: serverTimestamp()
+            });
+
+            showToast("Ad published successfully!");
             document.getElementById('bazabyose-post-form').reset();
             switchDashboardFolder('feed');
             window.bazabyoseGetSmartFeed();
           } catch (e) {
-            alert("Byanze: " + e.message);
+            showToast("Error: " + e.message, "error");
           }
         };
 
         window.bazabyoseGetSmartFeed = async function() {
           const container = document.getElementById('bazabyose-smart-feed-container');
           if (!container) return;
-          container.innerHTML = "<p class='text-sm text-gray-400'>Algorithm irimo gutunganya amatangazo...</p>";
+          container.innerHTML = "<p class='text-sm text-gray-400'>Loading marketplace feed...</p>";
 
           try {
             const snap = await getDocs(query(collection(db, "posts"), orderBy("createdAt", "desc")));
             container.innerHTML = "";
-            if (snap.empty) { container.innerHTML = "<p class='text-sm text-gray-500'>Nta matangazo arahari.</p>"; return; }
+            if (snap.empty) { container.innerHTML = "<p class='text-sm text-gray-500'>No ads available yet.</p>"; return; }
 
             const currUser = auth.currentUser;
             snap.forEach(docSnap => {
@@ -633,27 +698,27 @@
                 <p class="text-xs text-gray-500 mb-2">📍 ${post.district} / ${post.sector} | <strong class="text-emerald-700">${post.price} RWF</strong></p>
                 <p class="text-sm mb-4 text-gray-700">${post.description}</p>
                 <div class="flex justify-between items-center text-xs">
-                    <button onclick="openChatModal()" class="text-indigo-600 font-bold hover:underline">💬 Vugana n'Uyu</button>
+                    <button onclick="openChatModal()" class="text-indigo-600 font-bold hover:underline">💬 Contact Seller</button>
                     ${currUser && (currUser.email?.includes('admin') || currUser.uid === post.userId) ? `<button onclick="adminDeletePost('${postId}')" class="bg-red-600 text-white px-2.5 py-1 rounded-lg font-bold">Delete</button>` : ''}
                 </div>
               `;
               container.appendChild(card);
             });
           } catch (e) {
-            container.innerHTML = "<p class='text-red-500 text-sm'>Habaye ikibazo mu gusoma feed.</p>";
+            container.innerHTML = "<p class='text-red-500 text-sm'>Failed to load feed.</p>";
           }
         };
 
         window.adminDeletePost = async function(postId) {
-          if (confirm("Wifuza gusiba iri tangazo?")) {
+          if (confirm("Are you sure you want to delete this ad?")) {
             await deleteDoc(doc(db, "posts", postId));
-            alert("Itangazo ryasibwe!");
+            showToast("Ad deleted!");
             window.bazabyoseGetSmartFeed();
           }
         };
 
-        // SUPER ADMIN FUNCTIONS FOR FULL CONTROL
-        async function loadSuperAdminPanel() {
+        // ROYAL OFFICE / EXECUTIVE ADMIN CONTROL CENTER
+        async function loadRoyalAdminPanel() {
             loadAdminTransactions();
             loadAdminUsersList();
             loadAdminAuditLogs();
@@ -661,36 +726,46 @@
 
         async function loadAdminTransactions() {
             const container = document.getElementById('admin-transactions-container');
+            const badge = document.getElementById('pending-tx-badge');
             if(!container) return;
             try {
                 const snap = await getDocs(collection(db, "transactions"));
                 container.innerHTML = "";
-                if(snap.empty) { container.innerHTML = "<p class='text-xs text-gray-400'>Nta transaction zihari.</p>"; return; }
+                if(snap.empty) { 
+                    container.innerHTML = "<p class='text-xs text-gray-400'>No payment transactions found.</p>"; 
+                    if(badge) badge.innerText = "0 Pending";
+                    return; 
+                }
 
+                let pendingCount = 0;
                 snap.forEach(d => {
                     const tx = d.data();
                     const txId = d.id;
+                    if(tx.status === 'pending') pendingCount++;
+
                     const div = document.createElement('div');
                     div.className = "p-3 bg-gray-50 border rounded-xl text-xs flex justify-between items-center gap-2";
                     div.innerHTML = `
                         <div>
-                            <strong class="text-emerald-800">${tx.type?.toUpperCase()}</strong>: ${tx.amount} RWF (${tx.phone || 'Nta phone'})
-                            <br><span class="text-[10px] text-gray-500">Status: <b>${tx.status}</b> | Ref: ${tx.txRef || 'N/A'}</span>
+                            <strong class="text-amber-800">${tx.type?.toUpperCase()}</strong>: ${tx.amount} RWF 
+                            <br><span class="text-[11px] text-gray-600">Phone: ${tx.phone || 'N/A'} | Ref: ${tx.txRef || 'N/A'}</span>
+                            <br><span class="text-[10px] text-indigo-600 font-bold">Status: ${tx.status}</span>
                         </div>
                         <div class="flex gap-1">
-                            ${tx.status === 'pending' ? `<button onclick="adminApproveTx('${txId}', '${tx.userId}', ${tx.amount}, '${tx.type}')" class="bg-emerald-600 text-white px-2.5 py-1 rounded font-bold">Approve</button>` : ''}
-                            <button onclick="adminDeleteTx('${txId}')" class="bg-red-600 text-white px-2 py-1 rounded font-bold">Delete</button>
+                            ${tx.status === 'pending' ? `<button onclick="adminApproveTx('${txId}', '${tx.userId}', ${tx.amount}, '${tx.type}')" class="bg-emerald-600 text-white px-2.5 py-1 rounded font-bold hover:bg-emerald-700">Approve</button>` : ''}
+                            <button onclick="adminDeleteTx('${txId}')" class="bg-red-600 text-white px-2 py-1 rounded font-bold hover:bg-red-700">Delete</button>
                         </div>
                     `;
                     container.appendChild(div);
                 });
+                if(badge) badge.innerText = `${pendingCount} Pending`;
             } catch(e) {
-                container.innerHTML = "<p class='text-xs text-red-500'>Byanze gusoma transactions.</p>";
+                container.innerHTML = "<p class='text-xs text-red-500'>Failed to load transactions.</p>";
             }
         }
 
         window.adminApproveTx = async function(txId, userId, amount, type) {
-            if(confirm("Emeza iyi transaction?")) {
+            if(confirm("Approve this transaction?")) {
                 await updateDoc(doc(db, "transactions", txId), { status: "approved" });
                 if(userId) {
                     const userRef = doc(db, "users", userId);
@@ -700,13 +775,22 @@
                         await updateDoc(userRef, { balance: increment(-amount) });
                     }
                 }
-                alert("Transaction yemejwe neza!");
+                
+                await addDoc(collection(db, "auditLogs"), {
+                    action: "TX_APPROVED",
+                    details: `Approved ${type} of ${amount} RWF`,
+                    status: "success",
+                    createdAt: serverTimestamp()
+                });
+
+                showToast("Transaction approved successfully!");
                 loadAdminTransactions();
+                loadAdminAuditLogs();
             }
         };
 
         window.adminDeleteTx = async function(txId) {
-            if(confirm("Siba iyi transaction?")) {
+            if(confirm("Delete this transaction record?")) {
                 await deleteDoc(doc(db, "transactions", txId));
                 loadAdminTransactions();
             }
@@ -714,11 +798,14 @@
 
         async function loadAdminUsersList() {
             const container = document.getElementById('admin-users-container');
+            const userBadge = document.getElementById('total-users-badge');
             if(!container) return;
             try {
                 const snap = await getDocs(collection(db, "users"));
                 container.innerHTML = "";
+                let count = 0;
                 snap.forEach(d => {
+                    count++;
                     const u = d.data();
                     const uId = d.id;
                     const div = document.createElement('div');
@@ -726,31 +813,32 @@
                     div.innerHTML = `
                         <div>
                             <b>${u.fullName || 'User'}</b> (@${u.username || 'N/A'})
-                            <br><span class="text-[10px] text-gray-500">Email: ${u.email} | Role: <b>${u.role}</b> | Status: <b class="${u.status === 'blocked' ? 'text-red-600':'text-emerald-600'}">${u.status || 'active'}</b></span>
+                            <br><span class="text-[10px] text-gray-500">Email: ${u.email} | Role: <b>${u.role}</b> | Status: <b class="${u.status === 'blocked' ? 'text-red-600 font-bold':'text-emerald-600'}">${u.status || 'active'}</b></span>
                         </div>
                         <div class="flex gap-1">
                             <button onclick="adminToggleBlockUser('${uId}', '${u.status}')" class="${u.status === 'blocked' ? 'bg-emerald-600' : 'bg-amber-600'} text-white px-2 py-1 rounded font-bold">${u.status === 'blocked' ? 'Unblock' : 'Block'}</button>
-                            <button onclick="adminMakeAdmin('${uId}')" class="bg-indigo-600 text-white px-2 py-1 rounded font-bold">Make Admin</button>
+                            <button onclick="adminMakeAdmin('${uId}')" class="bg-indigo-600 text-white px-2 py-1 rounded font-bold">Admin</button>
                         </div>
                     `;
                     container.appendChild(div);
                 });
+                if(userBadge) userBadge.innerText = `${count} Users`;
             } catch(e) {
-                container.innerHTML = "<p class='text-xs text-red-500'>Byanze gusoma users.</p>";
+                container.innerHTML = "<p class='text-xs text-red-500'>Failed to load users.</p>";
             }
         }
 
         window.adminToggleBlockUser = async function(uId, currentStatus) {
             const newStatus = currentStatus === 'blocked' ? 'active' : 'blocked';
             await updateDoc(doc(db, "users", uId), { status: newStatus });
-            alert(`User status yahindutse: ${newStatus}`);
+            showToast(`User status updated to: ${newStatus}`);
             loadAdminUsersList();
         };
 
         window.adminMakeAdmin = async function(uId) {
-            if(confirm("Humuza uyu mushoferi/umukoresha abe Admin?")) {
+            if(confirm("Promote this user to Sovereign Admin?")) {
                 await updateDoc(doc(db, "users", uId), { role: 'admin' });
-                alert("Yahinduwe Admin neza!");
+                showToast("User promoted to Admin successfully!");
                 loadAdminUsersList();
             }
         };
@@ -761,7 +849,7 @@
             try {
                 const snap = await getDocs(query(collection(db, "auditLogs"), orderBy("createdAt", "desc")));
                 container.innerHTML = "";
-                if(snap.empty) { container.innerHTML = "<p class='text-xs text-gray-500'>Nta logs zirahari.</p>"; return; }
+                if(snap.empty) { container.innerHTML = "<p class='text-xs text-gray-500'>No logs found.</p>"; return; }
                 snap.forEach(d => {
                     const log = d.data();
                     const item = document.createElement('div');
@@ -787,14 +875,14 @@
                 });
                 renderChatUsersList(allUsersCache);
             } catch(e) {
-                listContainer.innerHTML = "<p class='p-3 text-xs text-red-500'>Byanze gusoma abantu.</p>";
+                listContainer.innerHTML = "<p class='p-3 text-xs text-red-500'>Failed to load users.</p>";
             }
         }
 
         function renderChatUsersList(users) {
             const listContainer = document.getElementById('chat-users-list');
             if(users.length === 0) {
-                listContainer.innerHTML = "<p class='p-3 text-xs text-gray-400 text-center'>Nta username cyangwa user wabonetse.</p>";
+                listContainer.innerHTML = "<p class='p-3 text-xs text-gray-400 text-center'>No users found.</p>";
                 return;
             }
 
@@ -820,12 +908,12 @@
 
         window.selectChatUser = function(uid, name, username) {
             activeChatUserId = uid;
-            document.getElementById('chat-active-header').innerHTML = `Muri kuganira na: <strong class="text-emerald-700">${name} (@${username})</strong>`;
-            document.getElementById('chat-messages-box').innerHTML = `<p class='text-center text-gray-400 text-xs'>Tangira ikiganiro na @${username}...</p>`;
+            document.getElementById('chat-active-header').innerHTML = `Chatting with: <strong class="text-emerald-700">${name} (@${username})</strong>`;
+            document.getElementById('chat-messages-box').innerHTML = `<p class='text-center text-gray-400 text-xs'>Start conversation with @${username}...</p>`;
         };
 
         window.triggerChatMediaPicker = () => {
-            if(!activeChatUserId) return alert("Banza uhitemo uwo muvugana muri search y'ibumoso!");
+            if(!activeChatUserId) return showToast("Please select a user from the left list first!", "error");
             document.getElementById('chat-media-upload').click();
         };
 
@@ -861,12 +949,12 @@
                 } catch (err) { console.log(err); }
             } else {
                 navigator.clipboard.writeText(url);
-                alert("📋 Link y'ifoto cyangwa video yikoporowe!");
+                showToast("Media link copied to clipboard!");
             }
         };
 
         window.sendChatMessage = function() {
-          if(!activeChatUserId) return alert("Banza uhitemo uwo muvugana muri search y'ibumoso!");
+          if(!activeChatUserId) return showToast("Please select a user from the left list first!", "error");
           const box = document.getElementById('chat-messages-box');
           const txt = document.getElementById('chat-input-text').value;
           if (!txt.trim()) return;
@@ -900,30 +988,49 @@
               status: "pending",
               createdAt: serverTimestamp()
             });
-            alert("Ubusabe bwa Deposit bwoherejwe! Tegereza ko Admin abyemeza.");
+
+            await addDoc(collection(db, "auditLogs"), {
+                userId: user.uid,
+                action: "DEPOSIT_REQUESTED",
+                details: `Requested deposit of ${document.getElementById('bazabyose-momo-amount').value} RWF`,
+                status: "pending",
+                createdAt: serverTimestamp()
+            });
+
+            showToast("Deposit request sent! Waiting for Admin approval.");
             window.bazabyoseCloseMoMoModal();
-          } catch (e) { alert("Byanze: " + e.message); }
+          } catch (e) { showToast("Error: " + e.message, "error"); }
         };
 
         window.submitCashOut = async function(event) {
             event.preventDefault();
             const user = auth.currentUser;
             if(!user) return;
+            const amt = parseInt(document.getElementById('cashout-amount').value);
             try {
                 await addDoc(collection(db, "transactions"), {
                     userId: user.uid,
                     type: "cashout",
-                    amount: parseInt(document.getElementById('cashout-amount').value),
+                    amount: amt,
                     phone: document.getElementById('cashout-phone').value,
                     status: "pending",
                     createdAt: serverTimestamp()
                 });
-                alert("Ubusabe bwa Cash Out bwoherejwe neza!");
+
+                await addDoc(collection(db, "auditLogs"), {
+                    userId: user.uid,
+                    action: "CASHOUT_REQUESTED",
+                    details: `Requested cash-out of ${amt} RWF`,
+                    status: "pending",
+                    createdAt: serverTimestamp()
+                });
+
+                showToast("Cash Out request submitted successfully!");
                 closeCashOutModal();
-            } catch (e) { alert("Byanze: " + e.message); }
+            } catch (e) { showToast("Error: " + e.message, "error"); }
         };
 
-        // Auth State Listener
+        // Strict Role-Based Auth State Listener
         onAuthStateChanged(auth, async (user) => {
           const authToggleBtn = document.getElementById('auth-toggle-btn');
           const dashView = document.getElementById('dashboard-view');
@@ -938,16 +1045,17 @@
             hero.classList.add('hidden');
 
             try {
-                let userSnap = await getDoc(doc(db, "users", user.uid));
+                const userSnap = await getDoc(doc(db, "users", user.uid));
                 let data = {};
                 if (userSnap.exists()) {
                     data = userSnap.data();
                 } else {
                     data = {
-                        fullName: user.displayName || "Admin User",
+                        fullName: user.displayName || "User",
                         email: user.email,
-                        role: user.email.includes('admin') ? "admin" : "worker",
+                        role: "worker",
                         balance: 0,
+                        status: "active",
                         createdAt: new Date().toISOString()
                     };
                     await setDoc(doc(db, "users", user.uid), data);
@@ -959,10 +1067,10 @@
                 document.getElementById('dash-balance').innerText = `${data.balance || 0} RWF`;
                 document.getElementById('dash-status').innerText = data.status || "Active";
                 
-                // Kwerekana Admin Control Panel Folder niba ari Admin cyangwa email irimo admin
-                if (data.role === 'admin' || user.email.includes('admin')) {
+                // Strict check: Only authorized Sovereign Admins see the Royal Office panel
+                if (data.role === 'admin') {
                     if(adminTabBtn) adminTabBtn.classList.remove('hidden');
-                    loadSuperAdminPanel();
+                    loadRoyalAdminPanel();
                 } else {
                     if(adminTabBtn) adminTabBtn.classList.add('hidden');
                 }
