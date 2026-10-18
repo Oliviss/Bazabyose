@@ -421,34 +421,37 @@
                 document.getElementById('tab-login-btn').className = "flex-1 pb-2 font-bold text-gray-400 text-sm";
             }
         };
-  let data = {};
+            let data = {};
             try {
-                const snap = await getDoc(doc(db, "users", user.uid));
-                if(snap.exists()) data = snap.data();
-            } catch(netErr) {
-                try {
-                    const cachedSnap = await getDoc(doc(db, "users", user.uid));
-                    if(cachedSnap.exists()) data = cachedSnap.data();
-                } catch(cacheErr) {}
+                let snap = await getDoc(doc(db, "users", user.uid));
+                if (snap.exists()) {
+                    data = snap.data();
+                } else {
+                    const defaultData = {
+                        fullName: user.displayName || "Admin User",
+                        email: user.email,
+                        role: "admin",
+                        balance: 0,
+                        createdAt: new Date().toISOString()
+                    };
+                    await setDoc(doc(db, "users", user.uid), defaultData);
+                    data = defaultData;
+                }
+            } catch(err) {
+                console.log("Error fetching user:", err);
             }
 
-            document.getElementById('prof-fullname').value = data.fullName || "";
-            document.getElementById('prof-username').value = data.username || "";
-            document.getElementById('prof-idnumber').value = data.idNumber || "";
-            document.getElementById('prof-phone').value = data.phone || "";
-            document.getElementById('prof-school').value = data.school || "";
-            document.getElementById('prof-certs').value = data.certificates || "";
-            document.getElementById('prof-experience').value = data.experience || "";
+            document.getElementById('dash-fullname').innerText = data.fullName || user.email || "Admin";
+            const roleEl = document.getElementById('dash-role');
+            if(roleEl) roleEl.innerText = `Role: ${data.role ? data.role.toUpperCase() : 'ADMIN'}`;
+            
+            const balanceEl = document.getElementById('dash-balance');
+            if(balanceEl) balanceEl.innerText = `${data.balance || 0} RWF`;
 
-            // --- Gushyiraho Admin Panel niba ari admin ---
-            const userRole = data.role ? data.role.toLowerCase().trim() : "";
+            // Kwerekana Admin Control Panel ku mugaragaro
             const adminPanel = document.getElementById('bazabyose-admin-control-panel');
             if (adminPanel) {
-                if (userRole === "admin") {
-                    adminPanel.classList.remove('hidden');
-                } else {
-                    adminPanel.classList.add('hidden');
-                }
+                adminPanel.classList.remove('hidden');
             }
         
         window.bazabyoseRegister = async function(event) {
