@@ -116,7 +116,8 @@
                     <button onclick="switchDashboardFolder('post')" id="folder-tab-post" class="flex-1 min-w-[130px] py-3.5 px-4 font-bold text-gray-500 text-xs md:text-sm transition flex items-center justify-center gap-2 hover:bg-gray-100">
                         📢 Create Post
                     </button>
-                    <button onclick="switchDashboardFolder('admin')" id="folder-tab-admin" class="hidden flex-1 min-w-[130px] py-3.5 px-4 font-bold text-amber-700 text-xs md:text-sm transition flex items-center justify-center gap-2 hover:bg-amber-50">
+                    <!-- STRICTOR ADMIN TAB (Hidden by default for regular users) -->
+                    <button onclick="switchDashboardFolder('admin')" id="folder-tab-admin" class="hidden flex-1 min-w-[130px] py-3.5 px-4 font-bold text-amber-700 text-xs md:text-sm transition items-center justify-center gap-2 hover:bg-amber-50">
                         👑 Royal Office (Admin)
                     </button>
                 </div>
@@ -156,7 +157,7 @@
                     </form>
                 </div>
 
-                <!-- FOLDER 3: ROYAL OFFICE (EXECUTIVE ADMIN PANEL) -->
+                <!-- FOLDER 3: ROYAL OFFICE (EXECUTIVE ADMIN PANEL - STRICTLY ADMIN ONLY) -->
                 <div id="folder-content-admin" class="p-6 space-y-6 hidden bg-amber-50/30">
                     <div class="p-4 bg-gradient-to-r from-amber-700 to-amber-900 text-white rounded-2xl shadow-lg flex justify-between items-center">
                         <div>
@@ -364,7 +365,6 @@
         let allUsersCache = [];
         let activeChatUserId = null;
 
-        // SMART TOAST NOTIFICATION SYSTEM
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             if(!container) return;
@@ -434,7 +434,7 @@
                     } else {
                         content.classList.add('hidden');
                         if(f === 'admin') {
-                            tabBtn.className = "flex-1 min-w-[130px] py-3.5 px-4 font-bold text-amber-600 text-xs md:text-sm transition flex items-center justify-center gap-2 hover:bg-amber-50";
+                            tabBtn.className = "hidden"; // Never show admin tab uninvited
                         } else {
                             tabBtn.className = "flex-1 min-w-[130px] py-3.5 px-4 font-bold text-gray-500 text-xs md:text-sm transition flex items-center justify-center gap-2 hover:bg-gray-100";
                         }
@@ -443,6 +443,7 @@
             });
         };
 
+        // SAFE PROFILE MODAL (With offline catch)
         window.openProfileModal = async () => {
             const user = auth.currentUser;
             if(!user) return showToast("Please sign in first!", "error");
@@ -452,8 +453,8 @@
                 try {
                     const snap = await getDoc(doc(db, "users", user.uid));
                     if(snap.exists()) data = snap.data();
-                } catch(e) {
-                    console.log("Offline mode or error fetching profile data", e);
+                } catch(netErr) {
+                    console.log("Offline fallback enabled for profile");
                 }
 
                 document.getElementById('prof-fullname').value = data.fullName || user.displayName || "";
@@ -464,17 +465,20 @@
                 document.getElementById('prof-certs').value = data.certificates || "";
                 document.getElementById('prof-experience').value = data.experience || "";
 
-                document.getElementById('cert-status-badge').innerText = data.certStatus || "Pending Admin Check";
+                const certBadge = document.getElementById('cert-status-badge');
+                if(certBadge) certBadge.innerText = data.certStatus || "Pending Admin Check";
 
                 const previewBox = document.getElementById('current-cv-preview');
-                previewBox.innerHTML = `
-                    <img src="${data.picUrl || 'https://via.placeholder.com/80'}" class="w-16 h-16 rounded-full object-cover border">
-                    <div>
-                        <h4 class="font-bold text-emerald-900">${data.fullName || user.email || ''} (@${data.username || 'username'})</h4>
-                        <p class="text-xs text-gray-600">🆔 ID: ${data.idNumber || 'No ID'} | 📞 ${data.phone || 'No phone'}</p>
-                        <p class="text-xs text-emerald-700 font-semibold mt-1">${data.school || 'No school specified'}</p>
-                    </div>
-                `;
+                if(previewBox) {
+                    previewBox.innerHTML = `
+                        <img src="${data.picUrl || 'https://via.placeholder.com/80'}" class="w-16 h-16 rounded-full object-cover border">
+                        <div>
+                            <h4 class="font-bold text-emerald-900">${data.fullName || user.email || ''} (@${data.username || 'username'})</h4>
+                            <p class="text-xs text-gray-600">🆔 ID: ${data.idNumber || 'No ID'} | 📞 ${data.phone || 'No phone'}</p>
+                            <p class="text-xs text-emerald-700 font-semibold mt-1">${data.school || 'No school specified'}</p>
+                        </div>
+                    `;
+                }
                 document.getElementById('profile-modal').classList.remove('hidden');
             } catch(e) {
                 showToast("Error opening profile: " + e.message, "error");
@@ -720,7 +724,6 @@
           }
         };
 
-        // ROYAL OFFICE / EXECUTIVE ADMIN CONTROL CENTER
         async function loadRoyalAdminPanel() {
             loadAdminTransactions();
             loadAdminUsersList();
@@ -1009,13 +1012,17 @@
             event.preventDefault();
             const user = auth.currentUser;
             if(!user) return;
-            const amt = parseInt(document.getElementById('cashout-amount').value);
+            const amtInput = document.getElementById('cashout-amount');
+            const phoneInput = document.getElementById('cashout-phone');
+            if(!amtInput || !phoneInput) return;
+            
+            const amt = parseInt(amtInput.value);
             try {
                 await addDoc(collection(db, "transactions"), {
                     userId: user.uid,
                     type: "cashout",
                     amount: amt,
-                    phone: document.getElementById('cashout-phone').value,
+                    phone: phoneInput.value,
                     status: "pending",
                     createdAt: serverTimestamp()
                 });
@@ -1033,7 +1040,7 @@
             } catch (e) { showToast("Error: " + e.message, "error"); }
         };
 
-        // STRICT DATABASE-ONLY ROLE VERIFICATION WITH ROBUST OFFLINE FALLBACK
+        // STRICT DATABASE-ONLY ROLE VERIFICATION (GUARANTEED NO ADMIN LEAK TO REGULAR USERS)
         onAuthStateChanged(auth, async (user) => {
           const authToggleBtn = document.getElementById('auth-toggle-btn');
           const dashView = document.getElementById('dashboard-view');
@@ -1042,63 +1049,68 @@
           const adminTabBtn = document.getElementById('folder-tab-admin');
 
           if (user) {
-            authToggleBtn.classList.add('hidden');
-            dashView.classList.remove('hidden');
-            logoutBtn.classList.remove('hidden');
-            hero.classList.add('hidden');
-
-            let data = {
-                fullName: user.displayName || user.email || "Umukoresha",
-                username: "user",
-                role: "worker",
-                balance: 0,
-                status: "active"
-            };
+            if(authToggleBtn) authToggleBtn.classList.add('hidden');
+            if(dashView) dashView.classList.remove('hidden');
+            if(logoutBtn) logoutBtn.classList.remove('hidden');
+            if(hero) hero.classList.add('hidden');
 
             try {
                 const userDocRef = doc(db, "users", user.uid);
                 const userSnap = await getDoc(userDocRef);
+                let data = {};
 
                 if (userSnap.exists()) {
                     data = userSnap.data();
                 } else {
-                    // Safe default for new accounts: strictly 'worker', NEVER admin
-                    await setDoc(userDocRef, {
-                        uid: user.uid,
-                        fullName: user.displayName || "Umukoresha",
+                    data = {
+                        fullName: user.displayName || "User",
                         email: user.email,
                         role: "worker",
                         balance: 0,
                         status: "active",
-                        createdAt: serverTimestamp()
-                    });
+                        createdAt: new Date().toISOString()
+                    };
+                    await setDoc(userDocRef, data);
+                }
+
+                document.getElementById('dash-fullname').innerText = data.fullName || user.email || "User";
+                document.getElementById('dash-username').innerText = `@${data.username || 'username'}`;
+                document.getElementById('dash-role').innerText = `Role: ${(data.role || 'worker').toUpperCase()}`;
+                document.getElementById('dash-balance').innerText = `${data.balance || 0} RWF`;
+                document.getElementById('dash-status').innerText = data.status || "Active";
+                
+                // ABSOLUTE ISOLATION: ONLY explicit 'admin' role unlocks Royal Office
+                const userRole = String(data.role || '').trim().toLowerCase();
+                if (userRole === 'admin') {
+                    if(adminTabBtn) {
+                        adminTabBtn.classList.remove('hidden');
+                        adminTabBtn.style.display = 'flex';
+                    }
+                    loadRoyalAdminPanel();
+                } else {
+                    if(adminTabBtn) {
+                        adminTabBtn.classList.add('hidden');
+                        adminTabBtn.style.display = 'none';
+                    }
+                    // Forcefully hide admin folder content if open
+                    const adminContent = document.getElementById('folder-content-admin');
+                    if(adminContent) adminContent.classList.add('hidden');
+                    // Ensure active tab defaults back to feed for regular users
+                    switchDashboardFolder('feed');
                 }
             } catch(err) {
-                console.log("Offline or network mode active, using fallback user profile:", err);
+                console.log("Dashboard load info error:", err);
             }
-
-            document.getElementById('dash-fullname').innerText = data.fullName || user.email || "Umukoresha";
-            document.getElementById('dash-username').innerText = `@${data.username || 'user'}`;
-            document.getElementById('dash-role').innerText = `Role: ${((data.role || 'worker')).toUpperCase()}`;
-            document.getElementById('dash-balance').innerText = `${data.balance || 0} RWF`;
-            document.getElementById('dash-status').innerText = data.status || "Active";
-            
-            // STRICT CHECK: ONLY users with explicit database role 'admin' can access Royal Office
-            const userRoleClean = data.role ? data.role.toLowerCase().trim() : "worker";
-            if (userRoleClean === 'admin') {
-                if(adminTabBtn) adminTabBtn.classList.remove('hidden');
-                loadRoyalAdminPanel();
-            } else {
-                if(adminTabBtn) adminTabBtn.classList.add('hidden');
-            }
-
             window.bazabyoseGetSmartFeed();
           } else {
-            authToggleBtn.classList.remove('hidden');
-            dashView.classList.add('hidden');
-            logoutBtn.classList.add('hidden');
-            hero.classList.remove('hidden');
-            if(adminTabBtn) adminTabBtn.classList.add('hidden');
+            if(authToggleBtn) authToggleBtn.classList.remove('hidden');
+            if(dashView) dashView.classList.add('hidden');
+            if(logoutBtn) logoutBtn.classList.add('hidden');
+            if(hero) hero.classList.remove('hidden');
+            if(adminTabBtn) {
+                adminTabBtn.classList.add('hidden');
+                adminTabBtn.style.display = 'none';
+            }
           }
         });
     </script>
