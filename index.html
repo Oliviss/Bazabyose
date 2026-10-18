@@ -367,6 +367,7 @@
         // SMART TOAST NOTIFICATION SYSTEM
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
+            if(!container) return;
             const toast = document.createElement('div');
             toast.className = `toast-animate pointer-events-auto px-4 py-3 rounded-xl shadow-xl text-white text-xs font-bold flex items-center gap-2 ${type === 'success' ? 'bg-[#008060]' : 'bg-red-600'}`;
             toast.innerHTML = `<span>${type === 'success' ? '✅' : '❌'}</span> <span>${message}</span>`;
@@ -448,8 +449,12 @@
             
             try {
                 let data = {};
-                const snap = await getDoc(doc(db, "users", user.uid));
-                if(snap.exists()) data = snap.data();
+                try {
+                    const snap = await getDoc(doc(db, "users", user.uid));
+                    if(snap.exists()) data = snap.data();
+                } catch(e) {
+                    console.log("Offline mode or error fetching profile data", e);
+                }
 
                 document.getElementById('prof-fullname').value = data.fullName || user.displayName || "";
                 document.getElementById('prof-username').value = data.username || "";
@@ -1028,7 +1033,7 @@
             } catch (e) { showToast("Error: " + e.message, "error"); }
         };
 
-        // STRICT DATABASE-ONLY ROLE VERIFICATION (No email loophole)
+        // STRICT DATABASE-ONLY ROLE VERIFICATION WITH ROBUST OFFLINE FALLBACK
         onAuthStateChanged(auth, async (user) => {
           const authToggleBtn = document.getElementById('auth-toggle-btn');
           const dashView = document.getElementById('dashboard-view');
@@ -1042,42 +1047,51 @@
             logoutBtn.classList.remove('hidden');
             hero.classList.add('hidden');
 
+            let data = {
+                fullName: user.displayName || user.email || "Umukoresha",
+                username: "user",
+                role: "worker",
+                balance: 0,
+                status: "active"
+            };
+
             try {
                 const userDocRef = doc(db, "users", user.uid);
                 const userSnap = await getDoc(userDocRef);
-                let data = {};
 
                 if (userSnap.exists()) {
                     data = userSnap.data();
                 } else {
-                    // Safe default for new accounts: strictly 'worker', never admin
-                    data = {
-                        fullName: user.displayName || "User",
+                    // Safe default for new accounts: strictly 'worker', NEVER admin
+                    await setDoc(userDocRef, {
+                        uid: user.uid,
+                        fullName: user.displayName || "Umukoresha",
                         email: user.email,
                         role: "worker",
                         balance: 0,
                         status: "active",
-                        createdAt: new Date().toISOString()
-                    };
-                    await setDoc(userDocRef, data);
-                }
-
-                document.getElementById('dash-fullname').innerText = data.fullName || user.email || "User";
-                document.getElementById('dash-username').innerText = `@${data.username || 'username'}`;
-                document.getElementById('dash-role').innerText = `Role: ${(data.role || 'worker').toUpperCase()}`;
-                document.getElementById('dash-balance').innerText = `${data.balance || 0} RWF`;
-                document.getElementById('dash-status').innerText = data.status || "Active";
-                
-                // STRICT CHECK: ONLY users with explicit database role 'admin' can access Royal Office
-                if (data.role === 'admin') {
-                    if(adminTabBtn) adminTabBtn.classList.remove('hidden');
-                    loadRoyalAdminPanel();
-                } else {
-                    if(adminTabBtn) adminTabBtn.classList.add('hidden');
+                        createdAt: serverTimestamp()
+                    });
                 }
             } catch(err) {
-                console.log("Dashboard load info error:", err);
+                console.log("Offline or network mode active, using fallback user profile:", err);
             }
+
+            document.getElementById('dash-fullname').innerText = data.fullName || user.email || "Umukoresha";
+            document.getElementById('dash-username').innerText = `@${data.username || 'user'}`;
+            document.getElementById('dash-role').innerText = `Role: ${((data.role || 'worker')).toUpperCase()}`;
+            document.getElementById('dash-balance').innerText = `${data.balance || 0} RWF`;
+            document.getElementById('dash-status').innerText = data.status || "Active";
+            
+            // STRICT CHECK: ONLY users with explicit database role 'admin' can access Royal Office
+            const userRoleClean = data.role ? data.role.toLowerCase().trim() : "worker";
+            if (userRoleClean === 'admin') {
+                if(adminTabBtn) adminTabBtn.classList.remove('hidden');
+                loadRoyalAdminPanel();
+            } else {
+                if(adminTabBtn) adminTabBtn.classList.add('hidden');
+            }
+
             window.bazabyoseGetSmartFeed();
           } else {
             authToggleBtn.classList.remove('hidden');
