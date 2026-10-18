@@ -97,47 +97,65 @@
                 </div>
             </div>
 
-            <!-- POST AD SECTION -->
-            <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
-                <h3 class="text-lg font-bold text-[#004d36] mb-3">📢 Shyira Itangazo / Ibikoresho (Add Picture & Video)</h3>
-                <form id="bazabyose-post-form" onsubmit="bazabyoseCreatePost(event)" class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input type="text" id="ad-title" required placeholder="Umutwe w'Itangazo" class="p-2.5 border rounded-lg text-sm">
-                        <select id="ad-category" class="p-2.5 border rounded-lg text-sm">
-                            <option value="job">Akazi (Job)</option>
-                            <option value="rental">Inzu yo Gukodesha (Rental)</option>
-                            <option value="car">Imodoka / Ibinyamiziga (Car)</option>
-                            <option value="equipment">Ibikoresho by'Isoko (Equipment)</option>
-                        </select>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <input type="text" id="ad-district" required placeholder="Akarere (Gasabo)" class="p-2.5 border rounded-lg text-sm">
-                        <input type="text" id="ad-sector" required placeholder="Umurenge (Remera)" class="p-2.5 border rounded-lg text-sm">
-                        <input type="number" id="ad-price" placeholder="Igiciro mu RWF" class="p-2.5 border rounded-lg text-sm">
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input type="file" id="ad-media-file" accept="image/*,video/*" class="w-full p-2 border rounded-lg text-xs bg-gray-50 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700">
-                        <textarea id="ad-description" rows="2" required placeholder="Ibisobanuro birambuye..." class="p-2.5 border rounded-lg text-sm"></textarea>
-                    </div>
-                    <button type="submit" class="bg-[#008060] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#004d36] transition shadow">Ohereza Itangazo</button>
-                </form>
-            </div>
-
-            <!-- SMART FEED -->
-            <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-bold text-[#004d36]">Isoko n'Amatangazo (Smart Recommendation Feed)</h3>
-                    <button onclick="bazabyoseGetSmartFeed()" class="bg-amber-400 text-gray-900 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-amber-500 transition shadow">🔄 Vugurura Feed</button>
+            <!-- SMART FOLDERS / TABS NAVIGATION -->
+            <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
+                <div class="flex border-b bg-gray-50 overflow-x-auto">
+                    <button onclick="switchDashboardFolder('feed')" id="folder-tab-feed" class="flex-1 min-w-[140px] py-3.5 px-4 font-bold text-emerald-800 border-b-2 border-emerald-800 text-sm transition flex items-center justify-center gap-2 bg-white">
+                        🛍️ Isoko n'Amatangazo
+                    </button>
+                    <button onclick="switchDashboardFolder('post')" id="folder-tab-post" class="flex-1 min-w-[140px] py-3.5 px-4 font-bold text-gray-500 text-sm transition flex items-center justify-center gap-2 hover:bg-gray-100">
+                        📢 Shyira Itangazo
+                    </button>
+                    <button onclick="switchDashboardFolder('admin')" id="folder-tab-admin" class="hidden flex-1 min-w-[140px] py-3.5 px-4 font-bold text-red-600 text-sm transition flex items-center justify-center gap-2 hover:bg-red-50">
+                        🛡️ Admin Panel
+                    </button>
                 </div>
-                <div id="bazabyose-smart-feed-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+
+                <!-- FOLDER 1: FEED -->
+                <div id="folder-content-feed" class="p-6 space-y-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-bold text-[#004d36]">Isoko n'Amatangazo (Smart Recommendation Feed)</h3>
+                        <button onclick="bazabyoseGetSmartFeed()" class="bg-amber-400 text-gray-900 px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-amber-500 transition shadow">🔄 Vugurura Feed</button>
+                    </div>
+                    <div id="bazabyose-smart-feed-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                </div>
+
+                <!-- FOLDER 2: POST AD SECTION -->
+                <div id="folder-content-post" class="p-6 space-y-4 hidden">
+                    <h3 class="text-lg font-bold text-[#004d36] mb-3">📢 Shyira Itangazo / Ibikoresho (Add Picture & Video)</h3>
+                    <form id="bazabyose-post-form" onsubmit="bazabyoseCreatePost(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="text" id="ad-title" required placeholder="Umutwe w'Itangazo" class="p-2.5 border rounded-lg text-sm">
+                            <select id="ad-category" class="p-2.5 border rounded-lg text-sm">
+                                <option value="job">Akazi (Job)</option>
+                                <option value="rental">Inzu yo Gukodesha (Rental)</option>
+                                <option value="car">Imodoka / Ibinyamiziga (Car)</option>
+                                <option value="equipment">Ibikoresho by'Isoko (Equipment)</option>
+                            </select>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <input type="text" id="ad-district" required placeholder="Akarere (Gasabo)" class="p-2.5 border rounded-lg text-sm">
+                            <input type="text" id="ad-sector" required placeholder="Umurenge (Remera)" class="p-2.5 border rounded-lg text-sm">
+                            <input type="number" id="ad-price" placeholder="Igiciro mu RWF" class="p-2.5 border rounded-lg text-sm">
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="file" id="ad-media-file" accept="image/*,video/*" class="w-full p-2 border rounded-lg text-xs bg-gray-50 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700">
+                            <textarea id="ad-description" rows="2" required placeholder="Ibisobanuro birambuye..." class="p-2.5 border rounded-lg text-sm"></textarea>
+                        </div>
+                        <button type="submit" class="bg-[#008060] text-white px-6 py-3 rounded-xl font-bold hover:bg-[#004d36] transition shadow">Ohereza Itangazo</button>
+                    </form>
+                </div>
+
+                <!-- FOLDER 3: ADMIN CONTROL PANEL -->
+                <div id="folder-content-admin" class="p-6 space-y-4 hidden bg-red-50/50">
+                    <div id="bazabyose-admin-control-panel" class="space-y-4">
+                        <h3 class="text-xl font-bold text-red-700">🛡️ Admin Control & File Audit Trail</h3>
+                        <p class="text-sm text-gray-700">Abayobozi bashobora kugenzura certificates/diplomas (Original Check) no kureba faili zose.</p>
+                        <div id="admin-files-audit-container" class="bg-white p-4 rounded-xl border border-red-200 max-h-60 overflow-y-auto space-y-2"></div>
+                    </div>
+                </div>
             </div>
 
-            <!-- ADMIN CONTROL PANEL -->
-            <div id="bazabyose-admin-control-panel" class="hidden bg-red-50 border-2 border-red-400 p-6 rounded-2xl shadow-md space-y-4">
-                <h3 class="text-xl font-bold text-red-700">🛡️ Admin Control & File Audit Trail</h3>
-                <p class="text-sm text-gray-700">Abayobozi bashobora kugenzura certificates/diplomas (Original Check) no kureba faili zose.</p>
-                <div id="admin-files-audit-container" class="bg-white p-4 rounded-xl border border-red-200 max-h-60 overflow-y-auto space-y-2"></div>
-            </div>
         </div>
 
     </div>
@@ -322,17 +340,7 @@
             {name: "Moto TVS Star", price: "1,600,000 RWF", img: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=300"},
             {name: "Intebe nziza (Sofa)", price: "720,000 RWF", img: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=300"},
             {name: "Televiziyo 43 Inch Smart", price: "230,000 RWF", img: "https://images.unsplash.com/photo-1593784991095-a205069470b6?w=300"},
-            {name: "Frigo nshya (Refrigerator)", price: "310,000 RWF", img: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd38?w=300"},
-            {name: "Inkoko z'Amagi (Layers)", price: "8,500 RWF", img: "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?w=300"},
-            {name: "Imbuto z'Intungamubiri", price: "25,000 RWF", img: "https://images.unsplash.com/photo-1610348725531-843dff563e2c?w=300"},
-            {name: "Imyenda y'Imyambarire", price: "15,000 RWF", img: "https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=300"},
-            {name: "Inkweto z'Abagabo", price: "25,000 RWF", img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=300"},
-            {name: "Solar Panel System", price: "350,000 RWF", img: "https://images.unsplash.com/photo-1509391365360-80a5697f884e?w=300"},
-            {name: "Printer ya Canon", price: "190,000 RWF", img: "https://images.unsplash.com/photo-1612815154858-60aa4c59eaa6?w=300"},
-            {name: "Camera ya Canon EOS", price: "650,000 RWF", img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=300"},
-            {name: "Meza z'ibiro (Office Desk)", price: "95,000 RWF", img: "https://images.unsplash.com/photo-1518455027359-f3f8164ba6bd?w=300"},
-            {name: "Generator y'Amashanyarazi", price: "450,000 RWF", img: "https://images.unsplash.com/photo-1617788138017-80ad40651399?w=300"},
-            {name: "Ipasi yo Guterura", price: "22,000 RWF", img: "https://images.unsplash.com/photo-1585832770481-2a550d52f6f1?w=300"}
+            {name: "Frigo nshya (Refrigerator)", price: "310,000 RWF", img: "https://images.unsplash.com/photo-1584568694244-14fbdf83bd38?w=300"}
         ];
 
         function loadRotatingProducts() {
@@ -364,7 +372,32 @@
         window.openCashOutModal = () => document.getElementById('cashout-modal').classList.remove('hidden');
         window.closeCashOutModal = () => document.getElementById('cashout-modal').classList.add('hidden');
 
-        // FIXED PROFILE MODAL: Handled offline mode & cache gracefully
+        // SMART FOLDERS SWITCHER FOR DASHBOARD
+        window.switchDashboardFolder = (folderName) => {
+            const folders = ['feed', 'post', 'admin'];
+            folders.forEach(f => {
+                const content = document.getElementById(`folder-content-${f}`);
+                const tabBtn = document.getElementById(`folder-tab-${f}`);
+                if(content && tabBtn) {
+                    if(f === folderName) {
+                        content.classList.remove('hidden');
+                        if(f === 'admin') {
+                            tabBtn.className = "flex-1 min-w-[140px] py-3.5 px-4 font-bold text-red-700 border-b-2 border-red-600 text-sm transition flex items-center justify-center gap-2 bg-white";
+                        } else {
+                            tabBtn.className = "flex-1 min-w-[140px] py-3.5 px-4 font-bold text-emerald-800 border-b-2 border-emerald-800 text-sm transition flex items-center justify-center gap-2 bg-white";
+                        }
+                    } else {
+                        content.classList.add('hidden');
+                        if(f === 'admin') {
+                            tabBtn.className = "flex-1 min-w-[140px] py-3.5 px-4 font-bold text-red-500 text-sm transition flex items-center justify-center gap-2 hover:bg-red-50";
+                        } else {
+                            tabBtn.className = "flex-1 min-w-[140px] py-3.5 px-4 font-bold text-gray-500 text-sm transition flex items-center justify-center gap-2 hover:bg-gray-100";
+                        }
+                    }
+                }
+            });
+        };
+
         window.openProfileModal = async () => {
             const user = auth.currentUser;
             if(!user) return alert("Banza winjire!");
@@ -421,38 +454,6 @@
                 document.getElementById('tab-login-btn').className = "flex-1 pb-2 font-bold text-gray-400 text-sm";
             }
         };
-            let data = {};
-            try {
-                let snap = await getDoc(doc(db, "users", user.uid));
-                if (snap.exists()) {
-                    data = snap.data();
-                } else {
-                    const defaultData = {
-                        fullName: user.displayName || "Admin User",
-                        email: user.email,
-                        role: "admin",
-                        balance: 0,
-                        createdAt: new Date().toISOString()
-                    };
-                    await setDoc(doc(db, "users", user.uid), defaultData);
-                    data = defaultData;
-                }
-            } catch(err) {
-                console.log("Error fetching user:", err);
-            }
-
-            document.getElementById('dash-fullname').innerText = data.fullName || user.email || "Admin";
-            const roleEl = document.getElementById('dash-role');
-            if(roleEl) roleEl.innerText = `Role: ${data.role ? data.role.toUpperCase() : 'ADMIN'}`;
-            
-            const balanceEl = document.getElementById('dash-balance');
-            if(balanceEl) balanceEl.innerText = `${data.balance || 0} RWF`;
-
-            // Kwerekana Admin Control Panel ku mugaragaro
-            const adminPanel = document.getElementById('bazabyose-admin-control-panel');
-            if (adminPanel) {
-                adminPanel.classList.remove('hidden');
-            }
         
         window.bazabyoseRegister = async function(event) {
           event.preventDefault();
@@ -628,6 +629,7 @@
 
             alert("✅ Itangazo ryashyizwe ku isoko neza!");
             document.getElementById('bazabyose-post-form').reset();
+            switchDashboardFolder('feed');
             window.bazabyoseGetSmartFeed();
           } catch (e) {
             alert("Byanze: " + e.message);
@@ -871,6 +873,7 @@
           const dashView = document.getElementById('dashboard-view');
           const logoutBtn = document.getElementById('logout-btn');
           const hero = document.getElementById('hero-showcase');
+          const adminTabBtn = document.getElementById('folder-tab-admin');
 
           if (user) {
             authToggleBtn.classList.add('hidden');
@@ -886,18 +889,32 @@
                     userSnap = await getDoc(doc(db, "users", user.uid), { source: 'cache' });
                 }
 
+                let data = {};
                 if (userSnap && userSnap.exists()) {
-                  const data = userSnap.data();
-                  document.getElementById('dash-fullname').innerText = data.fullName || user.displayName || "User";
-                  document.getElementById('dash-username').innerText = `@${data.username || 'username'}`;
-                  document.getElementById('dash-role').innerText = `Role: ${(data.role || 'worker').toUpperCase()}`;
-                  document.getElementById('dash-balance').innerText = `${data.balance || 0} RWF`;
-                  document.getElementById('dash-status').innerText = data.status || "Active";
-                  
-                  if (data.role === 'admin' || user.email.includes('admin')) {
-                    document.getElementById('bazabyose-admin-control-panel').classList.remove('hidden');
+                    data = userSnap.data();
+                } else {
+                    data = {
+                        fullName: user.displayName || "Admin User",
+                        email: user.email,
+                        role: user.email.includes('admin') ? "admin" : "worker",
+                        balance: 0,
+                        createdAt: new Date().toISOString()
+                    };
+                    await setDoc(doc(db, "users", user.uid), data);
+                }
+
+                document.getElementById('dash-fullname').innerText = data.fullName || user.email || "User";
+                document.getElementById('dash-username').innerText = `@${data.username || 'username'}`;
+                document.getElementById('dash-role').innerText = `Role: ${(data.role || 'worker').toUpperCase()}`;
+                document.getElementById('dash-balance').innerText = `${data.balance || 0} RWF`;
+                document.getElementById('dash-status').innerText = data.status || "Active";
+                
+                // Kwerekana Admin Control Panel Folder niba ari Admin
+                if (data.role === 'admin' || user.email.includes('admin')) {
+                    if(adminTabBtn) adminTabBtn.classList.remove('hidden');
                     loadAdminAuditLogs();
-                  }
+                } else {
+                    if(adminTabBtn) adminTabBtn.classList.add('hidden');
                 }
             } catch(err) {
                 console.log("Dashboard load info error:", err);
@@ -908,6 +925,7 @@
             dashView.classList.add('hidden');
             logoutBtn.classList.add('hidden');
             hero.classList.remove('hidden');
+            if(adminTabBtn) adminTabBtn.classList.add('hidden');
           }
         });
     </script>
