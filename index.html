@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BAZABYOSE - Executive Royal Marketplace & Smart Platform</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Tailwind CSS v3 ihamye kuri Mobile na Browser zose -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @keyframes gradientBG {
             0% { background-position: 0% 50%; }
@@ -443,7 +444,6 @@
             });
         };
 
-        // SAFE PROFILE MODAL (With offline catch)
         window.openProfileModal = async () => {
             const user = auth.currentUser;
             if(!user) return showToast("Please sign in first!", "error");
@@ -1040,7 +1040,6 @@
             } catch (e) { showToast("Error: " + e.message, "error"); }
         };
 
-        // ROBUST HYBRID ROLE & AUTH STATE LISTENER
         onAuthStateChanged(auth, async (user) => {
           const authToggleBtn = document.getElementById('auth-toggle-btn');
           const dashView = document.getElementById('dashboard-view');
@@ -1079,7 +1078,6 @@
                 document.getElementById('dash-balance').innerText = `${data.balance || 0} RWF`;
                 document.getElementById('dash-status').innerText = data.status || "Active";
                 
-                // HYBRID ADMIN CHECK: DATABASE ROLE OR ADMIN EMAIL FALLBACK
                 const userRole = String(data.role || '').trim().toLowerCase();
                 const userEmail = String(user.email || '').trim().toLowerCase();
                 
