@@ -1097,5 +1097,126 @@
           }
         });
     </script>
+    window.openProfileModal = async () => {
+            const user = auth.currentUser;
+            if(!user) return showToast("Please sign in first!", "error");
+            
+            document.getElementById('profile-modal').classList.remove('hidden');
+            try {
+                const docSnap = await getDoc(doc(db, "users", user.uid));
+                if(docSnap.exists()) {
+                    const data = docSnap.data();
+                    document.getElementById('prof-fullname').value = data.fullName || '';
+                    document.getElementById('prof-username').value = data.username || '';
+                    document.getElementById('prof-idnumber').value = data.idnumber || '';
+                    document.getElementById('prof-phone').value = data.phone || '';
+                    document.getElementById('prof-school').value = data.school || '';
+                    document.getElementById('prof-certs').value = data.certificates || '';
+                    document.getElementById('prof-experience').value = data.experience || '';
+                }
+            } catch (err) {
+                console.error("Error loading profile:", err);
+            }
+        };
+
+        window.closeProfileModal = () => document.getElementById('profile-modal').classList.add('hidden');
+
+        // Authentication State Listener & Admin Switcher
+        onAuthStateChanged(auth, async (user) => {
+            const authBtn = document.getElementById('auth-toggle-btn');
+            const logoutBtn = document.getElementById('logout-btn');
+            const dashboardView = document.getElementById('dashboard-view');
+            const adminTabBtn = document.getElementById('folder-tab-admin');
+
+            if (user) {
+                if(authBtn) authBtn.classList.add('hidden');
+                if(logoutBtn) logoutBtn.classList.remove('hidden');
+                if(dashboardView) dashboardView.classList.remove('hidden');
+
+                try {
+                    const userDocRef = doc(db, "users", user.uid);
+                    const userSnap = await getDoc(userDocRef);
+
+                    if (userSnap.exists()) {
+                        const data = userSnap.data();
+                        document.getElementById('dash-fullname').innerText = data.fullName || 'Citizen';
+                        document.getElementById('dash-username').innerText = '@' + (data.username || 'user');
+                        document.getElementById('dash-role').innerText = 'Role: ' + (data.role || 'worker');
+                        document.getElementById('dash-balance').innerText = (data.balance || 0).toLocaleString() + ' RWF';
+
+                        const userRole = String(data.role || '').trim().toLowerCase();
+                        
+                        // Byose bishingiye ku role ya Firestore cyangwa se UID yawe ya Admin
+                        if (userRole === 'admin' || user.uid === 'x5mX5hHpxIOrPD0G7uEKkRhcvrR2') {
+                            if(adminTabBtn) {
+                                adminTabBtn.classList.remove('hidden');
+                                adminTabBtn.style.display = 'flex';
+                            }
+                            loadRoyalAdminPanel();
+                        } else {
+                            if(adminTabBtn) {
+                                adminTabBtn.classList.add('hidden');
+                                adminTabBtn.style.display = 'none';
+                            }
+                        }
+                    }
+                } catch (e) {
+                    console.error("Error fetching user session data:", e);
+                }
+            } else {
+                if(authBtn) authBtn.classList.remove('hidden');
+                if(logoutBtn) logoutBtn.classList.add('hidden');
+                if(dashboardView) dashboardView.classList.add('hidden');
+                if(adminTabBtn) {
+                    adminTabBtn.classList.add('hidden');
+                    adminTabBtn.style.display = 'none';
+                }
+            }
+        });
+
+        async function loadRoyalAdminPanel() {
+            console.log("Loading Royal Supreme Admin Panel...");
+            // Hano hinjira logic yo gusoma za users na transactions
+        }
+
+        window.bazabyoseLogout = () => {
+            signOut(auth).then(() => {
+                showToast("Signed out successfully");
+                location.reload();
+            });
+        };
+
+        window.bazabyoseGetSmartFeed = async () => {
+            const container = document.getElementById('bazabyose-smart-feed-container');
+            if(!container) return;
+            container.innerHTML = `<p class="text-xs text-gray-500">Loading feed...</p>`;
+            try {
+                const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+                if(querySnapshot.empty) {
+                    container.innerHTML = `<p class="text-xs text-gray-500">No posts available yet. Create one!</p>`;
+                    return;
+                }
+                let html = '';
+                querySnapshot.forEach((docSnap) => {
+                    const post = docSnap.data();
+                    html += `
+                        <div class="bg-white p-4 rounded-xl shadow border">
+                            <h4 class="font-bold text-sm text-[#004d36]">${post.title || 'Ad'}</h4>
+                            <p class="text-xs text-gray-600 mt-1">${post.description || ''}</p>
+                            <p class="text-emerald-700 font-bold text-xs mt-2">${post.price ? post.price + ' RWF' : ''}</p>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            } catch(err) {
+                console.error("Feed error:", err);
+                container.innerHTML = `<p class="text-xs text-red-500">Error loading feed.</p>`;
+            }
+        };
+        bazabyoseGetSmartFeed();
+    </script>
+</body>
+</html>
 </body>
 </html>
