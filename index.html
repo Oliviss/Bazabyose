@@ -637,11 +637,8 @@
                 createdAt: serverTimestamp()
             });
 
-            showToast("Ad published successfully! Amakuru yoherejwe neza.", "success");
-            
-            // Gusiba box zose za Form neza
+            showToast("Ad published successfully!", "success");
             document.getElementById('bazabyose-post-form').reset();
-            
             switchDashboardFolder('feed');
             window.bazabyoseGetSmartFeed();
           } catch (e) {
@@ -1050,7 +1047,6 @@
                 
                 const userRole = String(data.role || '').trim().toLowerCase();
                 
-                // Admin check ikorerwa gusa kuri Firestore role (Nta email yigaragaza muri F12)
                 if (userRole === 'admin') {
                     if(adminTabBtn) {
                         adminTabBtn.classList.remove('hidden');
@@ -1083,3 +1079,4 @@
     </script>
 </body>
 </html>
+
