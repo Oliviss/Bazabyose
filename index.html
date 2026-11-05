@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BAZABYOSE - Executive Royal Marketplace & Smart Platform</title>
+    <!-- Tailwind CSS v3 ihamye kuri Mobile na Browser zose -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @keyframes gradientBG {
@@ -45,6 +46,7 @@
         <div class="max-w-5xl mx-auto">
             <h2 class="text-3xl md:text-5xl font-black mb-4 tracking-tight">Isoko Rikomeye n'Imirimo mu Rwanda</h2>
             <p class="text-base md:text-lg opacity-95 mb-8">Shakisha akazi, abakozi b'abahanga, inzu, imodoka, n'ibikoresho bitandukanye bifite ibiciro byiza mu maRWF.</p>
+            
             <div id="rotating-market-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 text-gray-900 text-left max-h-[420px] overflow-y-auto p-2"></div>
         </div>
     </div>
@@ -84,8 +86,10 @@
     </div>
 
     <div class="container mx-auto max-w-6xl px-4 py-8">
+
         <!-- DASHBOARD VIEW -->
         <div id="dashboard-view" class="hidden space-y-6">
+            
             <div class="bg-white p-6 rounded-2xl shadow-md border border-gray-100 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                     <h2 class="text-2xl font-black text-[#004d36]" id="dash-fullname">--</h2>
@@ -104,7 +108,7 @@
                 </div>
             </div>
 
-            <!-- SMART TABS NAVIGATION -->
+            <!-- SMART FOLDERS / TABS NAVIGATION -->
             <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
                 <div class="flex border-b bg-gray-50 overflow-x-auto">
                     <button onclick="switchDashboardFolder('feed')" id="folder-tab-feed" class="flex-1 min-w-[130px] py-3.5 px-4 font-bold text-emerald-800 border-b-2 border-emerald-800 text-xs md:text-sm transition flex items-center justify-center gap-2 bg-white">
@@ -113,7 +117,7 @@
                     <button onclick="switchDashboardFolder('post')" id="folder-tab-post" class="flex-1 min-w-[130px] py-3.5 px-4 font-bold text-gray-500 text-xs md:text-sm transition flex items-center justify-center gap-2 hover:bg-gray-100">
                         📢 Create Post
                     </button>
-                    <!-- ROYAL OFFICE TAB (Strictly Admin Only via Firestore Role) -->
+                    <!-- ROYAL OFFICE TAB (Strictly Admin Only) -->
                     <button onclick="switchDashboardFolder('admin')" id="folder-tab-admin" class="hidden flex-1 min-w-[130px] py-3.5 px-4 font-bold text-amber-700 text-xs md:text-sm transition items-center justify-center gap-2 hover:bg-amber-50">
                         👑 Royal Office (Admin)
                     </button>
@@ -169,7 +173,7 @@
                             <h3 class="text-base font-bold text-amber-900">💳 Payment Transactions & Real-Time Notifications</h3>
                             <span id="pending-tx-badge" class="bg-amber-100 text-amber-800 text-[10px] px-2 py-0.5 rounded-full font-bold">0 Pending</span>
                         </div>
-                        <p class="text-xs text-gray-600">Review pending deposits and cash-out requests. Approve to securely update user balances via backend records.</p>
+                        <p class="text-xs text-gray-600">Review pending deposits and cash-out requests. Approve to instantly credit or debit user balances.</p>
                         <div id="admin-transactions-container" class="space-y-2 max-h-60 overflow-y-auto"></div>
                     </div>
 
@@ -188,7 +192,9 @@
                     </div>
                 </div>
             </div>
+
         </div>
+
     </div>
 
     <!-- PROFILE MODAL -->
@@ -199,6 +205,7 @@
             
             <form id="profile-cv-form" onsubmit="saveUserProfileAndCV(event)" class="space-y-4">
                 <div id="current-cv-preview" class="mb-4 p-4 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center gap-4"></div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-gray-600 mb-1">Full Name</label>
@@ -209,6 +216,7 @@
                         <input type="text" id="prof-username" required class="w-full p-2.5 border rounded-lg text-sm">
                     </div>
                 </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-gray-600 mb-1">National ID Number</label>
@@ -219,6 +227,7 @@
                         <input type="tel" id="prof-phone" required class="w-full p-2.5 border rounded-lg text-sm">
                     </div>
                 </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-gray-600 mb-1">Profile Picture</label>
@@ -229,10 +238,12 @@
                         <input type="file" id="prof-cert-file" accept="image/*,.pdf" class="w-full p-2 border rounded-lg text-xs bg-gray-50 file:mr-2 file:py-1 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700">
                     </div>
                 </div>
+
                 <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs flex justify-between items-center">
                     <span>Certificate Status:</span>
                     <strong id="cert-status-badge" class="text-amber-700 font-bold">Pending Admin Check</strong>
                 </div>
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold text-gray-600 mb-1">School / Degree</label>
@@ -243,10 +254,12 @@
                         <input type="text" id="prof-certs" placeholder="e.g. Driving License" class="w-full p-2.5 border rounded-lg text-sm">
                     </div>
                 </div>
+
                 <div>
                     <label class="block text-xs font-bold text-gray-600 mb-1">Experience</label>
                     <textarea id="prof-experience" rows="3" placeholder="Describe your experience..." class="w-full p-2.5 border rounded-lg text-sm"></textarea>
                 </div>
+
                 <div class="flex justify-between items-center pt-2">
                     <button type="button" onclick="deleteUserCV()" class="bg-red-100 text-red-700 px-4 py-2 rounded-xl text-xs font-bold hover:bg-red-200 transition">🗑️ Delete CV & Files</button>
                     <button type="submit" class="bg-emerald-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-emerald-800 transition shadow">Save Profile</button>
@@ -275,6 +288,7 @@
                 <h3 class="font-bold text-sm">💬 BAZABYOSE Live Chat Network</h3>
                 <button onclick="closeChatModal()" class="bg-red-600 px-3 py-1 rounded-lg text-xs font-bold hover:bg-red-700">X</button>
             </div>
+            
             <div class="flex flex-1 overflow-hidden">
                 <div class="w-1/3 border-r bg-gray-50 flex flex-col">
                     <div class="p-3 border-b bg-white">
@@ -282,6 +296,7 @@
                     </div>
                     <div id="chat-users-list" class="flex-1 overflow-y-auto divide-y"></div>
                 </div>
+
                 <div class="w-2/3 flex flex-col bg-white">
                     <div id="chat-active-header" class="p-3 border-b bg-emerald-50 text-emerald-900 font-bold text-xs">
                         Select a user from the left list to chat...
@@ -289,6 +304,7 @@
                     <div id="chat-messages-box" class="flex-1 p-4 overflow-y-auto space-y-3 bg-gray-50">
                         <p class="text-center text-gray-400 text-xs">No messages yet.</p>
                     </div>
+                    
                     <div class="p-4 bg-white border-t flex flex-col sm:flex-row items-center gap-3">
                         <textarea id="chat-input-text" rows="2" placeholder="Type your message..." class="flex-1 w-full p-3 border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600 resize-none"></textarea>
                         <input type="file" id="chat-media-upload" accept="image/*,video/*" class="hidden" onchange="handleChatMediaSelection(event)">
@@ -356,6 +372,7 @@
             const toast = document.createElement('div');
             toast.className = `toast-animate pointer-events-auto px-4 py-3 rounded-xl shadow-xl text-white text-xs font-bold flex items-center gap-2 ${type === 'success' ? 'bg-[#008060]' : 'bg-red-600'}`;
             toast.innerHTML = `<span>${type === 'success' ? '✅' : '❌'}</span> <span>${message}</span>`;
+            
             container.appendChild(toast);
             setTimeout(() => {
                 toast.style.opacity = '0';
@@ -428,676 +445,6 @@
         };
 
         window.openProfileModal = async () => {
-            const user = auth.currentUser;
-            if(!user) return showToast("Please sign in first!", "error");
-            try {
-                let data = {};
-                const snap = await getDoc(doc(db, "users", user.uid));
-                if(snap.exists()) data = snap.data();
-
-                document.getElementById('prof-fullname').value = data.fullName || user.displayName || "";
-                document.getElementById('prof-username').value = data.username || "";
-                document.getElementById('prof-idnumber').value = data.idNumber || "";
-                document.getElementById('prof-phone').value = data.phone || "";
-                document.getElementById('prof-school').value = data.school || "";
-                document.getElementById('prof-certs').value = data.certificates || "";
-                document.getElementById('prof-experience').value = data.experience || "";
-
-                const certBadge = document.getElementById('cert-status-badge');
-                if(certBadge) certBadge.innerText = data.certStatus || "Pending Admin Check";
-
-                const previewBox = document.getElementById('current-cv-preview');
-                if(previewBox) {
-                    previewBox.innerHTML = `
-                        <img src="${data.picUrl || 'https://via.placeholder.com/80'}" class="w-16 h-16 rounded-full object-cover border">
-                        <div>
-                            <h4 class="font-bold text-emerald-900">${data.fullName || ''} (@${data.username || 'username'})</h4>
-                            <p class="text-xs text-gray-600">🆔 ID: ${data.idNumber || 'No ID'} | 📞 ${data.phone || 'No phone'}</p>
-                            <p class="text-xs text-emerald-700 font-semibold mt-1">${data.school || 'No school specified'}</p>
-                        </div>
-                    `;
-                }
-                document.getElementById('profile-modal').classList.remove('hidden');
-            } catch(e) {
-                showToast("Error opening profile: " + e.message, "error");
-            }
-        };
-        window.closeProfileModal = () => document.getElementById('profile-modal').classList.add('hidden');
-
-        window.switchAuthTab = (tab) => {
-            if(tab === 'login') {
-                document.getElementById('bazabyose-login-form').classList.remove('hidden');
-                document.getElementById('bazabyose-register-form').classList.add('hidden');
-                document.getElementById('tab-login-btn').className = "flex-1 pb-2 font-bold text-emerald-800 border-b-2 border-emerald-800 text-sm";
-                document.getElementById('tab-reg-btn').className = "flex-1 pb-2 font-bold text-gray-400 text-sm";
-            } else {
-                document.getElementById('bazabyose-login-form').classList.add('hidden');
-                document.getElementById('bazabyose-register-form').classList.remove('hidden');
-                document.getElementById('tab-reg-btn').className = "flex-1 pb-2 font-bold text-emerald-800 border-b-2 border-emerald-800 text-sm";
-                document.getElementById('tab-login-btn').className = "flex-1 pb-2 font-bold text-gray-400 text-sm";
-            }
-        };
-
-        window.bazabyoseRegister = async function(event) {
-          event.preventDefault();
-          const email = document.getElementById('bazabyose-reg-email').value;
-          const password = document.getElementById('bazabyose-reg-password').value;
-          const fullName = document.getElementById('bazabyose-reg-name').value;
-          const username = document.getElementById('bazabyose-reg-username').value.trim().toLowerCase();
-          const idNumber = document.getElementById('bazabyose-reg-idnumber').value;
-          const phone = document.getElementById('bazabyose-reg-phone').value;
-          const role = document.getElementById('bazabyose-reg-role').value;
-
-          if(!username) return showToast("Username is required!", "error");
-          if(!idNumber || idNumber.length < 5) return showToast("Please provide a valid National ID.", "error");
-
-          try {
-            const userCred = await createUserWithEmailAndPassword(auth, email, password);
-            await setDoc(doc(db, "users", userCred.user.uid), {
-              uid: userCred.user.uid,
-              fullName, username, email, idNumber, phone, role,
-              status: "active",
-              balance: 0,
-              picUrl: "", certUrl: "", certStatus: "Pending Admin Check",
-              school: "", certificates: "", experience: "",
-              createdAt: serverTimestamp()
-            });
-
-            await addDoc(collection(db, "auditLogs"), {
-                userId: userCred.user.uid,
-                action: "ACCOUNT_CREATED",
-                details: `User @${username} registered.`,
-                status: "active",
-                createdAt: serverTimestamp()
-            });
-
-            showToast("Account created successfully!", "success");
-            closeAuthModal();
-          } catch (error) {
-            showToast("Error: " + error.message, "error");
-          }
-        };
-
-        window.bazabyoseLogin = async function(event) {
-          event.preventDefault();
-          const email = document.getElementById('bazabyose-login-email').value;
-          const password = document.getElementById('bazabyose-login-password').value;
-          try {
-            await signInWithEmailAndPassword(auth, email, password);
-            showToast("Logged in successfully!", "success");
-            closeAuthModal();
-          } catch (error) {
-            showToast("Login failed: Check your credentials.", "error");
-          }
-        };
-
-        window.bazabyoseLogout = () => signOut(auth);
-
-        function readFileAsDataURL(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-                reader.readAsDataURL(file);
-            });
-        }
-
-        window.saveUserProfileAndCV = async function(event) {
-          event.preventDefault();
-          const user = auth.currentUser;
-          if (!user) return;
-          try {
-            let picUrl = undefined;
-            const picInput = document.getElementById('prof-pic-file');
-            if (picInput.files && picInput.files[0]) {
-                picUrl = await readFileAsDataURL(picInput.files[0]);
-            }
-
-            let certUrl = undefined;
-            const certInput = document.getElementById('prof-cert-file');
-            if (certInput.files && certInput.files[0]) {
-                certUrl = await readFileAsDataURL(certInput.files[0]);
-            }
-
-            const updateData = {
-              fullName: document.getElementById('prof-fullname').value,
-              username: document.getElementById('prof-username').value.trim().toLowerCase(),
-              idNumber: document.getElementById('prof-idnumber').value,
-              phone: document.getElementById('prof-phone').value,
-              school: document.getElementById('prof-school').value,
-              certificates: document.getElementById('prof-certs').value,
-              experience: document.getElementById('prof-experience').value
-            };
-            if(picUrl) updateData.picUrl = picUrl;
-            if(certUrl) {
-                updateData.certUrl = certUrl;
-                updateData.certStatus = "Pending Admin Original Check";
-            }
-
-            await updateDoc(doc(db, "users", user.uid), updateData);
-            await addDoc(collection(db, "auditLogs"), {
-                userId: user.uid,
-                action: "PROFILE_UPDATED",
-                details: `User updated profile info.`,
-                status: "active",
-                createdAt: serverTimestamp()
-            });
-
-            showToast("Profile saved successfully!", "success");
-            closeProfileModal();
-            location.reload();
-          } catch (e) {
-            showToast("Error: " + e.message, "error");
-          }
-        };
-
-        window.deleteUserCV = async function() {
-            if(confirm("Are you sure you want to delete your profile/CV files?")) {
-                const user = auth.currentUser;
-                if(!user) return;
-                await updateDoc(doc(db, "users", user.uid), {
-                    school: "", certificates: "", experience: "", picUrl: "", certUrl: "", certStatus: "Deleted by User"
-                });
-                showToast("CV and files deleted!", "success");
-                closeProfileModal();
-                location.reload();
-            }
-        };
-
-        window.bazabyoseCreatePost = async function(event) {
-          event.preventDefault();
-          const user = auth.currentUser;
-          if (!user) return showToast("Please sign in first!", "error");
-
-          try {
-            let mediaUrl = "";
-            const fileInput = document.getElementById('ad-media-file');
-            if (fileInput.files && fileInput.files[0]) {
-                mediaUrl = await readFileAsDataURL(fileInput.files[0]);
-            }
-
-            await addDoc(collection(db, "posts"), {
-              userId: user.uid,
-              title: document.getElementById('ad-title').value,
-              category: document.getElementById('ad-category').value,
-              district: document.getElementById('ad-district').value,
-              sector: document.getElementById('ad-sector').value,
-              price: document.getElementById('ad-price').value || 0,
-              imageUrl: mediaUrl,
-              description: document.getElementById('ad-description').value,
-              status: "active",
-              createdAt: serverTimestamp()
-            });
-
-            await addDoc(collection(db, "auditLogs"), {
-                userId: user.uid,
-                action: "POST_CREATED",
-                details: `Created post: ${document.getElementById('ad-title').value}`,
-                status: "active",
-                createdAt: serverTimestamp()
-            });
-
-            showToast("Ad published successfully! Amakuru yoherejwe neza.", "success");
-            
-            // Gusiba box zose za Form neza
-            document.getElementById('bazabyose-post-form').reset();
-            
-            switchDashboardFolder('feed');
-            window.bazabyoseGetSmartFeed();
-          } catch (e) {
-            showToast("Error: " + e.message, "error");
-          }
-        };
-
-        window.bazabyoseGetSmartFeed = async function() {
-          const container = document.getElementById('bazabyose-smart-feed-container');
-          if (!container) return;
-          container.innerHTML = "<p class='text-sm text-gray-400'>Loading marketplace feed...</p>";
-
-          try {
-            const snap = await getDocs(query(collection(db, "posts"), orderBy("createdAt", "desc")));
-            container.innerHTML = "";
-            if (snap.empty) { container.innerHTML = "<p class='text-sm text-gray-500'>No ads available yet.</p>"; return; }
-
-            const currUser = auth.currentUser;
-            snap.forEach(docSnap => {
-              const post = docSnap.data();
-              const postId = docSnap.id;
-              const card = document.createElement('div');
-              card.className = "bg-white border border-gray-100 p-4 rounded-2xl shadow-sm relative";
-              
-              let mediaHTML = '';
-              if (post.imageUrl) {
-                  if (post.imageUrl.startsWith('data:video') || post.imageUrl.includes('video')) {
-                      mediaHTML = `<video src="${post.imageUrl}" controls class="w-full h-40 object-cover rounded-xl mb-3"></video>`;
-                  } else {
-                      mediaHTML = `<img src="${post.imageUrl}" class="w-full h-40 object-cover rounded-xl mb-3">`;
-                  }
-              }
-
-              card.innerHTML = `
-                ${mediaHTML}
-                <h4 class="font-bold text-emerald-800 text-base mb-1">${post.title}</h4>
-                <p class="text-xs text-gray-500 mb-2">📍 ${post.district} / ${post.sector} | <strong class="text-emerald-700">${post.price} RWF</strong></p>
-                <p class="text-sm mb-4 text-gray-700">${post.description}</p>
-                <div class="flex justify-between items-center text-xs">
-                    <button onclick="openChatModal()" class="text-indigo-600 font-bold hover:underline">💬 Contact Seller</button>
-                    ${currUser && currUser.uid === post.userId ? `<button onclick="adminDeletePost('${postId}')" class="bg-red-600 text-white px-2.5 py-1 rounded-lg font-bold">Delete</button>` : ''}
-                </div>
-              `;
-              container.appendChild(card);
-            });
-          } catch (e) {
-            container.innerHTML = "<p class='text-red-500 text-sm'>Failed to load feed.</p>";
-          }
-        };
-
-        window.adminDeletePost = async function(postId) {
-          if (confirm("Are you sure you want to delete this ad?")) {
-            await deleteDoc(doc(db, "posts", postId));
-            showToast("Ad deleted!", "success");
-            window.bazabyoseGetSmartFeed();
-          }
-        };
-
-        async function loadRoyalAdminPanel() {
-            loadAdminTransactions();
-            loadAdminUsersList();
-            loadAdminAuditLogs();
-        }
-
-        async function loadAdminTransactions() {
-            const container = document.getElementById('admin-transactions-container');
-            const badge = document.getElementById('pending-tx-badge');
-            if(!container) return;
-            try {
-                const snap = await getDocs(collection(db, "transactions"));
-                container.innerHTML = "";
-                if(snap.empty) { 
-                    container.innerHTML = "<p class='text-xs text-gray-400'>No payment transactions found.</p>"; 
-                    if(badge) badge.innerText = "0 Pending";
-                    return; 
-                }
-
-                let pendingCount = 0;
-                snap.forEach(d => {
-                    const tx = d.data();
-                    const txId = d.id;
-                    if(tx.status === 'pending') pendingCount++;
-
-                    const div = document.createElement('div');
-                    div.className = "p-3 bg-gray-50 border rounded-xl text-xs flex justify-between items-center gap-2";
-                    div.innerHTML = `
-                        <div>
-                            <strong class="text-amber-800">${tx.type?.toUpperCase()}</strong>: ${tx.amount} RWF 
-                            <br><span class="text-[11px] text-gray-600">Phone: ${tx.phone || 'N/A'} | Ref: ${tx.txRef || 'N/A'}</span>
-                            <br><span class="text-[10px] text-indigo-600 font-bold">Status: ${tx.status}</span>
-                        </div>
-                        <div class="flex gap-1">
-                            ${tx.status === 'pending' ? `<button onclick="adminApproveTx('${txId}', '${tx.userId}', ${tx.amount}, '${tx.type}')" class="bg-emerald-600 text-white px-2.5 py-1 rounded font-bold hover:bg-emerald-700">Approve</button>` : ''}
-                            <button onclick="adminDeleteTx('${txId}')" class="bg-red-600 text-white px-2 py-1 rounded font-bold hover:bg-red-700">Delete</button>
-                        </div>
-                    `;
-                    container.appendChild(div);
-                });
-                if(badge) badge.innerText = `${pendingCount} Pending`;
-            } catch(e) {
-                container.innerHTML = "<p class='text-xs text-red-500'>Failed to load transactions.</p>";
-            }
-        }
-
-        window.adminApproveTx = async function(txId, userId, amount, type) {
-            if(confirm("Approve this transaction securely?")) {
-                await updateDoc(doc(db, "transactions", txId), { status: "approved" });
-                if(userId) {
-                    const userRef = doc(db, "users", userId);
-                    if(type === 'deposit') {
-                        await updateDoc(userRef, { balance: increment(amount) });
-                    } else if(type === 'cashout') {
-                        await updateDoc(userRef, { balance: increment(-amount) });
-                    }
-                }
-                
-                await addDoc(collection(db, "auditLogs"), {
-                    action: "TX_APPROVED",
-                    details: `Approved ${type} of ${amount} RWF securely`,
-                    status: "success",
-                    createdAt: serverTimestamp()
-                });
-
-                showToast("Transaction approved successfully!", "success");
-                loadAdminTransactions();
-                loadAdminAuditLogs();
-            }
-        };
-
-        window.adminDeleteTx = async function(txId) {
-            if(confirm("Delete this transaction record?")) {
-                await deleteDoc(doc(db, "transactions", txId));
-                loadAdminTransactions();
-            }
-        };
-
-        async function loadAdminUsersList() {
-            const container = document.getElementById('admin-users-container');
-            const userBadge = document.getElementById('total-users-badge');
-            if(!container) return;
-            try {
-                const snap = await getDocs(collection(db, "users"));
-                container.innerHTML = "";
-                let count = 0;
-                snap.forEach(d => {
-                    count++;
-                    const u = d.data();
-                    const uId = d.id;
-                    const div = document.createElement('div');
-                    div.className = "p-3 bg-gray-50 border rounded-xl text-xs flex justify-between items-center gap-2";
-                    div.innerHTML = `
-                        <div>
-                            <b>${u.fullName || 'User'}</b> (@${u.username || 'N/A'})
-                            <br><span class="text-[10px] text-gray-500">Role: <b>${u.role}</b> | Status: <b class="${u.status === 'blocked' ? 'text-red-600 font-bold':'text-emerald-600'}">${u.status || 'active'}</b></span>
-                        </div>
-                        <div class="flex gap-1">
-                            <button onclick="adminToggleBlockUser('${uId}', '${u.status}')" class="${u.status === 'blocked' ? 'bg-emerald-600' : 'bg-amber-600'} text-white px-2 py-1 rounded font-bold">${u.status === 'blocked' ? 'Unblock' : 'Block'}</button>
-                            <button onclick="adminMakeAdmin('${uId}')" class="bg-indigo-600 text-white px-2 py-1 rounded font-bold">Admin</button>
-                        </div>
-                    `;
-                    container.appendChild(div);
-                });
-                if(userBadge) userBadge.innerText = `${count} Users`;
-            } catch(e) {
-                container.innerHTML = "<p class='text-xs text-red-500'>Failed to load users.</p>";
-            }
-        }
-
-        window.adminToggleBlockUser = async function(uId, currentStatus) {
-            const newStatus = currentStatus === 'blocked' ? 'active' : 'blocked';
-            await updateDoc(doc(db, "users", uId), { status: newStatus });
-            showToast(`User status updated to: ${newStatus}`, "success");
-            loadAdminUsersList();
-        };
-
-        window.adminMakeAdmin = async function(uId) {
-            if(confirm("Promote this user to Sovereign Admin?")) {
-                await updateDoc(doc(db, "users", uId), { role: 'admin' });
-                showToast("User promoted to Admin successfully!", "success");
-                loadAdminUsersList();
-            }
-        };
-
-        async function loadAdminAuditLogs() {
-            const container = document.getElementById('admin-files-audit-container');
-            if(!container) return;
-            try {
-                const snap = await getDocs(query(collection(db, "auditLogs"), orderBy("createdAt", "desc")));
-                container.innerHTML = "";
-                if(snap.empty) { container.innerHTML = "<p class='text-xs text-gray-500'>No logs found.</p>"; return; }
-                snap.forEach(d => {
-                    const log = d.data();
-                    const item = document.createElement('div');
-                    item.className = "p-2 bg-white border rounded flex justify-between items-center";
-                    item.innerHTML = `<span><b>[${log.action}]</b> ${log.details || ''}</span><span class="text-[10px] text-gray-400">${log.status}</span>`;
-                    container.appendChild(item);
-                });
-            } catch(e) {}
-        }
-
-        async function loadChatUsers() {
-            const listContainer = document.getElementById('chat-users-list');
-            try {
-                const snap = await getDocs(collection(db, "users"));
-                allUsersCache = [];
-                const currUser = auth.currentUser;
-                snap.forEach(d => {
-                    const uData = d.data();
-                    if(currUser && uData.uid !== currUser.uid) {
-                        allUsersCache.push(uData);
-                    }
-                });
-                renderChatUsersList(allUsersCache);
-            } catch(e) {
-                listContainer.innerHTML = "<p class='p-3 text-xs text-red-500'>Failed to load users.</p>";
-            }
-        }
-
-        function renderChatUsersList(users) {
-            const listContainer = document.getElementById('chat-users-list');
-            if(users.length === 0) {
-                listContainer.innerHTML = "<p class='p-3 text-xs text-gray-400 text-center'>No users found.</p>";
-                return;
-            }
-            listContainer.innerHTML = users.map(u => `
-                <div onclick="selectChatUser('${u.uid}', '${u.fullName}', '${u.username}')" class="p-3 hover:bg-emerald-50 cursor-pointer transition flex items-center gap-2.5 border-b">
-                    <img src="${u.picUrl || 'https://via.placeholder.com/40'}" class="w-9 h-9 rounded-full object-cover border">
-                    <div class="truncate">
-                        <h5 class="font-bold text-xs text-gray-900">${u.fullName || ''}</h5>
-                        <p class="text-[10px] text-indigo-600 font-bold">@${u.username || 'username'}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        window.filterChatUsers = function() {
-            const queryVal = document.getElementById('chat-search-user').value.toLowerCase().replace('@','');
-            const filtered = allUsersCache.filter(u => 
-                (u.username && u.username.toLowerCase().includes(queryVal)) || 
-                (u.fullName && u.fullName.toLowerCase().includes(queryVal))
-            );
-            renderChatUsersList(filtered);
-        };
-
-        window.selectChatUser = function(uid, name, username) {
-            activeChatUserId = uid;
-            document.getElementById('chat-active-header').innerHTML = `Chatting with: <strong class="text-emerald-700">${name} (@${username})</strong>`;
-            document.getElementById('chat-messages-box').innerHTML = `<p class='text-center text-gray-400 text-xs'>Start conversation with @${username}...</p>`;
-        };
-
-        window.triggerChatMediaPicker = () => {
-            if(!activeChatUserId) return showToast("Please select a user from the left list first!", "error");
-            document.getElementById('chat-media-upload').click();
-        };
-
-        window.handleChatMediaSelection = async function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const mediaDataUrl = await readFileAsDataURL(file);
-            const isVideo = file.type.startsWith('video');
-            const box = document.getElementById('chat-messages-box');
-            const msgDiv = document.createElement('div');
-            msgDiv.className = "p-3 bg-indigo-50 border border-indigo-100 rounded-2xl text-sm self-end max-w-[85%] ml-auto text-gray-800 space-y-2";
-
-            let previewElement = isVideo ? `<video src="${mediaDataUrl}" controls class="w-full max-h-48 rounded-lg"></video>` : `<img src="${mediaDataUrl}" class="w-full max-h-48 object-cover rounded-lg">`;
-
-            msgDiv.innerHTML = `
-                ${previewElement}
-                <div class="flex items-center justify-between gap-3 pt-1 border-t border-indigo-100 text-xs font-bold">
-                    <a href="${mediaDataUrl}" download="${file.name || 'media'}" class="text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-lg hover:bg-emerald-100 transition flex items-center gap-1">⬇️ Download</a>
-                    <button onclick="shareChatMedia('${mediaDataUrl}', '${isVideo ? 'video' : 'image'}')" class="text-indigo-700 bg-indigo-100 px-3 py-1.5 rounded-lg hover:bg-indigo-200 transition flex items-center gap-1">🔗 Share</button>
-                </div>
-            `;
-            box.appendChild(msgDiv);
-            box.scrollTop = box.scrollHeight;
-            event.target.value = "";
-        };
-
-        window.shareChatMedia = async function(url) {
-            if (navigator.share) {
-                try { await navigator.share({ title: 'BAZABYOSE Media', url: url }); } catch (err) {}
-            } else {
-                navigator.clipboard.writeText(url);
-                showToast("Media link copied to clipboard!", "success");
-            }
-        };
-
-        window.sendChatMessage = function() {
-          if(!activeChatUserId) return showToast("Please select a user from the left list first!", "error");
-          const box = document.getElementById('chat-messages-box');
-          const txt = document.getElementById('chat-input-text').value;
-          if (!txt.trim()) return;
-
-          const msgDiv = document.createElement('div');
-          msgDiv.className = "p-3 bg-emerald-100 rounded-xl text-sm self-end max-w-[85%] ml-auto text-gray-800";
-          msgDiv.innerText = txt;
-          document.getElementById('chat-input-text').value = "";
-          box.appendChild(msgDiv);
-          box.scrollTop = box.scrollHeight;
-        };
-
-        window.bazabyoseOpenMoMoModal = (amt) => {
-          document.getElementById('bazabyose-momo-amount').value = amt;
-          document.getElementById('bazabyose-momo-modal').classList.remove('hidden');
-        };
-        window.bazabyoseCloseMoMoModal = () => document.getElementById('bazabyose-momo-modal').classList.add('hidden');
-
-        window.bazabyoseSubmitMoMoPayment = async function(event) {
-          event.preventDefault();
-          const user = auth.currentUser;
-          if (!user) return;
-          try {
-            await addDoc(collection(db, "transactions"), {
-              userId: user.uid,
-              type: "deposit",
-              phone: document.getElementById('bazabyose-momo-phone').value,
-              txRef: document.getElementById('bazabyose-momo-txref').value,
-              amount: parseInt(document.getElementById('bazabyose-momo-amount').value),
-              status: "pending",
-              createdAt: serverTimestamp()
-            });
-
-            await addDoc(collection(db, "auditLogs"), {
-                userId: user.uid,
-                action: "DEPOSIT_REQUESTED",
-                details: `Requested deposit of ${document.getElementById('bazabyose-momo-amount').value} RWF`,
-                status: "pending",
-                createdAt: serverTimestamp()
-            });
-
-            showToast("Deposit request sent successfully!", "success");
-            window.bazabyoseCloseMoMoModal();
-          } catch (e) { showToast("Error: " + e.message, "error"); }
-        };
-
-        window.submitCashOut = async function(event) {
-            event.preventDefault();
-            const user = auth.currentUser;
-            if(!user) return;
-            const amtInput = document.getElementById('cashout-amount');
-            const phoneInput = document.getElementById('cashout-phone');
-            if(!amtInput || !phoneInput) return;
-            const amt = parseInt(amtInput.value);
-            try {
-                await addDoc(collection(db, "transactions"), {
-                    userId: user.uid,
-                    type: "cashout",
-                    amount: amt,
-                    phone: phoneInput.value,
-                    status: "pending",
-                    createdAt: serverTimestamp()
-                });
-
-                await addDoc(collection(db, "auditLogs"), {
-                    userId: user.uid,
-                    action: "CASHOUT_REQUESTED",
-                    details: `Requested cash-out of ${amt} RWF`,
-                    status: "pending",
-                    createdAt: serverTimestamp()
-                });
-
-                showToast("Cash Out request submitted successfully!", "success");
-                closeCashOutModal();
-            } catch (e) { showToast("Error: " + e.message, "error"); }
-        };
-
-        onAuthStateChanged(auth, async (user) => {
-          const authToggleBtn = document.getElementById('auth-toggle-btn');
-          const dashView = document.getElementById('dashboard-view');
-          const logoutBtn = document.getElementById('logout-btn');
-          const hero = document.getElementById('hero-showcase');
-          const adminTabBtn = document.getElementById('folder-tab-admin');
-
-          window.bazabyoseGetSmartFeed();
-
-          if (user) {
-            if(authToggleBtn) authToggleBtn.classList.add('hidden');
-            if(dashView) dashView.classList.remove('hidden');
-            if(logoutBtn) logoutBtn.classList.remove('hidden');
-            if(hero) hero.classList.add('hidden');
-
-            try {
-                const userDocRef = doc(db, "users", user.uid);
-                const userSnap = await getDoc(userDocRef);
-                let data = {};
-
-                if (userSnap.exists()) {
-                    data = userSnap.data();
-                } else {
-                    data = {
-                        fullName: user.displayName || "User",
-                        username: "user_" + user.uid.substring(0,5),
-                        role: "worker",
-                        balance: 0,
-                        status: "active",
-                        createdAt: new Date().toISOString()
-                    };
-                    await setDoc(userDocRef, data);
-                }
-
-                document.getElementById('dash-fullname').innerText = data.fullName || "User";
-                document.getElementById('dash-username').innerText = `@${data.username || 'username'}`;
-                document.getElementById('dash-role').innerText = `Role: ${(data.role || 'worker').toUpperCase()}`;
-                document.getElementById('dash-balance').innerText = `${data.balance || 0} RWF`;
-                document.getElementById('dash-status').innerText = data.status || "Active";
-                
-               const userRole = String(data.role || '').trim().toLowerCase();
-                
-                // Byose bishingiye gusa kuri Firestore database
-                if (userRole === 'admin') {
-                    if(adminTabBtn) {
-                        adminTabBtn.classList.remove('hidden');
-                        adminTabBtn.style.display = 'flex';
-                    }
-                    loadRoyalAdminPanel();
-                } else {
-                    if(adminTabBtn) {
-                        adminTabBtn.classList.add('hidden');
-                        adminTabBtn.style.display = 'none';
-                    }
-                    const adminContent = document.getElementById('folder-content-admin');
-                    if(adminContent) adminContent.classList.add('hidden');
-                    switchDashboardFolder('feed');
-                }
-                    if(adminTabBtn) {
-                        adminTabBtn.classList.add('hidden');
-                        adminTabBtn.style.display = 'none';
-                    }
-                    const adminContent = document.getElementById('folder-content-admin');
-                    if(adminContent) adminContent.classList.add('hidden');
-                    switchDashboardFolder('feed');
-                }
-                    if(adminTabBtn) {
-                        adminTabBtn.classList.add('hidden');
-                        adminTabBtn.style.display = 'none';
-                    }
-                    const adminContent = document.getElementById('folder-content-admin');
-                    if(adminContent) adminContent.classList.add('hidden');
-                    switchDashboardFolder('feed');
-                }
-            } catch(err) {
-                console.log("Dashboard load info error:", err);
-            }
-          } else {
-            if(authToggleBtn) authToggleBtn.classList.remove('hidden');
-            if(dashView) dashView.classList.add('hidden');
-            if(logoutBtn) logoutBtn.classList.add('hidden');
-            if(hero) hero.classList.remove('hidden');
-            if(adminTabBtn) {
-                adminTabBtn.classList.add('hidden');
-                adminTabBtn.style.display = 'none';
-            }
-          }
-        });
-    </script>
-    window.openProfileModal = async () => {
             const user = auth.currentUser;
             if(!user) return showToast("Please sign in first!", "error");
             
@@ -1176,7 +523,6 @@
 
         async function loadRoyalAdminPanel() {
             console.log("Loading Royal Supreme Admin Panel...");
-            // Hano hinjira logic yo gusoma za users na transactions
         }
 
         window.bazabyoseLogout = () => {
@@ -1216,7 +562,5 @@
         };
         bazabyoseGetSmartFeed();
     </script>
-</body>
-</html>
 </body>
 </html>
