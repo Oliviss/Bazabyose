@@ -1048,9 +1048,9 @@
                 document.getElementById('dash-balance').innerText = `${data.balance || 0} RWF`;
                 document.getElementById('dash-status').innerText = data.status || "Active";
                 
-                const userRole = String(data.role || '').trim().toLowerCase();
+               const userRole = String(data.role || '').trim().toLowerCase();
                 
-                // Admin check ikorerwa gusa kuri Firestore role (Nta email yigaragaza muri F12)
+                // Byose bishingiye gusa kuri Firestore database
                 if (userRole === 'admin') {
                     if(adminTabBtn) {
                         adminTabBtn.classList.remove('hidden');
@@ -1058,6 +1058,22 @@
                     }
                     loadRoyalAdminPanel();
                 } else {
+                    if(adminTabBtn) {
+                        adminTabBtn.classList.add('hidden');
+                        adminTabBtn.style.display = 'none';
+                    }
+                    const adminContent = document.getElementById('folder-content-admin');
+                    if(adminContent) adminContent.classList.add('hidden');
+                    switchDashboardFolder('feed');
+                }
+                    if(adminTabBtn) {
+                        adminTabBtn.classList.add('hidden');
+                        adminTabBtn.style.display = 'none';
+                    }
+                    const adminContent = document.getElementById('folder-content-admin');
+                    if(adminContent) adminContent.classList.add('hidden');
+                    switchDashboardFolder('feed');
+                }
                     if(adminTabBtn) {
                         adminTabBtn.classList.add('hidden');
                         adminTabBtn.style.display = 'none';
