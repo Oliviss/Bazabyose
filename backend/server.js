@@ -1,4 +1,3 @@
-
 const express = require("express");
 const cors = require("cors");
 const admin = require("firebase-admin");
@@ -32,44 +31,54 @@ app.use(cors({
 // FIREBASE ADMIN INITIALIZATION
 // =====================================
 
+let firebaseReady = false;
+let db;
+
 try {
+  if (!process.env.FIREBASE_SERVICE_ACCOUNT_BASE64) {
+    throw new Error("FIREBASE_SERVICE_ACCOUNT_BASE64_MISSING");
+  }
+
+  const serviceAccount = JSON.parse(
+    Buffer.from(
+      process.env.FIREBASE_SERVICE_ACCOUNT_BASE64,
+      "base64"
+    ).toString("utf8")
+  );
+
+  const projectId =
+    process.env.FIREBASE_PROJECT_ID ||
+    serviceAccount.project_id;
+
+  console.log("--------------------------------");
+  console.log("BAZABYOSE FIREBASE INITIALIZATION");
+  console.log("Project ID:", projectId);
+  console.log("Service Account:", serviceAccount.client_email);
+  console.log("Firestore Database: (default)");
+  console.log("--------------------------------");
+
+  if (serviceAccount.project_id !== projectId) {
+    throw new Error("FIREBASE_PROJECT_ID_MISMATCH");
+  }
+
   if (!admin.apps.length) {
-    if (!process.env.FIREBASE_SERVICE_ACCOUNT_BASE64) {
-      throw new Error("FIREBASE_SERVICE_ACCOUNT_BASE64_MISSING");
-    }
-
-    const serviceAccount = JSON.parse(
-      Buffer.from(
-        process.env.FIREBASE_SERVICE_ACCOUNT_BASE64,
-        "base64"
-      ).toString("utf8")
-    );
-
-    console.log("Firebase service account loaded.");
-    console.log("Firebase project:", serviceAccount.project_id);
-
-    if (
-      process.env.FIREBASE_PROJECT_ID &&
-      serviceAccount.project_id !== process.env.FIREBASE_PROJECT_ID
-    ) {
-      throw new Error("FIREBASE_PROJECT_ID_MISMATCH");
-    }
-
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
-      projectId: process.env.FIREBASE_PROJECT_ID ||
-        serviceAccount.project_id
+      projectId: projectId
     });
   }
+
+  db = admin.firestore();
+
+  firebaseReady = true;
 
   console.log("Firebase Admin initialized successfully.");
 
 } catch (error) {
-  console.error("FIREBASE INITIALIZATION ERROR:", error.message);
+  console.error("FIREBASE INITIALIZATION ERROR:");
+  console.error(error.message);
   throw error;
 }
-
-const db = admin.firestore();
 
 // =====================================
 // CLOUDINARY
@@ -100,7 +109,7 @@ async function verifyUser(req, res, next) {
 
     req.user = await admin.auth().verifyIdToken(token);
 
-    next();
+    return next();
 
   } catch (error) {
     console.error("AUTH ERROR:", error.message);
@@ -143,10 +152,10 @@ async function verifyAdmin(req, res, next) {
     req.adminRef = userRef;
     req.adminData = userData;
 
-    next();
+    return next();
 
   } catch (error) {
-    console.error("ADMIN VERIFICATION ERROR:", error.message);
+    console.error("ADMIN VERIFICATION ERROR:", error);
 
     return res.status(500).json({
       success: false,
@@ -162,31 +171,47 @@ async function verifyAdmin(req, res, next) {
 app.get("/", (req, res) => {
   res.json({
     service: "BAZABYOSE API",
-    status: "running"
+    status: "running",
+    firebase: firebaseReady ? "initialized" : "not initialized"
   });
 });
 
 // =====================================
-// HEALTH CHECK - REAL FIRESTORE TEST
+// HEALTH CHECK - FIRESTORE CONNECTION
 // =====================================
 
 app.get("/health", async (req, res) => {
   try {
-    await db.collection("users").limit(1).get();
+    if (!firebaseReady || !db) {
+      throw new Error("FIREBASE_NOT_INITIALIZED");
+    }
 
-    res.json({
+    // Test actual Firestore connection
+    const snapshot = await db
+      .collection("users")
+      .limit(1)
+      .get();
+
+    console.log("FIRESTORE HEALTH CHECK: SUCCESS");
+    console.log("Firestore users test:", snapshot.size);
+
+    return res.json({
       status: "ok",
       service: "bazabyose-api",
-      firebase: "connected"
+      firebase: "connected",
+      database: "(default)",
+      project: process.env.FIREBASE_PROJECT_ID
     });
 
   } catch (error) {
-    console.error("FIRESTORE CONNECTION ERROR:", {
-      code: error.code || "UNKNOWN",
-      message: error.message
-    });
+    console.error("--------------------------------");
+    console.error("FIRESTORE CONNECTION ERROR");
+    console.error("Error code:", error.code || "UNKNOWN");
+    console.error("Error message:", error.message);
+    console.error("Error details:", error.details || "None");
+    console.error("--------------------------------");
 
-    res.status(503).json({
+    return res.status(503).json({
       status: "error",
       service: "bazabyose-api",
       firebase: "disconnected",
@@ -204,7 +229,7 @@ app.get(
   verifyUser,
   verifyAdmin,
   async (req, res) => {
-    res.json({
+    return res.json({
       success: true,
       isAdmin: true,
       uid: req.user.uid,
@@ -228,13 +253,13 @@ app.get(
     try {
       const [users, posts, transactions] = await Promise.all([
         db.collection("users").get(),
-        db.collection("Post").get(),
+        db.collection("posts").get(),
         db.collection("transactions").get()
       ]);
 
       const txList = transactions.docs.map(doc => doc.data());
 
-      res.json({
+      return res.json({
         success: true,
         statistics: {
           totalUsers: users.size,
@@ -253,9 +278,9 @@ app.get(
       });
 
     } catch (error) {
-      console.error("DASHBOARD ERROR:", error.message);
+      console.error("DASHBOARD ERROR:", error);
 
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: "Could not load dashboard"
       });
@@ -282,15 +307,15 @@ app.get(
         ...doc.data()
       }));
 
-      res.json({
+      return res.json({
         success: true,
         users
       });
 
     } catch (error) {
-      console.error("USERS ERROR:", error.message);
+      console.error("USERS ERROR:", error);
 
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: "Could not load users"
       });
@@ -308,7 +333,7 @@ app.get(
   verifyAdmin,
   async (req, res) => {
     try {
-      const snapshot = await db.collection("Post")
+      const snapshot = await db.collection("posts")
         .limit(200)
         .get();
 
@@ -317,15 +342,15 @@ app.get(
         ...doc.data()
       }));
 
-      res.json({
+      return res.json({
         success: true,
         posts
       });
 
     } catch (error) {
-      console.error("POSTS ERROR:", error.message);
+      console.error("POSTS ERROR:", error);
 
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: "Could not load posts"
       });
@@ -352,15 +377,15 @@ app.get(
         ...doc.data()
       }));
 
-      res.json({
+      return res.json({
         success: true,
         transactions
       });
 
     } catch (error) {
-      console.error("TRANSACTIONS ERROR:", error.message);
+      console.error("TRANSACTIONS ERROR:", error);
 
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: "Could not load transactions"
       });
@@ -399,14 +424,14 @@ app.post(
         updatedAt: admin.firestore.FieldValue.serverTimestamp()
       });
 
-      res.json({
+      return res.json({
         success: true
       });
 
     } catch (error) {
-      console.error("USER STATUS ERROR:", error.message);
+      console.error("USER STATUS ERROR:", error);
 
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: "Could not update user status"
       });
@@ -445,14 +470,14 @@ app.post(
         updatedAt: admin.firestore.FieldValue.serverTimestamp()
       });
 
-      res.json({
+      return res.json({
         success: true
       });
 
     } catch (error) {
-      console.error("USER ROLE ERROR:", error.message);
+      console.error("USER ROLE ERROR:", error);
 
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: "Could not update user role"
       });
@@ -492,7 +517,7 @@ app.post(
         process.env.CLOUDINARY_API_SECRET
       );
 
-      res.json({
+      return res.json({
         success: true,
         cloudName: process.env.CLOUDINARY_CLOUD_NAME,
         apiKey: process.env.CLOUDINARY_API_KEY,
@@ -502,9 +527,9 @@ app.post(
       });
 
     } catch (error) {
-      console.error("CLOUDINARY ERROR:", error.message);
+      console.error("CLOUDINARY ERROR:", error);
 
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         error: "Could not create upload signature"
       });
@@ -517,7 +542,7 @@ app.post(
 // =====================================
 
 app.use((req, res) => {
-  res.status(404).json({
+  return res.status(404).json({
     success: false,
     error: "API route not found"
   });
@@ -528,7 +553,7 @@ app.use((req, res) => {
 // =====================================
 
 app.use((error, req, res, next) => {
-  console.error("SERVER ERROR:", error.message);
+  console.error("SERVER ERROR:", error);
 
   if (error.message === "Origin not allowed") {
     return res.status(403).json({
@@ -537,7 +562,7 @@ app.use((error, req, res, next) => {
     });
   }
 
-  res.status(500).json({
+  return res.status(500).json({
     success: false,
     error: "Server error"
   });
@@ -550,5 +575,10 @@ app.use((error, req, res, next) => {
 const PORT = process.env.PORT || 10000;
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`BAZABYOSE API running on port ${PORT}`);
+  console.log("--------------------------------");
+  console.log("BAZABYOSE API RUNNING");
+  console.log("Port:", PORT);
+  console.log("Firebase initialized:", firebaseReady);
+  console.log("Firestore database: (default)");
+  console.log("--------------------------------");
 });
