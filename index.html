@@ -191,7 +191,7 @@ import {getFunctions,httpsCallable} from "https://www.gstatic.com/firebasejs/10.
 
 const firebaseConfig={apiKey:"AIzaSyD6hNoXtX-nNccAAwNObqmGjC5ruHQdf_I",authDomain:"bazabyose.firebaseapp.com",projectId:"bazabyose",storageBucket:"bazabyose.firebasestorage.app",messagingSenderId:"660235040672",appId:"1:660235040672:web:ea80b69fab346f037396c5",measurementId:"G-LYQ2ES1FJB"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app),functions=getFunctions(app);
-const CLOUDINARY_CLOUD_NAME="ew7oruod",CLOUDINARY_UPLOAD_PRESET="bazabyose_uploads";
+const CLOUDINARY_CLOUD_NAME="ew7oruod",CLOUDINARY_UPLOAD_PRESET="bazabyose_upload";
 let allUsersCache=[],activeChatUserId=null,activeChatId=null,chatUnsubscribe=null,currentUserData=null;
 
 const $=id=>document.getElementById(id);
