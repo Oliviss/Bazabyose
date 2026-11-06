@@ -1,3 +1,4 @@
+
 const express = require("express");
 const cors = require("cors");
 const admin = require("firebase-admin");
@@ -8,6 +9,7 @@ const app = express();
 
 app.use(express.json({ limit: "10mb" }));
 
+// CORS SECURITY
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
   .split(",")
   .map(origin => origin.trim())
@@ -15,10 +17,10 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS || "")
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || allowedOrigins.length === 0 ||
-        allowedOrigins.includes(origin)) {
+    if (!origin || allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
+
     return callback(new Error("Origin not allowed"));
   }
 }));
@@ -52,7 +54,7 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// CHECK LOGIN TOKEN
+// VERIFY LOGIN TOKEN
 async function verifyUser(req, res, next) {
   try {
     const header = req.headers.authorization || "";
@@ -64,9 +66,8 @@ async function verifyUser(req, res, next) {
     }
 
     const token = header.substring(7);
-    const decoded = await admin.auth().verifyIdToken(token);
+    req.user = await admin.auth().verifyIdToken(token);
 
-    req.user = decoded;
     next();
   } catch (error) {
     return res.status(401).json({
@@ -75,21 +76,25 @@ async function verifyUser(req, res, next) {
   }
 }
 
-// CHECK ADMIN PERMISSION
+// VERIFY ADMIN ROLE
 async function verifyAdmin(req, res, next) {
   try {
     const userRef = db.collection("users").doc(req.user.uid);
     const userDoc = await userRef.get();
 
-    if (!userDoc.exists ||
-        userDoc.data().role !== "admin" ||
-        userDoc.data().blocked === true) {
+    if (
+      !userDoc.exists ||
+      userDoc.data().role !== "admin" ||
+      userDoc.data().blocked === true
+    ) {
       return res.status(403).json({
         error: "Admin permission required"
       });
     }
 
     req.adminRef = userRef;
+    req.adminData = userDoc.data();
+
     next();
   } catch (error) {
     return res.status(500).json({
@@ -106,41 +111,203 @@ app.get("/", (req, res) => {
   });
 });
 
-app.get("/health", (req, res) => {
-  res.json({
-    status: "ok",
-    service: "bazabyose-api"
-  });
-});
-
-// CREATE CLOUDINARY SIGNATURE
-app.post("/api/media/sign", verifyUser, async (req, res) => {
+// HEALTH CHECK
+app.get("/health", async (req, res) => {
   try {
-    const timestamp = Math.round(Date.now() / 1000);
-
-    const params = {
-      timestamp,
-      folder: "bazabyose/public"
-    };
-
-    const signature = cloudinary.utils.api_sign_request(
-      params,
-      process.env.CLOUDINARY_API_SECRET
-    );
+    await db.collection("users").limit(1).get();
 
     res.json({
-      cloudName: process.env.CLOUDINARY_CLOUD_NAME,
-      apiKey: process.env.CLOUDINARY_API_KEY,
-      timestamp,
-      folder: params.folder,
-      signature
+      status: "ok",
+      service: "bazabyose-api",
+      firebase: "connected"
     });
   } catch (error) {
-    res.status(500).json({
-      error: "Could not create upload signature"
+    res.status(503).json({
+      status: "error",
+      service: "bazabyose-api",
+      firebase: "disconnected"
     });
   }
 });
+
+// CHECK CURRENT ADMIN
+app.get(
+  "/api/admin/me",
+  verifyUser,
+  verifyAdmin,
+  async (req, res) => {
+    res.json({
+      success: true,
+      isAdmin: true,
+      uid: req.user.uid,
+      name: req.adminData.name || "",
+      email: req.adminData.email || "",
+      role: req.adminData.role,
+      accountType: req.adminData.accountType || "personal"
+    });
+  }
+);
+
+// ADMIN DASHBOARD STATISTICS
+app.get(
+  "/api/admin/dashboard",
+  verifyUser,
+  verifyAdmin,
+  async (req, res) => {
+    try {
+      const [users, posts, transactions] = await Promise.all([
+        db.collection("users").get(),
+        db.collection("Post").get(),
+        db.collection("transactions").get()
+      ]);
+
+      const txList = transactions.docs.map(doc => doc.data());
+
+      res.json({
+        success: true,
+        statistics: {
+          totalUsers: users.size,
+          totalPosts: posts.size,
+          totalTransactions: transactions.size,
+          pendingTransactions: txList.filter(
+            tx => tx.status === "pending"
+          ).length,
+          approvedTransactions: txList.filter(
+            tx => tx.status === "approved"
+          ).length,
+          rejectedTransactions: txList.filter(
+            tx => tx.status === "rejected"
+          ).length
+        }
+      });
+    } catch (error) {
+      res.status(500).json({
+        error: "Could not load dashboard statistics"
+      });
+    }
+  }
+);
+
+// GET ALL USERS
+app.get(
+  "/api/admin/users",
+  verifyUser,
+  verifyAdmin,
+  async (req, res) => {
+    try {
+      const snapshot = await db.collection("users").limit(200).get();
+
+      const users = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
+      res.json({
+        success: true,
+        users
+      });
+    } catch (error) {
+      res.status(500).json({
+        error: "Could not load users"
+      });
+    }
+  }
+);
+
+// GET ALL POSTS
+app.get(
+  "/api/admin/posts",
+  verifyUser,
+  verifyAdmin,
+  async (req, res) => {
+    try {
+      const snapshot = await db.collection("Post").limit(200).get();
+
+      const posts = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
+      res.json({
+        success: true,
+        posts
+      });
+    } catch (error) {
+      res.status(500).json({
+        error: "Could not load posts"
+      });
+    }
+  }
+);
+
+// GET ALL TRANSACTIONS
+app.get(
+  "/api/admin/transactions",
+  verifyUser,
+  verifyAdmin,
+  async (req, res) => {
+    try {
+      const snapshot = await db.collection("transactions").limit(200).get();
+
+      const transactions = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
+      res.json({
+        success: true,
+        transactions
+      });
+    } catch (error) {
+      res.status(500).json({
+        error: "Could not load transactions"
+      });
+    }
+  }
+);
+
+// CREATE CLOUDINARY SIGNATURE
+app.post(
+  "/api/media/sign",
+  verifyUser,
+  async (req, res) => {
+    try {
+      if (
+        !process.env.CLOUDINARY_CLOUD_NAME ||
+        !process.env.CLOUDINARY_API_KEY ||
+        !process.env.CLOUDINARY_API_SECRET
+      ) {
+        return res.status(503).json({
+          error: "Cloudinary is not configured"
+        });
+      }
+
+      const timestamp = Math.round(Date.now() / 1000);
+
+      const params = {
+        timestamp,
+        folder: "bazabyose/public"
+      };
+
+      const signature = cloudinary.utils.api_sign_request(
+        params,
+        process.env.CLOUDINARY_API_SECRET
+      );
+
+      res.json({
+        cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+        apiKey: process.env.CLOUDINARY_API_KEY,
+        timestamp,
+        folder: params.folder,
+        signature
+      });
+    } catch (error) {
+      res.status(500).json({
+        error: "Could not create upload signature"
+      });
+    }
+  }
+);
 
 // PROCESS ADMIN TRANSACTIONS
 app.post(
@@ -151,8 +318,10 @@ app.post(
     try {
       const { transactionId, action } = req.body;
 
-      if (!transactionId ||
-          !["approve", "reject"].includes(action)) {
+      if (
+        !transactionId ||
+        !["approve", "reject"].includes(action)
+      ) {
         return res.status(400).json({
           error: "Invalid transaction request"
         });
@@ -195,6 +364,10 @@ app.post(
         const user = userDoc.data();
         const balance = Number(user.balance || 0);
 
+        if (!Number.isFinite(balance) || balance < 0) {
+          throw new Error("INVALID_USER_BALANCE");
+        }
+
         if (action === "approve") {
           if (tx.type === "deposit") {
             transaction.update(userRef, {
@@ -219,7 +392,10 @@ app.post(
           processedBy: req.user.uid
         });
 
-        return { transactionId, status: action };
+        return {
+          transactionId,
+          status: action === "approve" ? "approved" : "rejected"
+        };
       });
 
       res.json({
@@ -235,7 +411,7 @@ app.post(
   }
 );
 
-// CHANGE USER STATUS
+// CHANGE USER BLOCK STATUS
 app.post(
   "/api/admin/users/status",
   verifyUser,
@@ -254,7 +430,9 @@ app.post(
         blocked
       });
 
-      res.json({ success: true });
+      res.json({
+        success: true
+      });
 
     } catch (error) {
       res.status(500).json({
@@ -289,7 +467,9 @@ app.post(
         role
       });
 
-      res.json({ success: true });
+      res.json({
+        success: true
+      });
 
     } catch (error) {
       res.status(500).json({
@@ -303,6 +483,19 @@ app.post(
 app.use((req, res) => {
   res.status(404).json({
     error: "API route not found"
+  });
+});
+
+// ERROR HANDLER
+app.use((error, req, res, next) => {
+  if (error.message === "Origin not allowed") {
+    return res.status(403).json({
+      error: "Origin not allowed"
+    });
+  }
+
+  res.status(500).json({
+    error: "Server error"
   });
 });
 
