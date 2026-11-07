@@ -191,7 +191,14 @@ import {getFirestore,doc,getDoc,setDoc,collection,addDoc,getDocs,query,orderBy,w
 const firebaseConfig={apiKey:"AIzaSyD6hNoXtX-nNccAAwNObqmGjC5ruHQdf_I",authDomain:"bazabyose.firebaseapp.com",projectId:"bazabyose",storageBucket:"bazabyose.firebasestorage.app",messagingSenderId:"660235040672",appId:"1:660235040672:web:ea80b69fab346f037396c5",measurementId:"G-LYQ2ES1FJB"};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
 const API_BASE="https://bazabyose-api.onrender.com";
-const CLOUDINARY_CLOUD_NAME="ew7oruod";
+async function apiRequest(path,options={}){
+ if(!auth.currentUser)throw Error("Banza winjire muri account.");
+ const token=await auth.currentUser.getIdToken();
+ const response=await fetch(API_BASE+path,{...options,headers:{"Content-Type":"application/json","Authorization":"Bearer "+token,...(options.headers||{})}});
+ const data=await response.json().catch(()=>({}));
+ if(!response.ok||data.success===false)throw Error(data.error||`API error ${response.status}`);
+ return data;
+}
 let allUsersCache=[],activeChatUserId=null,activeChatId=null,chatUnsubscribe=null,currentUserData=null;
 
 const $=id=>document.getElementById(id);
@@ -204,16 +211,6 @@ function toast(message,type="success"){
 function setBusy(button,busy,label="Birimo..."){if(!button)return;button.disabled=busy;if(busy){button.dataset.oldText=button.textContent;button.textContent=label;}else if(button.dataset.oldText){button.textContent=button.dataset.oldText;delete button.dataset.oldText;}}
 function requireUser(){if(!auth.currentUser){toast("Banza winjire muri account.","error");return false;}return true;}
 function safeError(e){console.error(e);return e?.message||"Habaye ikibazo. Ongera ugerageze.";}
-async function api(path,options={}){
- if(!auth.currentUser)throw Error("Banza winjire muri account.");
- const token=await auth.currentUser.getIdToken();
- const headers={"Authorization":"Bearer "+token,...(options.headers||{})};
- if(!(options.body instanceof FormData))headers["Content-Type"]="application/json";
- const response=await fetch(API_BASE+path,{...options,headers});
- const data=await response.json().catch(()=>({}));
- if(!response.ok||data.success===false)throw Error(data.error||("API error "+response.status));
- return data;
-}
 
 const products=[
  ["Imashini y'Ubukorikori","150,000 RWF","https://images.unsplash.com/photo-1581092160607-ee22621dd758?w=400"],
@@ -261,19 +258,12 @@ async function cloudinaryUpload(file,kind="image"){
  const isVideo=file.type.startsWith("video/");
  const allowed=isVideo?["video/mp4","video/webm"]:["image/jpeg","image/png","image/webp"];
  if(!allowed.includes(file.type))throw Error("File format ntiyemewe. Koresha JPG, PNG, WEBP, MP4 cyangwa WEBM.");
- const max=isVideo?50*1024*1024:10*1024*1024;
- if(file.size>max)throw Error(`File irenze ${isVideo?50:10}MB.`);
- const resource=isVideo?"video":"image";
- const signed=await api("/api/media/sign",{method:"POST",body:"{}"});
- const form=new FormData();
- form.append("file",file);
- form.append("api_key",signed.apiKey);
- form.append("timestamp",String(signed.timestamp));
- form.append("folder",signed.folder);
- form.append("signature",signed.signature);
- const response=await fetch(`https://api.cloudinary.com/v1_1/${signed.cloudName||CLOUDINARY_CLOUD_NAME}/${resource}/upload`,{method:"POST",body:form});
- const result=await response.json();
- if(!response.ok)throw Error(result.error?.message||"Cloudinary upload yanze.");
+ const max=isVideo?50*1024*1024:10*1024*1024;if(file.size>max)throw Error(`File irenze ${isVideo?50:10}MB.`);
+ const signed=await apiRequest("/api/media/sign",{method:"POST",body:JSON.stringify({})});
+ const resource=isVideo?"video":"image",form=new FormData();
+ form.append("file",file);form.append("api_key",signed.apiKey);form.append("timestamp",String(signed.timestamp));form.append("folder",signed.folder);form.append("signature",signed.signature);
+ const response=await fetch(`https://api.cloudinary.com/v1_1/${signed.cloudName}/${resource}/upload`,{method:"POST",body:form});
+ const result=await response.json();if(!response.ok)throw Error(result.error?.message||"Cloudinary upload yanze.");
  return {url:result.secure_url,publicId:result.public_id,resourceType:result.resource_type,format:result.format};
 }
 window.openProfileModal=async()=>{
@@ -331,96 +321,51 @@ window.adminDeletePost=async id=>{if(!requireUser()||!confirm("Siba iri tangazo?
 
 window.bazabyoseOpenMoMoModal=amount=>{if(!requireUser())return;$("bazabyose-momo-amount").value=amount||5000;$("bazabyose-momo-modal").classList.remove("hidden");};
 window.bazabyoseSubmitMoMoPayment=async e=>{
- e.preventDefault();if(!requireUser())return;
- const amount=Number($("bazabyose-momo-amount").value);
+ e.preventDefault();if(!requireUser())return;const amount=Number($("bazabyose-momo-amount").value);
  if(!Number.isSafeInteger(amount)||amount<100)return toast("Amafaranga agomba kuba nibura 100 RWF.","error");
- try{
-  await api("/api/transactions",{method:"POST",body:JSON.stringify({type:"deposit",amount,phone:$("bazabyose-momo-phone").value.trim(),txRef:$("bazabyose-momo-txref").value.trim()})});
-  toast("Deposit request yagejejwe kuri Admin.");$("bazabyose-momo-modal").classList.add("hidden");e.target.reset();
- }catch(err){toast(safeError(err),"error");}
+ try{await apiRequest("/api/transactions",{method:"POST",body:JSON.stringify({type:"deposit",amount,phone:$("bazabyose-momo-phone").value.trim(),txRef:$("bazabyose-momo-txref").value.trim()})});toast("Deposit request yagejejwe kuri Admin.");$("bazabyose-momo-modal").classList.add("hidden");e.target.reset();}
+ catch(err){toast(safeError(err),"error");}
 };
 window.submitCashOut=async e=>{
- e.preventDefault();if(!requireUser())return;
- const amount=Number($("cashout-amount").value);
+ e.preventDefault();if(!requireUser())return;const amount=Number($("cashout-amount").value);
  if(!Number.isSafeInteger(amount)||amount<100)return toast("Andika amafaranga nibura 100 RWF.","error");
- try{
-  await api("/api/transactions",{method:"POST",body:JSON.stringify({type:"cashout",amount,phone:$("cashout-phone").value.trim()})});
-  toast("Cashout request yoherejwe. Amafaranga yabitswe kugeza Admin ayemeje.");closeCashOutModal();e.target.reset();await refreshDashboard();
- }catch(err){toast(safeError(err),"error");}
+ try{await apiRequest("/api/transactions",{method:"POST",body:JSON.stringify({type:"cashout",amount,phone:$("cashout-phone").value.trim()})});toast("Cashout request yoherejwe kuri Admin.");closeCashOutModal();e.target.reset();await refreshDashboard();}
+ catch(err){toast(safeError(err),"error");}
 };
 window.loadMyTransactions=async()=>{
- if(!requireUser())return;const box=$("my-transactions-list");box.textContent="Loading...";$("history-modal").classList.remove("hidden");
- try{
-  const data=await api("/api/transactions/mine");box.replaceChildren();
-  if(!data.transactions?.length)box.textContent="Nta transaction urakora.";
-  (data.transactions||[]).forEach(t=>{const row=document.createElement("div");row.className="p-3 border rounded-lg text-sm";row.textContent=`${String(t.type).toUpperCase()} — ${Number(t.amount||0).toLocaleString()} RWF — ${t.status} — ${t.phone||""}`;box.append(row);});
- }catch(e){box.textContent=safeError(e);}
+ if(!requireUser())return;const box=$("my-transactions-list");box.textContent="Loading...";
+ try{const data=await apiRequest("/api/transactions/mine");box.replaceChildren();if(!data.transactions.length)box.textContent="Nta transaction urakora.";$("history-modal").classList.remove("hidden");data.transactions.forEach(t=>{const row=document.createElement("div");row.className="p-3 border rounded-lg text-sm";row.textContent=`${String(t.type).toUpperCase()} — ${Number(t.amount||0).toLocaleString()} RWF — ${t.status} — ${t.phone||""}`;box.append(row);});}
+ catch(e){box.textContent=safeError(e);}
 };
 
-// Admin operations are handled by the authenticated Render API, not Firebase callable functions.
+// Admin operations all use the authenticated Express backend.
 async function loadRoyalAdminPanel(){await Promise.all([loadAdminTransactions(),loadAdminUsersList(),loadAdminAuditLogs()]);}
 async function loadAdminTransactions(){
  const box=$("admin-transactions-container");box.textContent="Loading...";
- try{
-  const data=await api("/api/admin/transactions");box.replaceChildren();let pending=0;
-  (data.transactions||[]).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)).forEach(t=>{
-   if(t.status==="pending")pending++;
-   const row=document.createElement("div");row.className="p-3 bg-gray-50 border rounded-xl text-xs flex flex-wrap justify-between gap-2 items-center";
-   const info=document.createElement("div");info.textContent=`${String(t.type).toUpperCase()} — ${Number(t.amount||0).toLocaleString()} RWF | ${t.phone||"N/A"} | ${t.txRef||""} | ${t.status}`;row.append(info);
-   if(t.status==="pending"){
-    const approve=document.createElement("button");approve.className="bg-emerald-600 text-white px-3 py-2 rounded font-bold";approve.textContent="Approve";approve.onclick=()=>adminProcessTx(t.id,"approve");
-    const reject=document.createElement("button");reject.className="bg-red-600 text-white px-3 py-2 rounded font-bold";reject.textContent="Reject";reject.onclick=()=>adminProcessTx(t.id,"reject");row.append(approve,reject);
-   }
-   box.append(row);
-  });
-  $("pending-tx-badge").textContent=`${pending} Pending`;if(!data.transactions?.length)box.textContent="Nta transactions zihari.";
+ try{const data=await apiRequest("/api/admin/transactions");box.replaceChildren();let pending=0;
+ data.transactions.forEach(t=>{if(t.status==="pending")pending++;const row=document.createElement("div");row.className="p-3 bg-gray-50 border rounded-xl text-xs flex justify-between gap-2 items-center";
+ const info=document.createElement("div");info.textContent=`${String(t.type).toUpperCase()} — ${Number(t.amount||0).toLocaleString()} RWF | ${t.phone||"N/A"} | ${t.txRef||""} | ${t.status}`;row.append(info);
+ if(t.status==="pending"){const approve=document.createElement("button");approve.className="bg-emerald-600 text-white px-3 py-2 rounded font-bold";approve.textContent="Approve";approve.onclick=()=>adminApproveTx(t.id);const reject=document.createElement("button");reject.className="bg-red-600 text-white px-3 py-2 rounded font-bold";reject.textContent="Reject";reject.onclick=()=>adminRejectTx(t.id);row.append(approve,reject);}box.append(row);});
+ $("pending-tx-badge").textContent=`${pending} Pending`;if(!data.transactions.length)box.textContent="Nta transactions zihari.";
  }catch(e){box.textContent="Admin transaction access yanze: "+safeError(e);}
 }
-async function adminProcessTx(txId,decision){
- if(!confirm(decision==="approve"?"Wemeza iyi transaction?":"Wanga iyi transaction?"))return;
- try{await api(`/api/admin/transactions/${encodeURIComponent(txId)}/process`,{method:"POST",body:JSON.stringify({decision})});toast("Transaction processed neza.");await loadAdminTransactions();await loadAdminAuditLogs();await refreshDashboard();}
- catch(e){toast(safeError(e),"error");}
-}
+window.adminApproveTx=async txId=>{if(!confirm("Wemeza iyi transaction?"))return;try{await apiRequest(`/api/admin/transactions/${encodeURIComponent(txId)}/process`,{method:"POST",body:JSON.stringify({decision:"approve"})});toast("Transaction yemejwe.");await loadAdminTransactions();await loadAdminAuditLogs();await refreshDashboard();}catch(e){toast(safeError(e),"error");}};
+window.adminRejectTx=async txId=>{if(!confirm("Wanga iyi transaction?"))return;try{await apiRequest(`/api/admin/transactions/${encodeURIComponent(txId)}/process`,{method:"POST",body:JSON.stringify({decision:"reject"})});toast("Transaction yanze.");await loadAdminTransactions();await loadAdminAuditLogs();await refreshDashboard();}catch(e){toast(safeError(e),"error");}};
 async function loadAdminUsersList(){
  const box=$("admin-users-container");box.textContent="Loading...";
- try{
-  const data=await api("/api/admin/users");box.replaceChildren();$("total-users-badge").textContent=`${data.users?.length||0} Users`;
-  (data.users||[]).forEach(u=>{
-   const row=document.createElement("div");row.className="p-3 bg-gray-50 border rounded-xl flex flex-wrap justify-between gap-2 text-xs";
-   const info=document.createElement("div");info.textContent=`${u.fullName||u.name||"User"} (@${u.username||"N/A"}) | ${u.role||"worker"} | ${(u.blocked||u.status==="blocked")?"blocked":"active"}`;row.append(info);
-   const blocked=!!(u.blocked||u.status==="blocked");
-   const block=document.createElement("button");block.className="bg-amber-600 text-white px-2 py-1 rounded";block.textContent=blocked?"Unblock":"Block";block.onclick=()=>adminSetUserStatus(u.id,!blocked);
-   const role=document.createElement("button");role.className="bg-indigo-600 text-white px-2 py-1 rounded";role.textContent=u.role==="admin"?"Make Worker":"Make Admin";role.onclick=()=>adminSetUserRole(u.id,u.role==="admin"?"worker":"admin");
-   row.append(block,role);box.append(row);
-  });
+ try{const data=await apiRequest("/api/admin/users");box.replaceChildren();$("total-users-badge").textContent=`${data.users.length} Users`;
+ data.users.forEach(u=>{const row=document.createElement("div");row.className="p-3 bg-gray-50 border rounded-xl flex flex-wrap justify-between gap-2 text-xs";const info=document.createElement("div");info.textContent=`${u.fullName||"User"} (@${u.username||"N/A"}) | ${u.role||"worker"} | ${u.blocked||u.status==="blocked"?"blocked":"active"}`;row.append(info);
+ if(u.id!==auth.currentUser.uid){const blocked=!!u.blocked||u.status==="blocked";const btn=document.createElement("button");btn.className="bg-amber-600 text-white px-2 py-1 rounded";btn.textContent=blocked?"Unblock":"Block";btn.onclick=()=>adminSetUserStatus(u.id,!blocked);const role=document.createElement("button");role.className="bg-indigo-600 text-white px-2 py-1 rounded";role.textContent="Make Admin";role.onclick=()=>adminSetUserRole(u.id,"admin");row.append(btn,role);}box.append(row);});
  }catch(e){box.textContent="User list yanze gufunguka: "+safeError(e);}
 }
-async function adminSetUserStatus(uid,blocked){
- if(!confirm(blocked?"Block uyu mukoresha?":"Unblock uyu mukoresha?"))return;
- try{await api("/api/admin/users/status",{method:"POST",body:JSON.stringify({userId:uid,blocked})});toast("User status yahinduwe.");await loadAdminUsersList();}
- catch(e){toast(safeError(e),"error");}
-}
-async function adminSetUserRole(uid,role){
- if(!confirm(role==="admin"?"Ushaka guha uyu muntu uburenganzira bwa Admin?":"Ushaka gukuraho uburenganzira bwa Admin?") )return;
- try{await api("/api/admin/users/role",{method:"POST",body:JSON.stringify({userId:uid,role})});toast("Role yahinduwe.");await loadAdminUsersList();}
- catch(e){toast(safeError(e),"error");}
-}
-async function loadAdminAuditLogs(){
- const box=$("admin-files-audit-container");box.textContent="Loading...";
- try{const data=await api("/api/admin/audit-logs");box.replaceChildren();(data.logs||[]).forEach(d=>{const p=document.createElement("p");p.className="p-2 bg-white border rounded";p.textContent=`[${d.action||"LOG"}] ${d.details||""} — ${d.status||""}`;box.append(p);});if(!data.logs?.length)box.textContent="Nta logs zihari.";}
- catch(e){box.textContent="Audit logs ntizibonetse: "+safeError(e);}
-}
+window.adminSetUserStatus=async(uid,blocked)=>{if(!confirm(`Ushaka ${blocked?"guhagarika":"kongera gufungura"} uyu mukoresha?`))return;try{await apiRequest("/api/admin/users/status",{method:"POST",body:JSON.stringify({userId:uid,blocked})});toast("User status yahinduwe.");await loadAdminUsersList();}catch(e){toast(safeError(e),"error");}};
+window.adminSetUserRole=async(uid,role)=>{if(!confirm("Ushaka guha uyu muntu uburenganzira bwa Admin?"))return;try{await apiRequest("/api/admin/users/role",{method:"POST",body:JSON.stringify({userId:uid,role})});toast("Role yahinduwe.");await loadAdminUsersList();}catch(e){toast(safeError(e),"error");}};
+async function loadAdminAuditLogs(){const box=$("admin-files-audit-container");try{const data=await apiRequest("/api/admin/audit-logs");box.replaceChildren();data.logs.forEach(d=>{const p=document.createElement("p");p.className="p-2 bg-white border rounded";p.textContent=`[${d.action||"LOG"}] ${d.details||""} — ${d.status||""}`;box.append(p);});if(!data.logs.length)box.textContent="Nta logs zihari.";}catch(e){box.textContent="Audit logs ntizibonetse: "+safeError(e);}}
 async function refreshDashboard(){
  if(!auth.currentUser)return;const snap=await getDoc(doc(db,"users",auth.currentUser.uid));if(!snap.exists())throw Error("User profile ntiboneka.");currentUserData=snap.data();
  $("dash-fullname").textContent=currentUserData.fullName||"User";$("dash-username").textContent="@"+(currentUserData.username||"username");$("dash-role").textContent="Role: "+String(currentUserData.role||"worker").toUpperCase();$("dash-balance").textContent=Number(currentUserData.balance||0).toLocaleString()+" RWF";$("dash-status").textContent=currentUserData.status||"active";
- if(currentUserData.blocked===true||currentUserData.status==="blocked"){await signOut(auth);throw Error("Account yawe yahagaritswe. Vugana na support.");}
- let isAdmin=false;
- if(currentUserData.role==="admin"){
-  try{const adminCheck=await api("/api/admin/me");isAdmin=adminCheck.isAdmin===true;}
-  catch(err){console.error("Admin API verification failed:",err);toast("Admin permission ntiremezwa na backend: "+safeError(err),"error");}
- }
- $("folder-tab-admin").classList.toggle("hidden",!isAdmin);
- if(isAdmin)await loadRoyalAdminPanel();else switchDashboardFolder("feed");
+ if(currentUserData.status==="blocked"){await signOut(auth);throw Error("Account yawe yahagaritswe. Vugana na support.");}
+ let isAdmin=false;try{const adminCheck=await apiRequest("/api/admin/me");isAdmin=adminCheck.isAdmin===true;}catch(_){isAdmin=false;}$("folder-tab-admin").classList.toggle("hidden",!isAdmin);if(isAdmin){currentUserData.role="admin";await loadRoyalAdminPanel();}else switchDashboardFolder("feed");
 }
 
 // Chat: one deterministic conversation document for the two users; messages persist in Firestore.
